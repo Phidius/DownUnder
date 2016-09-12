@@ -1,0 +1,149 @@
+fileFormatVersion: 2
+guid: bb09f93ff9d8dd1498ad0baf0477c918
+timeCreated: 1473371928
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Body
+    100002: Legs
+    100004: Primary01_L
+    100006: Primary01_R
+    100008: Primary02_L
+    100010: Primary02_R
+    100012: Primary03_L
+    100014: Primary03_R
+    100016: Primary04_L
+    100018: Primary04_R
+    100020: Quaternary01_L
+    100022: Quaternary01_R
+    100024: Quaternary02_L
+    100026: Quaternary02_R
+    100028: Quaternary03_L
+    100030: Quaternary03_R
+    100032: Quaternary04_L
+    100034: Quaternary04_R
+    100036: Satchimo
+    100038: //RootNode
+    100040: SatchimoMesh
+    100042: Secondary01_L
+    100044: Secondary01_R
+    100046: Secondary02_L
+    100048: Secondary02_R
+    100050: Secondary03_L
+    100052: Secondary03_R
+    100054: Secondary04_L
+    100056: Secondary04_R
+    100058: Tertiary01_L
+    100060: Tertiary01_R
+    100062: Tertiary02_L
+    100064: Tertiary02_R
+    100066: Tertiary03_L
+    100068: Tertiary03_R
+    100070: Tertiary04_L
+    100072: Tertiary04_R
+    400000: Body
+    400002: Legs
+    400004: Primary01_L
+    400006: Primary01_R
+    400008: Primary02_L
+    400010: Primary02_R
+    400012: Primary03_L
+    400014: Primary03_R
+    400016: Primary04_L
+    400018: Primary04_R
+    400020: Quaternary01_L
+    400022: Quaternary01_R
+    400024: Quaternary02_L
+    400026: Quaternary02_R
+    400028: Quaternary03_L
+    400030: Quaternary03_R
+    400032: Quaternary04_L
+    400034: Quaternary04_R
+    400036: Satchimo
+    400038: //RootNode
+    400040: SatchimoMesh
+    400042: Secondary01_L
+    400044: Secondary01_R
+    400046: Secondary02_L
+    400048: Secondary02_R
+    400050: Secondary03_L
+    400052: Secondary03_R
+    400054: Secondary04_L
+    400056: Secondary04_R
+    400058: Tertiary01_L
+    400060: Tertiary01_R
+    400062: Tertiary02_L
+    400064: Tertiary02_R
+    400066: Tertiary03_L
+    400068: Tertiary03_R
+    400070: Tertiary04_L
+    400072: Tertiary04_R
+    4300000: SatchimoMesh
+    7400000: Default Take
+    9500000: //RootNode
+    13700000: SatchimoMesh
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
