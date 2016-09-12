@@ -35,7 +35,7 @@ public class SpiderController : MonoBehaviour
     private float _navDelayMax = .5f;
     private float _navDelay;
     private Quaternion lookRotation;
-    private InteractableController _interactableController;
+    private InteractionSpider _interactableController;
 
     // Use this for initialization
     void Start ()
@@ -47,7 +47,7 @@ public class SpiderController : MonoBehaviour
 	    _audioSource = GetComponent<AudioSource>();
 
         // Optional components
-        _interactableController = GetComponent<InteractableController>();
+        _interactableController = GetComponent<InteractionSpider>();
         agent.updateRotation = false;
         agent.updatePosition = true;
 
@@ -132,8 +132,9 @@ public class SpiderController : MonoBehaviour
                 if (desiredVelocity != Vector3.zero)
                 {
                     lookRotation = Quaternion.LookRotation(desiredVelocity);
-                    lookRotation *= Quaternion.Euler(Vector3.up*180);
+                    lookRotation *= Quaternion.Euler(Vector3.up*180); // Stupid blender model gets imported facing the wrong way...
                 }
+
                 _rigidBody.velocity = desiredVelocity;
             }
             //rotate us over time according to speed until we are in the required rotation
@@ -146,23 +147,7 @@ public class SpiderController : MonoBehaviour
         }
     }
     
-
-    //void OnCollisionStay(Collision collision)
-    //{
-
-    //    var playerController = collision.gameObject.GetComponent<PlayerController>();
-
-    //    if (playerController)
-    //    {
-    //        if (_state != SpiderState.Attacking)
-    //        {
-    //            _state = SpiderState.Attacking;
-    //            _animator.SetTrigger("IsAttacking");
-    //        }
-    //    }
-
-    //}
-    
+        
     public SpiderState GetState()
     {
         return _state;
@@ -193,10 +178,9 @@ public class SpiderController : MonoBehaviour
 
     public void RemoveCorpse()
     {
-
         if (_interactableController)
         {
-            if (_interactableController.GetLootSize() == 0)
+            if (!_interactableController.IsEnabled())
             {
                 Destroy(gameObject);
             }
@@ -214,6 +198,7 @@ public class SpiderController : MonoBehaviour
         child.GetComponent<MeshRenderer>().material = miniMapMaterial;
         _animator.SetTrigger("IsActive");
     }
+
     public void SetActive()
     {
         _state = SpiderState.Walking;

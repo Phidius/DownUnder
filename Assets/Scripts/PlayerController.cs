@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
     private FirstPersonController _firstPersonController;
     private float _jumpSpeed;
     private float _runSpeed;
-    private GameObject _interactableObject;
+    private GameObject _interactableGameObject;
 
     // Use this for initialization
     void Start ()
@@ -90,32 +90,32 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(gaze, out hit))
         {
-            var gazeObject = hit.transform.gameObject.GetComponent<InteractableController>();
-            if (gazeObject)
+            var gazeObject = (IInteractable)hit.transform.gameObject.GetComponent(typeof(IInteractable));
+            if (gazeObject != null)
             {
                 // This is interactable
-                if (_interactableObject && hit.transform.gameObject.GetInstanceID() != _interactableObject.GetInstanceID())
+                if (_interactableGameObject && hit.transform.gameObject.GetInstanceID() != _interactableGameObject.GetInstanceID())
                 {
                     // This is a different object - turn off the last one used
-                    _interactableObject.GetComponent<InteractableController>().EnableHalo(false);
+                    ((IInteractable)_interactableGameObject.GetComponent(typeof(IInteractable))).Highlight(this, false);
                 }
                 // Turn on this object
-                _interactableObject = hit.transform.gameObject;
-                _interactableObject.GetComponent<InteractableController>().EnableHalo(true);
+                _interactableGameObject = hit.transform.gameObject;
+                ((IInteractable)_interactableGameObject.GetComponent(typeof(IInteractable))).Highlight(this, true);
 
-            } else if (_interactableObject)
+            } else if (_interactableGameObject)
             {
                 // This is not - turn off the last one used
-                _interactableObject.GetComponent<InteractableController>().EnableHalo(false);
-                _interactableObject = null;
+                ((IInteractable)_interactableGameObject.GetComponent(typeof(IInteractable))).Highlight(this, false);
+                _interactableGameObject = null;
             }
         }
         else
         {
-            if (_interactableObject)
+            if (_interactableGameObject)
             {
-                _interactableObject.GetComponent<InteractableController>().EnableHalo(false);
-                _interactableObject = null;
+                ((IInteractable)_interactableGameObject.GetComponent(typeof(IInteractable))).Highlight(this, false);
+                _interactableGameObject = null;
             }
         }
     }
@@ -192,26 +192,31 @@ public class PlayerController : MonoBehaviour
 
         if (CrossPlatformInputManager.GetButtonDown("Fire2"))
         {
-            if (_interactableObject)
+            if (_interactableGameObject)
             {
-                print("Fire2 - " + _interactableObject.name);
-                var lootList = _interactableObject.GetComponent<InteractableController>().GetLoot();
-                foreach (var prefab in lootList)
+                //var lootList = _interactableObject.GetComponent<InteractionSpider>().GetLoot();
+                //foreach (var prefab in lootList)
+                //{
+                //    print(prefab.name);
+                //    var loot = Instantiate(prefab, _interactableObject.transform.position, Quaternion.identity);
+                //    print(loot.name);
+                //}
+                foreach (IInteractable interactable in _interactableGameObject.GetComponents(typeof(IInteractable)))
                 {
-                    print(prefab.name);
-                    var loot = Instantiate(prefab, _interactableObject.transform.position, Quaternion.identity);
-                    print(loot.name);
+                    interactable.Interact(this);
                 }
-                var healthLoot = _interactableObject.GetComponent<BottleHealthController>();
-                if (healthLoot)
-                {
-                    healthLoot.Use(this);
-                }
-                var staminaLoot = _interactableObject.GetComponent<BottleStaminaController>();
-                if (staminaLoot)
-                {
-                    staminaLoot.Use(this);
-                }
+                //_interactableObject.GetComponent<InteractionSpider>().Interact(this);
+
+                //var healthLoot = _interactableObject.GetComponent<BottleHealthController>();
+                //if (healthLoot)
+                //{
+                //    healthLoot.Interact(this);
+                //}
+                //var staminaLoot = _interactableObject.GetComponent<BottleStaminaController>();
+                //if (staminaLoot)
+                //{
+                //    staminaLoot.Interact(this);
+                //}
             }
         }
 
