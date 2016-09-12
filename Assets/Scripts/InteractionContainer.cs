@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System;
 
-public class InteractionSpider : MonoBehaviour, IInteractable {
+public class InteractionContainer: MonoBehaviour, IInteractable {
 
-    public List<GameObject> lootItems;
+    public List<GameObject> contents;
     public bool isInteractable = true;
     private Behaviour _halo;
     
@@ -15,19 +14,19 @@ public class InteractionSpider : MonoBehaviour, IInteractable {
 	
     public List<GameObject> GetLoot()
     {
-        var result = new List<GameObject>(lootItems);
-        lootItems.Clear(); // Can only get the loot once
+        var result = new List<GameObject>(contents);
+        contents.Clear(); // Can only get the loot once
         Enable(false);
         return result;
     }
     
     public void Interact(PlayerController player)
     {
-        foreach (var prefab in lootItems)
+        foreach (var prefab in contents)
         {
-            var loot = Instantiate(prefab, transform.position, Quaternion.identity);
+            Instantiate(prefab, transform.position, Quaternion.identity);
         }
-        lootItems.Clear(); // Can only get the loot once
+        contents.Clear(); // Can only get the loot once
         Enable(false);
     }
     

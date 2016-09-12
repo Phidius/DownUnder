@@ -35,7 +35,7 @@ public class SpiderController : MonoBehaviour
     private float _navDelayMax = .5f;
     private float _navDelay;
     private Quaternion lookRotation;
-    private InteractionSpider _interactableController;
+    private IInteractable _interactionSpider;
 
     // Use this for initialization
     void Start ()
@@ -47,7 +47,7 @@ public class SpiderController : MonoBehaviour
 	    _audioSource = GetComponent<AudioSource>();
 
         // Optional components
-        _interactableController = GetComponent<InteractionSpider>();
+        _interactionSpider = (IInteractable)GetComponent(typeof(IInteractable));
         agent.updateRotation = false;
         agent.updatePosition = true;
 
@@ -68,12 +68,12 @@ public class SpiderController : MonoBehaviour
                 _audioSource.loop = false;
                 _audioSource.PlayDelayed(.5f);
                 _animator.SetTrigger("IsDieing");
-                if (_interactableController)
+                if (_interactionSpider != null)
                 {
-                    _interactableController.isInteractable = true;
+                    _interactionSpider.Enable(true);
                 }
             }
-            else if (_interactableController)
+            else if (_interactionSpider!= null)
             {
                 RemoveCorpse();
             }
@@ -178,9 +178,9 @@ public class SpiderController : MonoBehaviour
 
     public void RemoveCorpse()
     {
-        if (_interactableController)
+        if (_interactionSpider!= null)
         {
-            if (!_interactableController.IsEnabled())
+            if (!_interactionSpider.IsEnabled())
             {
                 Destroy(gameObject);
             }
