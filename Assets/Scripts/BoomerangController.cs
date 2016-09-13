@@ -22,17 +22,17 @@ public class BoomerangController : MonoBehaviour
     private AudioSource _audioSource;
     private BoomerangState _state = BoomerangState.Rest;
     private Vector3 _target;
-    private GameObject _parent;
-    private Vector3 _offset;
+    private Transform _parent;
+    private Transform _weaponSlot;
     
 	// Use this for initialization
 	void Start ()
     {
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
-        _parent = transform.parent.gameObject;
-        _offset = transform.localPosition; //new Vector3(0.11f, -0.1f, 0.4f);
-	}
+        _parent = transform.parent; // Use _parent to move the Boomerang... the transform will be locked by the _animator
+	    _weaponSlot = _parent.parent; // Return the _parent to this transform when catching after a throw
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -40,8 +40,8 @@ public class BoomerangController : MonoBehaviour
         if (_state == BoomerangState.ThrowAway)
 	    {
             
-            transform.position = Vector3.MoveTowards(transform.position, _target, step);
-	        if (Vector3.Distance(transform.position, _target) < .01f)
+            _parent.position = Vector3.MoveTowards(_parent.position, _target, step);
+	        if (Vector3.Distance(_parent.position, _target) < .01f)
 	        {
 	            // Turn around
                 _state = BoomerangState.ThrowReturn;
@@ -49,13 +49,16 @@ public class BoomerangController : MonoBehaviour
         }
         else if (_state == BoomerangState.ThrowReturn)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _parent.transform.position + _offset, step);
-            if (Vector3.Distance(transform.position, _parent.transform.position + _offset) < .01f)
+            _parent.position = Vector3.MoveTowards(_parent.position, _weaponSlot.position, step);
+            if (Vector3.Distance(_parent.position, _weaponSlot.position) < .01f)
             {
                 // Return to player's "hand"
                 _state = BoomerangState.Rest;
-                transform.parent = _parent.transform;
-                transform.localPosition = _offset;
+                _parent.parent = _weaponSlot;
+                _parent.localPosition = Vector3.zero; // _parent.position is the global position
+                _parent.localRotation = Quaternion.identity;
+                _parent.localScale = Vector3.one;
+                
                 _animator.SetBool("Flying", false);
 
             }
@@ -65,37 +68,49 @@ public class BoomerangController : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.name == "SpiderSense")
+        if (collider.tag == "Event" || _state == BoomerangState.Rest)
         {
             return;
         }
+        var hitables = collider.GetComponents(typeof(IHitable));
 
-        var spiderController = collider.GetComponent<SpiderController>();
-
-        if (spiderController && _state != BoomerangState.Rest)
+        if (hitables == null || hitables.Length == 0)
         {
-            spiderController.ApplyDamage(meleeDamage);
-            _state = BoomerangState.ThrowReturn;
-            _audioSource.clip = hitSound;
-            _audioSource.Play();
+            if (_state == BoomerangState.ThrowAway)
+            {
+                // Hitting anything without a hitable component simply causes the projectile to return
+                _state = BoomerangState.ThrowReturn;
+            }
             return;
         }
 
-        var trapdoorController = collider.GetComponent<TrapdoorController>();
-        if (trapdoorController && _state != BoomerangState.Rest)
+        foreach (var component in hitables)
         {
-            trapdoorController.ApplyDamage(meleeDamage);
+            var hitable = (IHitable) component;
+            hitable.Hit(meleeDamage);
             _state = BoomerangState.ThrowReturn;
-            _audioSource.clip = hitSound;
-            _audioSource.Play();
-            return;
         }
 
-        if (_state == BoomerangState.ThrowAway)
-        {
-            // No sound effect when hitting terrain
-            _state = BoomerangState.ThrowReturn;
-        }
+        //var spiderController = collider.GetComponent<SpiderController>();
+
+        //if (spiderController)
+        //{
+        //    spiderController.ApplyDamage(meleeDamage);
+        //    _state = BoomerangState.ThrowReturn;
+        //    _audioSource.clip = hitSound;
+        //    _audioSource.Play();
+        //    return;
+        //}
+
+        //var trapdoorController = collider.GetComponent<TrapdoorController>();
+        //if (trapdoorController)
+        //{
+        //    trapdoorController.ApplyDamage(meleeDamage);
+        //    _state = BoomerangState.ThrowReturn;
+        //    _audioSource.clip = hitSound;
+        //    _audioSource.Play();
+        //    return;
+        //}
 
     }
     public BoomerangState GetState()
@@ -103,43 +118,13 @@ public class BoomerangController : MonoBehaviour
         return _state;
     }
 
-    //void OnCollisionEnter(Collision collision)
-    //{
-    //    var spiderController = collision.collider.GetComponent<SpiderController>();
-    //    var playerController = GetComponent<Collider>().GetComponent<PlayerController>();
-
-    //    if (spiderController && _state != BoomerangState.Rest)
-    //    {
-    //        spiderController.ApplyDamage(meleeDamage);
-    //        _audioSource.clip = hitSound;
-    //        _audioSource.Play();
-    //    }
-    //    _state = BoomerangState.ThrowReturn;
-    //    if (playerController)
-    //    {
-    //        if (_state == BoomerangState.ThrowReturn)
-    //        {
-    //            // Return to player's "hand"
-    //            _animator.SetBool("Flying", false);
-    //            _rigidBody.velocity = Vector3.zero;
-    //            _state = BoomerangState.Rest;
-    //            transform.parent = _parent.transform;
-    //            transform.localPosition = _offset;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        _state = BoomerangState.ThrowReturn;
-    //    }
-
-    //}
-
     public void Swing()
     {
         if (_state == BoomerangState.Rest)
         {
-            _animator.SetTrigger("Swing");
             _state = BoomerangState.Swing;
+            _animator.SetTrigger("Swing");
+            Invoke("ResetState", _animator.GetCurrentAnimatorStateInfo(0).length);
 
             _audioSource.clip = swingSound;
             _audioSource.Play();
@@ -157,11 +142,11 @@ public class BoomerangController : MonoBehaviour
         if (_state == BoomerangState.Rest)
         {
             var position = transform.root.position;
-            _animator.SetBool("Flying", true);
-            transform.parent = null;
-            transform.position = position;
+            _parent.parent = null;
+            _parent.position = position;
             _target = target;
             _state = BoomerangState.ThrowAway;
+            _animator.SetBool("Flying", true);
             _audioSource.clip = swingSound;
             _audioSource.Play();
 

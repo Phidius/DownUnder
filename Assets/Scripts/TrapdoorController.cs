@@ -2,17 +2,21 @@
 using UnityEngine;
 using System.Collections;
 
-public class TrapdoorController : MonoBehaviour
+[RequireComponent(typeof(AudioSource))]
+public class TrapdoorController : MonoBehaviour, IHitable, ISpawner
 {
     public float initialHealth = 10;
-    public GameObject barrier;
+    public AudioClip hitSound;
+    public GameObject spawnPrefab;
 
     private float _currentHealth;
     private MeshRenderer _meshRenderer;
+    private AudioSource _audioSource;
 
     void Start()
     {
         _currentHealth = initialHealth;
+        _audioSource = GetComponent<AudioSource>();
         _meshRenderer = GetComponent<MeshRenderer>();
         if (!_meshRenderer)
         {
@@ -25,14 +29,20 @@ public class TrapdoorController : MonoBehaviour
     {
         if (_currentHealth <= 0)
         {
-            Destroy(barrier);
-            Destroy(_meshRenderer);
+            Destroy(gameObject);
         }
     }
+    
+    public float GetHealth()
+    {
+        return _currentHealth;
+    }
 
-    public void ApplyDamage(int damage)
+    public void Hit(float damage)
     {
         _currentHealth -= damage;
+        _audioSource.clip = hitSound;
+        _audioSource.Play();
         if (_meshRenderer)
         {
             var color = _meshRenderer.material.color;
@@ -41,8 +51,8 @@ public class TrapdoorController : MonoBehaviour
         }
     }
 
-    public float GetHealth()
+    public void Spawn()
     {
-        return _currentHealth;
+        var spawn = (GameObject) Instantiate(spawnPrefab, transform.position, Quaternion.identity);
     }
 }

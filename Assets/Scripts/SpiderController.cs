@@ -7,7 +7,7 @@ using System.Collections;
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(AudioSource))]
-public class SpiderController : MonoBehaviour
+public class SpiderController : MonoBehaviour, IHitable
 {
     public enum SpiderState
     {
@@ -29,7 +29,7 @@ public class SpiderController : MonoBehaviour
     private Animator _animator;
     private Rigidbody _rigidBody;
     private AudioSource _audioSource;
-    private int _currentHealth;
+    private float _currentHealth;
     private SpiderState _state = SpiderState.Idle;
     public Transform _target;
     private float _navDelayMax = .5f;
@@ -162,10 +162,6 @@ public class SpiderController : MonoBehaviour
         }
         
     }
-    public void ApplyDamage(int damage)
-    {
-        _currentHealth -= damage;
-    }
 
     public void DoDamage()
     {
@@ -206,5 +202,10 @@ public class SpiderController : MonoBehaviour
     public void SetTarget(Transform target)
     {
         _target = target;
+    }
+
+    public void Hit(float damage)
+    {
+        _currentHealth -= damage;
     }
 }
