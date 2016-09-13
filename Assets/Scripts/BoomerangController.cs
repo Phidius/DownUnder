@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(AudioSource))]
 public class BoomerangController : MonoBehaviour
 {
@@ -22,26 +21,26 @@ public class BoomerangController : MonoBehaviour
     private AudioSource _audioSource;
     private BoomerangState _state = BoomerangState.Rest;
     private Vector3 _target;
-    private GameObject _parent;
-    private Vector3 _offset;
+    private Transform _parent; // The transform that will be moving through world space - this.transform will only move in local space, never through the world
+    private Transform _weaponSpot; // The transform that the _parent will reside in while at rest
     
 	// Use this for initialization
 	void Start ()
     {
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
-        _parent = transform.parent.gameObject;
-        _offset = transform.localPosition; //new Vector3(0.11f, -0.1f, 0.4f);
+        _parent = transform.parent;
+        _weaponSpot = _parent.transform.parent;
 	}
 	
 	// Update is called once per frame
 	void Update () {
         var step = throwSpeed * Time.deltaTime;
+        //print(_animator.GetCurrentAnimatorStateInfo(0).fullPathHash);
         if (_state == BoomerangState.ThrowAway)
-	    {
-            
-            transform.position = Vector3.MoveTowards(transform.position, _target, step);
-	        if (Vector3.Distance(transform.position, _target) < .01f)
+	    {            
+            _parent.position = Vector3.MoveTowards(_parent.position, _target, step);
+	        if (Vector3.Distance(_parent.position, _target) < .01f)
 	        {
 	            // Turn around
                 _state = BoomerangState.ThrowReturn;
@@ -49,13 +48,14 @@ public class BoomerangController : MonoBehaviour
         }
         else if (_state == BoomerangState.ThrowReturn)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _parent.transform.position + _offset, step);
-            if (Vector3.Distance(transform.position, _parent.transform.position + _offset) < .01f)
+            _parent.position = Vector3.MoveTowards(_parent.position, _weaponSpot.position, step);
+            if (Vector3.Distance(_parent.position, _weaponSpot.position) < .01f)
             {
                 // Return to player's "hand"
                 _state = BoomerangState.Rest;
-                transform.parent = _parent.transform;
-                transform.localPosition = _offset;
+                _parent.parent = _weaponSpot;
+                //_parent.position = Vector3.zero;
+                _parent.localPosition = Vector3.zero;
                 _animator.SetBool("Flying", false);
 
             }
@@ -139,8 +139,8 @@ public class BoomerangController : MonoBehaviour
         if (_state == BoomerangState.Rest)
         {
             _animator.SetTrigger("Swing");
+            Invoke("ResetState", _animator.GetCurrentAnimatorStateInfo(0).length);
             _state = BoomerangState.Swing;
-
             _audioSource.clip = swingSound;
             _audioSource.Play();
         }
@@ -156,14 +156,14 @@ public class BoomerangController : MonoBehaviour
     {
         if (_state == BoomerangState.Rest)
         {
-            var position = transform.root.position;
-            _animator.SetBool("Flying", true);
-            transform.parent = null;
-            transform.position = position;
+            var position = transform.root.position; // Model's position in world space
+            _parent.parent = null; // Free the Boomerang transform to move through world space
+            _parent.position = position; // But first, move it to the starting point
             _target = target;
             _state = BoomerangState.ThrowAway;
             _audioSource.clip = swingSound;
             _audioSource.Play();
+            _animator.SetBool("Flying", true);
 
         }
     }
