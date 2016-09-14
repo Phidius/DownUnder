@@ -7,7 +7,7 @@ using UnityStandardAssets.CrossPlatformInput;
 
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(FirstPersonController))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IHitable
 {
     public enum PlayerState
     {
@@ -241,7 +241,7 @@ public class PlayerController : MonoBehaviour
         _message.text = "You have " + state;
         Invoke("ClearMessage", 2f);
         _currentHealth = startingHealth;
-        ApplyDamage(0);
+        Hit(0);
         _currentHealth = startingHealth;
         transform.position = _startingPosition;
         transform.rotation = Quaternion.Euler(0f, 180f, 0f);
@@ -257,10 +257,15 @@ public class PlayerController : MonoBehaviour
         _message.text = string.Empty;
     }
 
-    public void ApplyDamage(float damage)
+    public void ApplyStamina(float stamina)
+    {
+        _stamina += stamina;
+    }
+
+    public void Hit(float damage)
     {
         _currentHealth -= damage;
-        if (_currentHealth > startingHealth*.75)
+        if (_currentHealth > startingHealth * .75)
         {
             _healthImage.color = Color.green;
         }
@@ -274,7 +279,7 @@ public class PlayerController : MonoBehaviour
         }
 
         var healthScale = _healthImage.transform.localScale;
-        healthScale.x = _currentHealth/startingHealth;
+        healthScale.x = _currentHealth / startingHealth;
         _healthImage.transform.localScale = healthScale;
 
         if (_currentHealth > 0)
@@ -282,10 +287,5 @@ public class PlayerController : MonoBehaviour
             _audioSource.clip = gruntSound;
             _audioSource.Play();
         }
-    }
-
-    public void ApplyStamina(float stamina)
-    {
-        _stamina += stamina;
     }
 }

@@ -7,7 +7,7 @@ using System.Collections;
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(AudioSource))]
-public class SpiderController : MonoBehaviour, IHitable
+public class SpiderController : MonoBehaviour, IHitable, IPatrolable
 {
     public enum SpiderState
     {
@@ -38,13 +38,13 @@ public class SpiderController : MonoBehaviour, IHitable
     private IInteractable _interactionSpider;
 
     // Use this for initialization
-    void Start ()
-	{
+    void Start()
+    {
         // Required components
         agent = GetComponentInChildren<NavMeshAgent>();
         _animator = GetComponent<Animator>();
-	    _rigidBody = GetComponent<Rigidbody>();
-	    _audioSource = GetComponent<AudioSource>();
+        _rigidBody = GetComponent<Rigidbody>();
+        _audioSource = GetComponent<AudioSource>();
 
         // Optional components
         _interactionSpider = (IInteractable)GetComponent(typeof(IInteractable));
@@ -73,7 +73,7 @@ public class SpiderController : MonoBehaviour, IHitable
                     _interactionSpider.Enable(true);
                 }
             }
-            else if (_interactionSpider!= null)
+            else if (_interactionSpider != null)
             {
                 RemoveCorpse();
             }
@@ -126,13 +126,13 @@ public class SpiderController : MonoBehaviour, IHitable
                 }
 
                 desiredVelocity = agent.desiredVelocity;
-                    // Get the direction and speed from the agent to get to the destination
+                // Get the direction and speed from the agent to get to the destination
 
                 //create the rotation we need to be in to look at the _target
                 if (desiredVelocity != Vector3.zero)
                 {
                     lookRotation = Quaternion.LookRotation(desiredVelocity);
-                    lookRotation *= Quaternion.Euler(Vector3.up*180); // Stupid blender model gets imported facing the wrong way...
+                    lookRotation *= Quaternion.Euler(Vector3.up * 180); // Stupid blender model gets imported facing the wrong way...
                 }
 
                 _rigidBody.velocity = desiredVelocity;
@@ -146,8 +146,8 @@ public class SpiderController : MonoBehaviour, IHitable
             _rigidBody.velocity = Vector3.zero;
         }
     }
-    
-        
+
+
     public SpiderState GetState()
     {
         return _state;
@@ -160,7 +160,7 @@ public class SpiderController : MonoBehaviour, IHitable
         {
             _state = SpiderState.Walking;
         }
-        
+
     }
 
     public void DoDamage()
@@ -168,23 +168,28 @@ public class SpiderController : MonoBehaviour, IHitable
         var distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= agent.stoppingDistance)
         {
-            _target.GetComponent<PlayerController>().ApplyDamage(damage);
+            var hitable = (IHitable)_target.GetComponent(typeof(IHitable));
+            if (hitable != null)
+            {
+                hitable.Hit(damage);
+            }
         }
     }
 
     public void RemoveCorpse()
     {
-        if (_interactionSpider!= null)
+        if (_interactionSpider != null)
         {
             if (!_interactionSpider.IsEnabled())
             {
                 Destroy(gameObject);
             }
-        } else
-        {
-            Destroy(gameObject);    
         }
-           
+        else
+        {
+            Destroy(gameObject);
+        }
+
     }
 
     public void Spawn(Transform target)
@@ -192,7 +197,9 @@ public class SpiderController : MonoBehaviour, IHitable
         _target = target;
         var child = transform.Find("MiniMapIcon").gameObject;
         child.GetComponent<MeshRenderer>().material = miniMapMaterial;
-        _animator.SetTrigger("IsActive");
+        var animator = GetComponent<Animator>();
+
+        animator.SetTrigger("IsActive");
     }
 
     public void SetActive()
@@ -207,5 +214,24 @@ public class SpiderController : MonoBehaviour, IHitable
     public void Hit(float damage)
     {
         _currentHealth -= damage;
+    }
+
+    public void SetNextWaypoint(WayPointController waypoint)
+    {
+        if (_target && _target.tag != "Player")
+        {
+            _target = waypoint.transform;
+        }
+
+    }
+
+    public Transform CurrentTarget()
+    {
+        return _target;
+    }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
     }
 }

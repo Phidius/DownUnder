@@ -1,21 +1,25 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(AudioSource))]
-public class TrapdoorController : MonoBehaviour, IHitable, ISpawner
+public class TrapdoorController : MonoBehaviour, IHitable
 {
-    public float initialHealth = 10;
+    public float initialHealth = 4f;
+    public int maxSpawns = 5;
+    public float spawnDelay = 20f;
     public AudioClip hitSound;
     public GameObject spawnPrefab;
 
     private float _currentHealth;
+    private float _nextSpawnTime;
     private MeshRenderer _meshRenderer;
     private AudioSource _audioSource;
 
     void Start()
     {
         _currentHealth = initialHealth;
+        _nextSpawnTime = Time.time + spawnDelay;
         _audioSource = GetComponent<AudioSource>();
         _meshRenderer = GetComponent<MeshRenderer>();
         if (!_meshRenderer)
@@ -30,6 +34,13 @@ public class TrapdoorController : MonoBehaviour, IHitable, ISpawner
         if (_currentHealth <= 0)
         {
             Destroy(gameObject);
+        }
+
+        if (Time.time > _nextSpawnTime && maxSpawns > 0f)
+        {
+            _nextSpawnTime = _nextSpawnTime + spawnDelay;
+            maxSpawns --;
+            Spawn();
         }
     }
     
@@ -53,6 +64,15 @@ public class TrapdoorController : MonoBehaviour, IHitable, ISpawner
 
     public void Spawn()
     {
-        var spawn = (GameObject) Instantiate(spawnPrefab, transform.position, Quaternion.identity);
+        if (spawnPrefab)
+        {
+            var spawn = (GameObject)Instantiate(spawnPrefab, transform.position, Quaternion.identity);
+            var spiderController = spawn.GetComponent<SpiderController>();
+            var patrolable = (IPatrolable)spawn.GetComponent(typeof (IPatrolable));
+            
+            var waypoint = WayPointController.SetWayPoint(patrolable);
+            spiderController.Spawn(waypoint.transform);
+        }
+       
     }
 }

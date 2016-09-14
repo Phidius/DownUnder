@@ -13,9 +13,16 @@ public class SpiderSense : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.tag == "Player" && _spider.GetState() == SpiderController.SpiderState.Idle)
+        if (collider.tag == "Player")
         {
-            _spider.Spawn(collider.transform);
+            if (_spider.GetState() == SpiderController.SpiderState.Idle)
+            {
+                _spider.Spawn(collider.transform);
+            }
+            else
+            {
+                _spider.SetTarget(collider.transform);
+            }
         }
     }
 }

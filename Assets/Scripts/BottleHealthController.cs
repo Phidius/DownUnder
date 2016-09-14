@@ -31,7 +31,7 @@ public class BottleHealthController : MonoBehaviour, IInteractable {
 
     public void Interact(PlayerController player)
     {
-        player.ApplyDamage(-healthRestored);
+        player.Hit(-healthRestored);
         Destroy(gameObject);
     }
 
