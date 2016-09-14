@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour, IHitable
     public float maxThrowDistance = 50f;
     public float throwWindupSpeed = 10f;
     public AudioClip gruntSound;
+    public GameObject dot;
 
     private Vector3 _startingPosition;
     private float _currentHealth;
@@ -38,7 +39,9 @@ public class PlayerController : MonoBehaviour, IHitable
     private float _jumpSpeed;
     private float _runSpeed;
     private GameObject _interactableGameObject;
-
+    private Vector3 _dotScale;
+    private float interactableUpdate = 0f;
+    private float maxInteractableUpdate = 0.5f;
     // Use this for initialization
     void Start ()
 	{
@@ -52,7 +55,8 @@ public class PlayerController : MonoBehaviour, IHitable
 	    _stamina = staminaMax;
 
         _boomerang = GameObject.FindObjectOfType<BoomerangController>();
-	    
+
+        _dotScale = dot.transform.localScale;
         foreach (var component in GetComponentsInChildren<Text>())
         {
             if (component.name == "Message")
@@ -84,12 +88,23 @@ public class PlayerController : MonoBehaviour, IHitable
 
     }
 
-    void FixedUpdate()
+    void GetIteractables()
     {
+        interactableUpdate += Time.deltaTime;
         var gaze = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.4f, 0f));
         RaycastHit hit;
         if (Physics.Raycast(gaze, out hit))
         {
+            dot.transform.position = hit.point;
+            var cameraPosition = Camera.main.transform.position;
+            //print("Scale:" + Vector3.Distance(hit.point, cameraPosition));
+            var distance = Vector3.Distance(hit.point, cameraPosition);
+            var distanceMultiplier = _dotScale * distance;
+            dot.transform.localScale = distanceMultiplier;
+            if (interactableUpdate < maxInteractableUpdate)
+            {
+                return;
+            }
             var gazeObject = (IInteractable)hit.transform.gameObject.GetComponent(typeof(IInteractable));
             if (gazeObject != null)
             {
@@ -103,7 +118,8 @@ public class PlayerController : MonoBehaviour, IHitable
                 _interactableGameObject = hit.transform.gameObject;
                 ((IInteractable)_interactableGameObject.GetComponent(typeof(IInteractable))).Highlight(this, true);
 
-            } else if (_interactableGameObject)
+            }
+            else if (_interactableGameObject)
             {
                 // This is not - turn off the last one used
                 ((IInteractable)_interactableGameObject.GetComponent(typeof(IInteractable))).Highlight(this, false);
@@ -112,6 +128,11 @@ public class PlayerController : MonoBehaviour, IHitable
         }
         else
         {
+            dot.transform.position = Vector3.zero;
+            if (interactableUpdate < maxInteractableUpdate)
+            {
+                return;
+            }
             if (_interactableGameObject)
             {
                 ((IInteractable)_interactableGameObject.GetComponent(typeof(IInteractable))).Highlight(this, false);
@@ -132,6 +153,7 @@ public class PlayerController : MonoBehaviour, IHitable
             return;
         }
 
+        GetIteractables();
         // Change back to prvious color.
         // Set/recharge the stamina
         if (CrossPlatformInputManager.GetButtonDown("Jump"))

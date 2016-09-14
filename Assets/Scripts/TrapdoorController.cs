@@ -44,7 +44,7 @@ public class TrapdoorController : MonoBehaviour, IHitable
             for (var counter = 0;counter < _spawns.Length;counter++)
             {
                 var spawn = _spawns[counter];
-                print(spawn);
+                //print(spawn);
                 if (spawn == null)
                 {
                     _nextSpawnTime = _nextSpawnTime + spawnDelay;
