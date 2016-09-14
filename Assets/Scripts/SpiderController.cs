@@ -22,6 +22,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     public int startingHealth;
     public int damage;
     public AudioClip deathCry;
+    public AudioClip hitSound;
     public Material miniMapMaterial;
     public NavMeshAgent agent { get; private set; }
 
@@ -214,6 +215,9 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     public void Hit(float damage)
     {
         _currentHealth -= damage;
+        _audioSource.clip = hitSound;
+        _audioSource.loop = false;
+        _audioSource.Play();
     }
 
     public void SetNextWaypoint(WayPointController waypoint)

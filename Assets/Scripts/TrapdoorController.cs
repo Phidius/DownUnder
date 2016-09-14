@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 public class TrapdoorController : MonoBehaviour, IHitable
 {
     public float initialHealth = 4f;
-    public int maxSpawns = 5;
+    public int maxSpawns = 3;
     public float spawnDelay = 20f;
     public AudioClip hitSound;
     public GameObject spawnPrefab;
@@ -15,9 +15,11 @@ public class TrapdoorController : MonoBehaviour, IHitable
     private float _nextSpawnTime;
     private MeshRenderer _meshRenderer;
     private AudioSource _audioSource;
+    private GameObject[] _spawns;
 
     void Start()
     {
+        _spawns =  new GameObject[maxSpawns];
         _currentHealth = initialHealth;
         _nextSpawnTime = Time.time + spawnDelay;
         _audioSource = GetComponent<AudioSource>();
@@ -36,11 +38,21 @@ public class TrapdoorController : MonoBehaviour, IHitable
             Destroy(gameObject);
         }
 
-        if (Time.time > _nextSpawnTime && maxSpawns > 0f)
+
+        if (Time.time > _nextSpawnTime)
         {
-            _nextSpawnTime = _nextSpawnTime + spawnDelay;
-            maxSpawns --;
-            Spawn();
+            for (var counter = 0;counter < _spawns.Length;counter++)
+            {
+                var spawn = _spawns[counter];
+                print(spawn);
+                if (spawn == null)
+                {
+                    _nextSpawnTime = _nextSpawnTime + spawnDelay;
+                    _spawns[counter] = Spawn();
+                    break;
+                }
+            }
+
         }
     }
     
@@ -62,17 +74,19 @@ public class TrapdoorController : MonoBehaviour, IHitable
         }
     }
 
-    public void Spawn()
+    public GameObject Spawn()
     {
+        GameObject result = null;
         if (spawnPrefab)
         {
             var spawn = (GameObject)Instantiate(spawnPrefab, transform.position, Quaternion.identity);
+            result = spawn;
             var spiderController = spawn.GetComponent<SpiderController>();
             var patrolable = (IPatrolable)spawn.GetComponent(typeof (IPatrolable));
             
             var waypoint = WayPointController.SetWayPoint(patrolable);
             spiderController.Spawn(waypoint.transform);
         }
-       
+        return result;
     }
 }
