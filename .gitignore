@@ -1,3 +1,6 @@
 
 Builds
 Library
+Temp
+*.csproj
+*.sln
