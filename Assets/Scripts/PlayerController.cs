@@ -42,9 +42,12 @@ public class PlayerController : MonoBehaviour, IHitable
     private Vector3 _dotScale;
     private float interactableUpdate = 0f;
     private float maxInteractableUpdate = 0.5f;
+
+    private OptionsController options;
     // Use this for initialization
     void Start ()
-	{
+    {
+        options = GameObject.FindObjectOfType<OptionsController>();
 	    _audioSource = GetComponent<AudioSource>();
 	    _firstPersonController = GetComponent<FirstPersonController>();
 	    _jumpSpeed = _firstPersonController.GetJumpSpeed();
@@ -191,54 +194,58 @@ public class PlayerController : MonoBehaviour, IHitable
 	        return;// The following code requires the state Rest
 	    }
 
-	    if (CrossPlatformInputManager.GetButton("Fire1"))
-	    {
-	        _throwDistance += (throwWindupSpeed * Time.deltaTime);
-	        _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
-
-        }
-
-	    if (CrossPlatformInputManager.GetButtonUp("Fire1"))
+        if (!options.showOptions)
         {
-            if (_throwDistance > maxThrowDistance * .1f)
-	        {
-	            var point = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.40f, _throwDistance));
-	            _boomerang.Throw(point);
-	        }
-	        else
-	        {
-	            _boomerang.Swing();
-	        }
-	        _throwDistance = 0f;
-	    }
-
-        if (CrossPlatformInputManager.GetButtonDown("Fire2"))
-        {
-            if (_interactableGameObject)
+            if (CrossPlatformInputManager.GetButton("Fire1"))
             {
-                //var lootList = _interactableObject.GetComponent<InteractionSpider>().GetLoot();
-                //foreach (var prefab in lootList)
-                //{
-                //    print(prefab.name);
-                //    var loot = Instantiate(prefab, _interactableObject.transform.position, Quaternion.identity);
-                //    print(loot.name);
-                //}
-                foreach (IInteractable interactable in _interactableGameObject.GetComponents(typeof(IInteractable)))
-                {
-                    interactable.Interact(this);
-                }
-                //_interactableObject.GetComponent<InteractionSpider>().Interact(this);
+                _throwDistance += (throwWindupSpeed*Time.deltaTime);
+                _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
 
-                //var healthLoot = _interactableObject.GetComponent<BottleHealthController>();
-                //if (healthLoot)
-                //{
-                //    healthLoot.Interact(this);
-                //}
-                //var staminaLoot = _interactableObject.GetComponent<BottleStaminaController>();
-                //if (staminaLoot)
-                //{
-                //    staminaLoot.Interact(this);
-                //}
+            }
+
+            if (CrossPlatformInputManager.GetButtonUp("Fire1"))
+            {
+                if (_throwDistance > maxThrowDistance*.1f)
+                {
+                    var point = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.40f, _throwDistance));
+                    _boomerang.Throw(point);
+                }
+                else
+                {
+                    _boomerang.Swing();
+                }
+                _throwDistance = 0f;
+            }
+
+            if (CrossPlatformInputManager.GetButtonDown("Fire2"))
+            {
+                if (_interactableGameObject)
+                {
+                    //var lootList = _interactableObject.GetComponent<InteractionSpider>().GetLoot();
+                    //foreach (var prefab in lootList)
+                    //{
+                    //    print(prefab.name);
+                    //    var loot = Instantiate(prefab, _interactableObject.transform.position, Quaternion.identity);
+                    //    print(loot.name);
+                    //}
+                    foreach (IInteractable interactable in _interactableGameObject.GetComponents(typeof (IInteractable))
+                        )
+                    {
+                        interactable.Interact(this);
+                    }
+                    //_interactableObject.GetComponent<InteractionSpider>().Interact(this);
+
+                    //var healthLoot = _interactableObject.GetComponent<BottleHealthController>();
+                    //if (healthLoot)
+                    //{
+                    //    healthLoot.Interact(this);
+                    //}
+                    //var staminaLoot = _interactableObject.GetComponent<BottleStaminaController>();
+                    //if (staminaLoot)
+                    //{
+                    //    staminaLoot.Interact(this);
+                    //}
+                }
             }
         }
 

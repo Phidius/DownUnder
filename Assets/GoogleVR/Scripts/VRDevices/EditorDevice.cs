@@ -97,8 +97,9 @@ namespace Gvr.Internal {
       var neck = (rot * neckOffset - neckOffset.y * Vector3.up) * GvrViewer.Instance.NeckModelScale;
       headPose.Set(neck, rot);
 
-      triggered = Input.GetMouseButtonDown(0);
-      tilted = Input.GetKeyUp(KeyCode.Escape);
+        //triggered = Input.GetMouseButtonDown(0);
+        triggered = Input.GetKeyDown(KeyCode.Tab);
+        tilted = Input.GetKeyUp(KeyCode.Escape);
     }
 
     public override void PostRender(RenderTexture stereoScreen) {

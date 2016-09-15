@@ -52,7 +52,20 @@ public class GvrViewer : MonoBehaviour {
       return instance;
     }
   }
-  private static GvrViewer instance = null;
+    public static bool Initialized
+    {
+        get
+        {
+#if UNITY_EDITOR
+            if (instance == null && !Application.isPlaying)
+            {
+                instance = UnityEngine.Object.FindObjectOfType<GvrViewer>();
+            }
+#endif
+            return instance;
+        }
+    }
+    private static GvrViewer instance = null;
 
   /// Generate a GvrViewer instance.  Takes no action if one already exists.
   public static void Create() {
@@ -573,7 +586,8 @@ public class GvrViewer : MonoBehaviour {
 
   private void DispatchEvents() {
     // Update flags first by copying from device and other inputs.
-    Triggered = device.triggered || Input.GetMouseButtonDown(0);
+    //Triggered = device.triggered || Input.GetMouseButtonDown(0);
+    Triggered = device.triggered || Input.GetKeyDown(KeyCode.Tab);
     Tilted = device.tilted;
     ProfileChanged = device.profileChanged;
     BackButtonPressed = device.backButtonPressed || Input.GetKeyDown(KeyCode.Escape);
