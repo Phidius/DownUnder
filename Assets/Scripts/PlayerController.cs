@@ -100,7 +100,6 @@ public class PlayerController : MonoBehaviour, IHitable
         {
             dot.transform.position = hit.point;
             var cameraPosition = Camera.main.transform.position;
-            //print("Scale:" + Vector3.Distance(hit.point, cameraPosition));
             var distance = Vector3.Distance(hit.point, cameraPosition);
             var distanceMultiplier = _dotScale * distance;
             dot.transform.localScale = distanceMultiplier;
@@ -221,15 +220,7 @@ public class PlayerController : MonoBehaviour, IHitable
             {
                 if (_interactableGameObject)
                 {
-                    //var lootList = _interactableObject.GetComponent<InteractionSpider>().GetLoot();
-                    //foreach (var prefab in lootList)
-                    //{
-                    //    print(prefab.name);
-                    //    var loot = Instantiate(prefab, _interactableObject.transform.position, Quaternion.identity);
-                    //    print(loot.name);
-                    //}
-                    foreach (IInteractable interactable in _interactableGameObject.GetComponents(typeof (IInteractable))
-                        )
+                    foreach (IInteractable interactable in _interactableGameObject.GetComponents(typeof (IInteractable)))
                     {
                         interactable.Interact(this);
                     }

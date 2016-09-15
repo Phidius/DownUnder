@@ -31,6 +31,10 @@ public class BottleHealthController : MonoBehaviour, IInteractable {
 
     public void Interact(PlayerController player)
     {
+        if (Vector3.Distance(player.transform.position, transform.position) > 5f)
+        {
+            return;
+        }
         player.Hit(-healthRestored);
         Destroy(gameObject);
     }

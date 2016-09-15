@@ -22,6 +22,10 @@ public class InteractionContainer: MonoBehaviour, IInteractable {
     
     public void Interact(PlayerController player)
     {
+        if (Vector3.Distance(player.transform.position, transform.position) > 5f)
+        {
+            return;
+        }
         foreach (var prefab in contents)
         {
             Instantiate(prefab, transform.position, Quaternion.identity);
@@ -42,6 +46,11 @@ public class InteractionContainer: MonoBehaviour, IInteractable {
 
     public void Highlight(PlayerController player, bool show)
     {
+        if (_halo == null)
+        {
+            return;
+        }
+
         if (IsEnabled() && show && Vector3.Distance(player.transform.position, transform.position) < 5f)
         {
             _halo.enabled = true;

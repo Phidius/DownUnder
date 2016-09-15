@@ -119,7 +119,6 @@ public class OptionsController : MonoBehaviour
     public void ExitGame()
     {
         // TODO: Confirm exiting?
-        print("Application.Quit();");
         Application.Quit();
     }
 

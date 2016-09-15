@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(Rigidbody))]
+//[RequireComponent(typeof(Rigidbody))] // Required to detect collisions
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(AudioSource))]
@@ -20,6 +20,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
 
     //values that will be set in the Inspector
     public int startingHealth;
+    public float runSpeed = 0.0f;
     public int damage;
     public AudioClip deathCry;
     public AudioClip hitSound;
@@ -28,8 +29,8 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
 
     //values for internal use
     private Animator _animator;
-    private Rigidbody _rigidBody;
     private AudioSource _audioSource;
+    private EndFight _endFight;
     private float _currentHealth;
     private SpiderState _state = SpiderState.Idle;
     public Transform _target;
@@ -37,23 +38,45 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     private float _navDelay;
     private Quaternion lookRotation;
     private IInteractable _interactionSpider;
+    private float _spiderSenseRadius = 5.0f;
 
     // Use this for initialization
     void Start()
     {
         // Required components
-        agent = GetComponentInChildren<NavMeshAgent>();
         _animator = GetComponent<Animator>();
-        _rigidBody = GetComponent<Rigidbody>();
         _audioSource = GetComponent<AudioSource>();
+        agent = GetComponent<NavMeshAgent>();
+
+        // Child components
+        var spiderSense = GetComponentInChildren<SpiderSense>();
 
         // Optional components
         _interactionSpider = (IInteractable)GetComponent(typeof(IInteractable));
+
+        // Global components
+        _endFight = GameObject.FindObjectOfType<EndFight>();
+
+        if (_endFight == null)
+        {
+            Debug.Log("This level is missing an EndFight!");
+        }
+
         agent.updateRotation = false;
         agent.updatePosition = true;
 
+        if (spiderSense)
+        {
+            _spiderSenseRadius = spiderSense.GetComponent<SphereCollider>().radius;
+        }
+
         _currentHealth = startingHealth;
         _navDelay = _navDelayMax + .1f;
+
+        if (runSpeed < agent.speed)
+        {
+            runSpeed = agent.speed*2;
+        }
     }
 
     // Update is called once per frame
@@ -64,10 +87,11 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             if (_state != SpiderState.Dying)
             {
                 _state = SpiderState.Dying;
-                _rigidBody.velocity = Vector3.zero;
+                agent.Stop();
                 _audioSource.clip = deathCry;
                 _audioSource.loop = false;
                 _audioSource.PlayDelayed(.5f);
+                _animator.speed = 1f;
                 _animator.SetTrigger("IsDieing");
                 if (_interactionSpider != null)
                 {
@@ -80,9 +104,14 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             }
             return;
         }
+        if (_endFight.hasBegun)
+        {
+            agent.speed = runSpeed;
+            _target = _endFight.target;
+        }
+
         if (!_target || _state == SpiderState.Dying)
         {
-            _rigidBody.velocity = Vector3.zero;
             return;
         }
 
@@ -91,6 +120,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
         if (distance < agent.stoppingDistance && _state != SpiderState.Attacking)
         {
             _state = SpiderState.Attacking;
+            _animator.speed = 1f;
             _animator.SetTrigger("IsAttacking");
         }
 
@@ -98,28 +128,22 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
         {
             Vector3 desiredVelocity = Vector3.zero;
             _navDelay += Time.deltaTime;
-
-            //print(name + " is " + distance + "m away");
-            if (distance < 5f)
+            
+            if (distance < _spiderSenseRadius)
             {
                 //find the vector pointing from our position to the _target
                 var _direction = transform.position - _target.position;
-
+                _animator.speed = 2f;
                 //create the rotation we need to be in to look at the _target
                 lookRotation = Quaternion.LookRotation(_direction);
 
-                //var velocity = new Vector3(_direction.x*agent.speed*-1f, _rigidBody.velocity.y,
-                //    _direction.z*agent.speed*-1f);
-
-                //_rigidBody.velocity = velocity;
-                //print("Distance:" + distance + ", transform:" + transform.position + ", _target:" + _target.position + ", setVelocity:" + velocity);
-
-                var distanceCovered = (Time.deltaTime) * agent.speed;
+                var distanceCovered = (Time.deltaTime) * runSpeed;
                 var fractionalMovement = distanceCovered / distance;
                 transform.position = Vector3.Lerp(transform.position, _target.position, fractionalMovement);
             }
             else
             {
+                _animator.speed = 1f;
                 if (_navDelay > _navDelayMax)
                 {
                     _navDelay = 0f;
@@ -135,16 +159,11 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
                     lookRotation = Quaternion.LookRotation(desiredVelocity);
                     lookRotation *= Quaternion.Euler(Vector3.up * 180); // Stupid blender model gets imported facing the wrong way...
                 }
-
-                _rigidBody.velocity = desiredVelocity;
+                
             }
             //rotate us over time according to speed until we are in the required rotation
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 360 / agent.angularSpeed); // TODO: use the agent.angularSpeed instead
 
-        }
-        else
-        {
-            _rigidBody.velocity = Vector3.zero;
         }
     }
 

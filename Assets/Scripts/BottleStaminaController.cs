@@ -31,6 +31,10 @@ public class BottleStaminaController : MonoBehaviour, IInteractable
 
     public void Interact(PlayerController player)
     {
+        if (Vector3.Distance(player.transform.position, transform.position) > 5f)
+        {
+            return;
+        }
         player.ApplyStamina(staminaRestored);
         Destroy(gameObject);
     }
