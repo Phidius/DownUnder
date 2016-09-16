@@ -15,11 +15,11 @@ public class OptionsController : MonoBehaviour
     private FirstPersonController _firstPerson;
     
     private string[] _qualitySettings;
+
+
     // Use this for initialization
     void Start ()
     {
-        //layoutOffset.x = Screen.width*.1f;
-        //layoutOffset.y = Screen.height*.2f;
         _qualitySettings = QualitySettings.names;
         _firstPerson = GameObject.FindObjectOfType<FirstPersonController>();
 	    //panel = transform.Find("Panel").gameObject;
@@ -35,7 +35,7 @@ public class OptionsController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-	    var changeOptions = showOptions;
+        var changeOptions = showOptions;
 	    if (_gvrViewer && GvrViewer.Instance.VRModeEnabled)
 	    {
 	        var triggered = GvrViewer.Instance.Triggered;
@@ -58,7 +58,7 @@ public class OptionsController : MonoBehaviour
 	        ShowOptions();
 	    }
 	}
-    
+
     private void ShowOptions()
     {
         if (showOptions)

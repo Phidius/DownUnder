@@ -15,13 +15,15 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
         Climbing,
         Walking,
         Attacking,
-        Dying
+        Dying,
+        Dead
     };
 
     //values that will be set in the Inspector
     public int startingHealth;
     public float runSpeed = 0.0f;
     public int damage;
+    public AudioClip walkSound;
     public AudioClip deathCry;
     public AudioClip hitSound;
     public Material miniMapMaterial;
@@ -82,35 +84,18 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     // Update is called once per frame
     void Update()
     {
-        if (_currentHealth <= 0)
-        {
-            if (_state != SpiderState.Dying)
-            {
-                _state = SpiderState.Dying;
-                agent.Stop();
-                _audioSource.clip = deathCry;
-                _audioSource.loop = false;
-                _audioSource.PlayDelayed(.5f);
-                _animator.speed = 1f;
-                _animator.SetTrigger("IsDieing");
-                if (_interactionSpider != null)
-                {
-                    _interactionSpider.Enable(true);
-                }
-            }
-            else if (_interactionSpider != null)
-            {
-                RemoveCorpse();
-            }
-            return;
-        }
         if (_endFight.hasBegun)
         {
             agent.speed = runSpeed;
             _target = _endFight.target;
         }
+        if (_state == SpiderState.Dead)
+        {
+            RemoveCorpse();
+            return;
+        }
 
-        if (!_target || _state == SpiderState.Dying)
+        if (!_target)
         {
             return;
         }
@@ -131,6 +116,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             
             if (distance < _spiderSenseRadius)
             {
+                agent.Stop();
                 //find the vector pointing from our position to the _target
                 var _direction = transform.position - _target.position;
                 _animator.speed = 2f;
@@ -143,6 +129,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             }
             else
             {
+                agent.Resume();
                 _animator.speed = 1f;
                 if (_navDelay > _navDelayMax)
                 {
@@ -231,12 +218,38 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
         _target = target;
     }
 
+    public void SetDead()
+    {
+        _state = SpiderState.Dead;
+    }
+
     public void Hit(float damage)
     {
         _currentHealth -= damage;
         _audioSource.clip = hitSound;
         _audioSource.loop = false;
         _audioSource.Play();
+        if (_currentHealth <= 0)
+        {
+            if (_state != SpiderState.Dying)
+            {
+                _state = SpiderState.Dying;
+                agent.Stop();
+                Invoke("StartDyingSound", hitSound.length);
+                _animator.speed = 1f;
+                _animator.SetTrigger("IsDieing");
+                if (_interactionSpider != null)
+                {
+                    _interactionSpider.Enable(true);
+                }
+            }
+            else if (_interactionSpider != null)
+            {
+                RemoveCorpse();
+            }
+            return;
+        }
+        Invoke("StartWalkingSound", hitSound.length);
     }
 
     public void SetNextWaypoint(WayPointController waypoint)
@@ -246,6 +259,23 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             _target = waypoint.transform;
         }
 
+    }
+
+    private void StartWalkingSound()
+    {
+        if (_state != SpiderState.Dying)
+        {
+            _audioSource.clip = walkSound;
+            _audioSource.loop = true;
+            _audioSource.Play();
+        }
+    }
+
+    private void StartDyingSound()
+    {
+        _audioSource.clip = deathCry;
+        _audioSource.loop = false;
+        _audioSource.Play();
     }
 
     public Transform CurrentTarget()
