@@ -34,7 +34,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     private AudioSource _audioSource;
     private EndFight _endFight;
     private float _currentHealth;
-    private SpiderState _state = SpiderState.Idle;
+    public SpiderState _state = SpiderState.Idle;
     public Transform _target;
     private float _navDelayMax = .5f;
     private float _navDelay;
@@ -109,7 +109,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             _animator.SetTrigger("IsAttacking");
         }
 
-        if (_state == SpiderState.Walking || _state == SpiderState.Attacking)
+        if (_state == SpiderState.Walking)// || _state == SpiderState.Attacking)
         {
             Vector3 desiredVelocity = Vector3.zero;
             _navDelay += Time.deltaTime;
@@ -185,8 +185,15 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
 
     public void RemoveCorpse()
     {
+        if (_state != SpiderState.Dead)
+        {
+            return;
+        }
+        //print("Is _interactionSpider != null? " + _interactionSpider != null);  
+
         if (_interactionSpider != null)
         {
+            //print("Is !_interactionSpider.IsEnabled()? " + !_interactionSpider.IsEnabled());
             if (!_interactionSpider.IsEnabled())
             {
                 Destroy(gameObject);
@@ -221,29 +228,33 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     public void SetDead()
     {
         _state = SpiderState.Dead;
+
+        if (_interactionSpider != null)
+        {
+            _interactionSpider.Enable(true);
+        }
     }
 
     public void Hit(float damage)
     {
+        if (_state == SpiderState.Dying || _state == SpiderState.Dead)
+        {
+            return; // No use beating a dead horse
+        }
         _currentHealth -= damage;
         _audioSource.clip = hitSound;
         _audioSource.loop = false;
         _audioSource.Play();
+
         if (_currentHealth <= 0)
         {
-            if (_state != SpiderState.Dying)
-            {
-                _state = SpiderState.Dying;
-                agent.Stop();
-                Invoke("StartDyingSound", hitSound.length);
-                _animator.speed = 1f;
-                _animator.SetTrigger("IsDieing");
-                if (_interactionSpider != null)
-                {
-                    _interactionSpider.Enable(true);
-                }
-            }
-            else if (_interactionSpider != null)
+            _state = SpiderState.Dying;
+            agent.Stop();
+            Invoke("StartDyingSound", hitSound.length);
+            _animator.speed = 1f;
+            _animator.SetTrigger("IsDieing");
+
+            if (_interactionSpider != null)
             {
                 RemoveCorpse();
             }
@@ -263,12 +274,13 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
 
     private void StartWalkingSound()
     {
-        if (_state != SpiderState.Dying)
+        if (_state == SpiderState.Dying || _state != SpiderState.Dead)
         {
-            _audioSource.clip = walkSound;
-            _audioSource.loop = true;
-            _audioSource.Play();
+            return;
         }
+        _audioSource.clip = walkSound;
+        _audioSource.loop = true;
+        _audioSource.Play();
     }
 
     private void StartDyingSound()

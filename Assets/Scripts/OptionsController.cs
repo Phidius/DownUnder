@@ -1,28 +1,28 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using UnityStandardAssets.Characters.FirstPerson;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class OptionsController : MonoBehaviour
 {
     public bool showOptions = false;
-    //public Vector2 layoutOffset;
     public GameObject panel;
     public Text quality;
 
     private bool _gvrViewer = false;
     private FirstPersonController _firstPerson;
-    
+    private Button[] _actions;
     private string[] _qualitySettings;
-
+    private int _currentAction = 0;
+    private bool _verticalInUse = false;
 
     // Use this for initialization
     void Start ()
     {
         _qualitySettings = QualitySettings.names;
         _firstPerson = GameObject.FindObjectOfType<FirstPersonController>();
-	    //panel = transform.Find("Panel").gameObject;
+        _actions = GetComponentsInChildren<Button>();
+        HighlightAction();
 
 	    if (GvrViewer.Initialized)
 	    {
@@ -57,7 +57,30 @@ public class OptionsController : MonoBehaviour
 	        showOptions = changeOptions;
 	        ShowOptions();
 	    }
-	}
+
+        if (CrossPlatformInputManager.GetAxisRaw("Vertical") != 0)
+        {
+            if (_verticalInUse == false)
+            {
+                _verticalInUse = true;
+                _currentAction = _currentAction + 1;
+                if (_currentAction > _actions.Length - 1)
+                {
+                    _currentAction = 0;
+                }
+                HighlightAction();
+            }
+        }
+        if (CrossPlatformInputManager.GetAxisRaw("Vertical") == 0)
+        {
+            _verticalInUse = false;
+        }
+        if (CrossPlatformInputManager.GetButtonDown("Submit"))
+        {
+            UseAction();
+        }
+
+    }
 
     private void ShowOptions()
     {
@@ -146,5 +169,22 @@ public class OptionsController : MonoBehaviour
     private void DisplayQualitySetting()
     {
         quality.text = _qualitySettings[QualitySettings.GetQualityLevel()];
+    }
+
+    private void HighlightAction()
+    {
+        if (_actions.Length > _currentAction)
+        {
+            _actions[_currentAction].Select();
+        }
+
+    }
+    private void UseAction()
+    {
+        if (_actions.Length > _currentAction)
+        {
+            _actions[_currentAction].onClick.Invoke();
+        }
+
     }
 }
