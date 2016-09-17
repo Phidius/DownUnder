@@ -5,12 +5,15 @@ public class InteractionContainer: MonoBehaviour, IInteractable {
 
     public List<GameObject> contents;
     public bool isInteractable = true;
+    public Animator animator;
+
     private Behaviour _halo;
     
 	// Use this for initialization
 	void Start () {
         _halo = GetComponent("Halo") as Behaviour;
-    }
+	    animator = GetComponent<Animator>();
+	}
 	
     public List<GameObject> GetLoot()
     {
@@ -32,6 +35,11 @@ public class InteractionContainer: MonoBehaviour, IInteractable {
         }
         contents.Clear(); // Can only get the loot once
         Enable(false);
+
+        if (animator)
+        {
+            animator.SetTrigger("Interact");
+        }
     }
     
     public void Enable(bool enable)

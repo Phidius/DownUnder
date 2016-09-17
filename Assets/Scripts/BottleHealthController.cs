@@ -6,7 +6,6 @@ public class BottleHealthController : MonoBehaviour, IInteractable {
 
     public float healthRestored = 10;
     private Behaviour _halo;
-
     void Start()
     {
         _halo = GetComponent("Halo") as Behaviour;
