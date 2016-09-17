@@ -31,12 +31,12 @@ public class InteractionContainer: MonoBehaviour, IInteractable {
         }
         foreach (var prefab in contents)
         {
-            Instantiate(prefab, transform.position, Quaternion.identity);
+            Instantiate(prefab, transform.position + new Vector3(0f, .2f, 0f), Quaternion.identity);
         }
         contents.Clear(); // Can only get the loot once
         Enable(false);
 
-        if (animator)
+        if (animator != null)
         {
             animator.SetTrigger("Interact");
         }

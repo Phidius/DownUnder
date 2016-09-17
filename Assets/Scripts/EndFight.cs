@@ -20,6 +20,11 @@ public class EndFight : MonoBehaviour
                 {
                     spider.Spawn(collider.transform);
                 }
+                else
+                {
+                    spider.SetTarget(collider.transform);
+                }
+                spider.agent.speed = spider.runSpeed;
             }
         }
     }

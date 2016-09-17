@@ -21,7 +21,7 @@ public class WayPointController : MonoBehaviour
     void OnTriggerEnter(Collider collider)
     {
         var patrolable = (IPatrolable)collider.GetComponent(typeof (IPatrolable));
-        if (patrolable != null)
+        if (patrolable != null && patrolable.CurrentTarget().gameObject.tag != "Player")
         {
             SetWayPoint(patrolable);
         }
