@@ -52,34 +52,36 @@ public class OptionsController : MonoBehaviour
             }
         }
         
-	    if (changeOptions != this.showOptions)
+	    if (changeOptions != showOptions)
 	    {
 	        showOptions = changeOptions;
 	        ShowOptions();
 	    }
 
-        if (CrossPlatformInputManager.GetAxisRaw("Vertical") != 0)
+        if (showOptions)
         {
-            if (_verticalInUse == false)
+            if (CrossPlatformInputManager.GetAxisRaw("Vertical") != 0)
             {
-                _verticalInUse = true;
-                _currentAction = _currentAction + 1;
-                if (_currentAction > _actions.Length - 1)
+                if (_verticalInUse == false)
                 {
-                    _currentAction = 0;
+                    _verticalInUse = true;
+                    _currentAction = _currentAction + 1;
+                    if (_currentAction > _actions.Length - 1)
+                    {
+                        _currentAction = 0;
+                    }
+                    HighlightAction();
                 }
-                HighlightAction();
+            }
+            if (CrossPlatformInputManager.GetAxisRaw("Vertical") == 0)
+            {
+                _verticalInUse = false;
+            }
+            if (CrossPlatformInputManager.GetButtonDown("Submit"))
+            {
+                UseAction();
             }
         }
-        if (CrossPlatformInputManager.GetAxisRaw("Vertical") == 0)
-        {
-            _verticalInUse = false;
-        }
-        if (CrossPlatformInputManager.GetButtonDown("Submit"))
-        {
-            UseAction();
-        }
-
     }
 
     private void ShowOptions()
@@ -106,38 +108,6 @@ public class OptionsController : MonoBehaviour
             Cursor.visible = false;
         }
     }
-
-    //void OnGUI()
-    //{
-    //    if (panel.activeInHierarchy)
-    //    {
-    //        var viewPort = new UnityEngine.Rect(layoutOffset.x, layoutOffset.y, Screen.width - 2*layoutOffset.x, Screen.height - 2*layoutOffset.y);
-    //        GUILayout.BeginArea(viewPort);
-    //        GUILayout.BeginVertical();
-    //        GUILayout.BeginHorizontal();
-    //        GUILayout.Label("Current Settings: " + _qualitySettings[QualitySettings.GetQualityLevel()]);
-            
-    //        int i = 0;
-    //        while (i < _qualitySettings.Length)
-    //        {
-    //            if (GUILayout.Button(_qualitySettings[i]))
-    //                QualitySettings.SetQualityLevel(i, true);
-
-    //            i++;
-    //        }
-    //        GUILayout.EndHorizontal();
-            
-
-    //        if (GUILayout.Button("Exit"))
-    //        {
-    //            ExitGame();
-    //        }
-    //        GUILayout.EndVertical();
-    //        GUILayout.EndArea();
-
-
-    //    }
-    //}
 
     public void ExitGame()
     {
@@ -179,6 +149,7 @@ public class OptionsController : MonoBehaviour
         }
 
     }
+
     private void UseAction()
     {
         if (_actions.Length > _currentAction)

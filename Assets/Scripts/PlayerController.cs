@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour, IHitable
     private Vector3 _dotScale;
     private float interactableUpdate = 0f;
     private float maxInteractableUpdate = 0.5f;
+    private Vector3 _aimPosition = new Vector3(0.5f, 0.4f, 0f);
 
     private OptionsController options;
     // Use this for initialization
@@ -94,7 +95,12 @@ public class PlayerController : MonoBehaviour, IHitable
     void GetIteractables()
     {
         interactableUpdate += Time.deltaTime;
-        var gaze = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.4f, 0f));
+        if (interactableUpdate < maxInteractableUpdate)
+        {
+            return;
+        }
+
+        var gaze = Camera.main.ViewportPointToRay(_aimPosition);
         RaycastHit hit;
         if (Physics.Raycast(gaze, out hit))
         {
@@ -103,28 +109,25 @@ public class PlayerController : MonoBehaviour, IHitable
             var distance = Vector3.Distance(hit.point, cameraPosition);
             var distanceMultiplier = _dotScale * distance;
             dot.transform.localScale = distanceMultiplier;
-            if (interactableUpdate < maxInteractableUpdate)
-            {
-                return;
-            }
-            var gazeObject = (IInteractable)hit.transform.gameObject.GetComponent(typeof(IInteractable));
+
+            var gazeObject = (Interactable)hit.transform.gameObject.GetComponent(typeof(Interactable));
             if (gazeObject != null)
             {
                 // This is interactable
                 if (_interactableGameObject && hit.transform.gameObject.GetInstanceID() != _interactableGameObject.GetInstanceID())
                 {
                     // This is a different object - turn off the last one used
-                    ((IInteractable)_interactableGameObject.GetComponent(typeof(IInteractable))).Highlight(this, false);
+                    ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable))).Highlight(this, false);
                 }
                 // Turn on this object
                 _interactableGameObject = hit.transform.gameObject;
-                ((IInteractable)_interactableGameObject.GetComponent(typeof(IInteractable))).Highlight(this, true);
+                ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable))).Highlight(this, true);
 
             }
             else if (_interactableGameObject)
             {
                 // This is not - turn off the last one used
-                ((IInteractable)_interactableGameObject.GetComponent(typeof(IInteractable))).Highlight(this, false);
+                ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable))).Highlight(this, false);
                 _interactableGameObject = null;
             }
         }
@@ -137,7 +140,7 @@ public class PlayerController : MonoBehaviour, IHitable
             }
             if (_interactableGameObject)
             {
-                ((IInteractable)_interactableGameObject.GetComponent(typeof(IInteractable))).Highlight(this, false);
+                ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable))).Highlight(this, false);
                 _interactableGameObject = null;
             }
         }
@@ -206,7 +209,9 @@ public class PlayerController : MonoBehaviour, IHitable
             {
                 if (_throwDistance > maxThrowDistance*.1f)
                 {
-                    var point = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.40f, _throwDistance));
+                    var throwTarget = _aimPosition;
+                    throwTarget.z = _throwDistance;
+                    var point = Camera.main.ViewportToWorldPoint(throwTarget);
                     _boomerang.Throw(point);
                 }
                 else
@@ -220,7 +225,7 @@ public class PlayerController : MonoBehaviour, IHitable
             {
                 if (_interactableGameObject)
                 {
-                    foreach (IInteractable interactable in _interactableGameObject.GetComponents(typeof (IInteractable)))
+                    foreach (Interactable interactable in _interactableGameObject.GetComponents(typeof (Interactable)))
                     {
                         interactable.Interact(this);
                     }

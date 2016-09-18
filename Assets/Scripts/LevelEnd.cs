@@ -6,6 +6,7 @@ public class LevelEnd : MonoBehaviour
     public AudioClip winningSound;
 
     private AudioSource _audioSource;
+    private bool _levelFinished = false;
 
     void Start()
     {
@@ -16,8 +17,9 @@ public class LevelEnd : MonoBehaviour
     {
         var playerController = collider.GetComponent <PlayerController>();
 
-        if (playerController)
+        if (playerController && !_levelFinished)
         {
+            _levelFinished = true;
             _audioSource.clip = winningSound;
             _audioSource.loop = false;
             _audioSource.volume = 0.9f;

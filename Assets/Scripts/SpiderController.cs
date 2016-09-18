@@ -39,7 +39,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     private float _navDelayMax = .5f;
     private float _navDelay;
     private Quaternion lookRotation;
-    private IInteractable _interactionSpider;
+    private InteractionSpider _interactionSpider;
     private float _spiderSenseRadius = 5.0f;
 
     // Use this for initialization
@@ -54,7 +54,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
         var spiderSense = GetComponentInChildren<SpiderSense>();
 
         // Optional components
-        _interactionSpider = (IInteractable)GetComponent(typeof(IInteractable));
+        _interactionSpider = (InteractionSpider)GetComponent(typeof(Interactable));
 
         // Global components
         _endFight = GameObject.FindObjectOfType<EndFight>();

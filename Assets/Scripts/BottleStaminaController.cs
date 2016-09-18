@@ -2,46 +2,14 @@
 using System.Collections;
 using System;
 
-public class BottleStaminaController : MonoBehaviour, IInteractable
+public class BottleStaminaController : Interactable
 {
     public float staminaRestored = 50;
-    private Behaviour _halo;
 
-    void Start()
+    public override void Interact(PlayerController player)
     {
-        _halo = GetComponent("Halo") as Behaviour;
-    }
-
-    public void Enable(bool enable)
-    {
-        // Always enabled
-    }
-
-    public void Highlight(PlayerController player, bool show)
-    {
-        if (IsEnabled() && show && Vector3.Distance(player.transform.position, transform.position) < 5f)
-        {
-            _halo.enabled = true;
-        }
-        else
-        {
-            _halo.enabled = false;
-        }
-    }
-
-    public void Interact(PlayerController player)
-    {
-        if (Vector3.Distance(player.transform.position, transform.position) > 5f)
-        {
-            return;
-        }
+        base.Interact(player);
         player.ApplyStamina(staminaRestored);
-        Destroy(gameObject);
     }
 
-    public bool IsEnabled()
-    {
-        return true;
-    }
-    
 }

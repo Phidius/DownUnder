@@ -1,46 +1,13 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
 
-public class BottleHealthController : MonoBehaviour, IInteractable {
+public class BottleHealthController : Interactable {
 
     public float healthRestored = 10;
-    private Behaviour _halo;
-    void Start()
-    {
-        _halo = GetComponent("Halo") as Behaviour;
-    }
 
-    public void Enable(bool enable)
+    public override void Interact(PlayerController player)
     {
-        // Always enabled
-    }
-
-    public void Highlight(PlayerController player, bool show)
-    {
-        if (IsEnabled() && show && Vector3.Distance(player.transform.position, transform.position) < 5f)
-        {
-            _halo.enabled = true;
-        }
-        else
-        {
-            _halo.enabled = false;
-        }
-    }
-
-    public void Interact(PlayerController player)
-    {
-        if (Vector3.Distance(player.transform.position, transform.position) > 5f)
-        {
-            return;
-        }
+        base.Interact(player);
         player.Hit(-healthRestored);
-        Destroy(gameObject);
-    }
-
-    public bool IsEnabled()
-    {
-        return true;
     }
     
 }
