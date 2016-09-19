@@ -57,8 +57,8 @@ public class PlayerController : MonoBehaviour, IHitable
         _startingPosition = transform.position;
 	    _startingPosition.y += 500f;
 	    _stamina = staminaMax;
-
-        _boomerang = GameObject.FindObjectOfType<BoomerangController>();
+        
+        _boomerang = GetComponentInChildren<BoomerangController>();
 
         _dotScale = dot.transform.localScale;
         foreach (var component in GetComponentsInChildren<Text>())
@@ -191,7 +191,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
         _staminaImage.transform.localScale = staminaScale;
 
-        if (_boomerang.GetState() != BoomerangController.BoomerangState.Rest)
+        if (_boomerang.GetState() != BoomerangController.WeaponState.Rest)
 	    {
 	        return;// The following code requires the state Rest
 	    }
