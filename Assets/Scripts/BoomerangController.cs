@@ -6,9 +6,7 @@ public class BoomerangController : Weapon
 
     public float throwSpeed;
 
-    private WeaponState _state = WeaponState.Rest;
-    private Vector3 _target;
-    
+  
 	// Update is called once per frame
 	void Update () {
         var step = throwSpeed * Time.deltaTime;
@@ -28,7 +26,7 @@ public class BoomerangController : Weapon
             if (Vector3.Distance(_parent.position, _weaponSlot.position) < .01f)
             {
                 // Return to player's "hand"
-                _state = WeaponState.Rest;
+                _state = WeaponState.Idle;
                 _parent.parent = _weaponSlot;
                 _parent.localPosition = Vector3.zero; // _parent.position is the global position
                 _parent.localRotation = Quaternion.identity;
@@ -40,10 +38,9 @@ public class BoomerangController : Weapon
         }
 	}
 
-
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.tag == "Event" || _state == WeaponState.Rest)
+        if (collider.tag == "Event" || _state == WeaponState.Rest || _state == WeaponState.Idle)
         {
             return;
         }
@@ -67,43 +64,12 @@ public class BoomerangController : Weapon
         }
     }
 
-    public WeaponState GetState()
-    {
-        return _state;
-    }
 
-    public void Swing()
-    {
-        if (_state == WeaponState.Rest)
-        {
-            _state = WeaponState.Swing;
-            _animator.SetTrigger("Swing");
-            Invoke("ResetState", _animator.GetCurrentAnimatorStateInfo(0).length);
 
-            _audioSource.clip = swingSound;
-            _audioSource.Play();
-        }
 
-    }
-
-    public void Throw(Vector3 target)
-    {
-        if (_state == WeaponState.Rest)
-        {
-            var position = transform.root.position;
-            _parent.parent = null;
-            _parent.position = position;
-            _target = target;
-            _state = WeaponState.ThrowAway;
-            _animator.SetBool("Flying", true);
-            _audioSource.clip = swingSound;
-            _audioSource.Play();
-
-        }
-    }
     
     public void ResetState()
     {
-        _state = WeaponState.Rest;
+        _state = WeaponState.Idle;
     }
 }

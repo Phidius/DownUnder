@@ -10,6 +10,7 @@ public class BottleStaminaController : Interactable
     {
         base.Interact(player);
         player.ApplyStamina(staminaRestored);
+        Destroy(transform.parent.gameObject);
     }
 
 }

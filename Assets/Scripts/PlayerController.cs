@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.Characters.FirstPerson;
 using UnityStandardAssets.CrossPlatformInput;
@@ -32,7 +31,7 @@ public class PlayerController : MonoBehaviour, IHitable
     private Text _message;
 
     private AudioSource _audioSource;
-    private BoomerangController _boomerang;
+    private Weapon _weapon;
     private float _throwDistance = 0f;
     private float _stamina;
     private FirstPersonController _firstPersonController;
@@ -58,8 +57,8 @@ public class PlayerController : MonoBehaviour, IHitable
 	    _startingPosition.y += 500f;
 	    _stamina = staminaMax;
         
-        _boomerang = GetComponentInChildren<BoomerangController>();
-
+        _weapon = GetComponentInChildren<Weapon>();
+        _weapon.Equipped(true);
         _dotScale = dot.transform.localScale;
         foreach (var component in GetComponentsInChildren<Text>())
         {
@@ -191,7 +190,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
         _staminaImage.transform.localScale = staminaScale;
 
-        if (_boomerang.GetState() != BoomerangController.WeaponState.Rest)
+        if (_weapon.GetState() != BoomerangController.WeaponState.Idle)
 	    {
 	        return;// The following code requires the state Rest
 	    }
@@ -212,11 +211,11 @@ public class PlayerController : MonoBehaviour, IHitable
                     var throwTarget = _aimPosition;
                     throwTarget.z = _throwDistance;
                     var point = Camera.main.ViewportToWorldPoint(throwTarget);
-                    _boomerang.Throw(point);
+                    _weapon.Throw(point);
                 }
                 else
                 {
-                    _boomerang.Swing();
+                    _weapon.Swing();
                 }
                 _throwDistance = 0f;
             }

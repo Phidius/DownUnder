@@ -11,7 +11,7 @@ public class Interactable : MonoBehaviour {
      */
     protected bool _highlighted = false;
 
-    private Renderer _meshRenderer;
+    private Renderer _renderer;
     //private Material _outlinedMaterial;
     private Material[] _materials;
     public List<Material> _highlightedMaterials;
@@ -22,8 +22,8 @@ public class Interactable : MonoBehaviour {
     {
         var _outlinedMaterial = (Material)Resources.Load("Outlined_Material", typeof(Material));
         // Use the current object to find the MeshRenderer by default
-        _meshRenderer = GetComponentInChildren<Renderer>();
-        _materials = _meshRenderer.materials;
+        _renderer = GetComponentInChildren<Renderer>();
+        _materials = _renderer.materials;
 
         _highlightedMaterials = _materials.ToList<Material>();
         _highlightedMaterials.Add(_outlinedMaterial);
@@ -43,14 +43,14 @@ public class Interactable : MonoBehaviour {
         if (IsEnabled() && show && Vector3.Distance(player.transform.position, transform.position) < 5f)
         {
             _highlighted = true;
-            _meshRenderer.materials = _highlightedMaterials.ToArray<Material>();
+            _renderer.materials = _highlightedMaterials.ToArray<Material>();
         }
         else
         {
             _highlighted = false;
-            if (_meshRenderer != null)
+            if (_renderer != null)
             {
-                _meshRenderer.materials = _materials;
+                _renderer.materials = _materials;
             }
         }
     }
@@ -61,7 +61,6 @@ public class Interactable : MonoBehaviour {
         {
             return;
         }
-        Destroy(gameObject);
     }
 
 }

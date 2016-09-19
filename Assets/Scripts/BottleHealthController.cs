@@ -8,6 +8,7 @@ public class BottleHealthController : Interactable {
     {
         base.Interact(player);
         player.Hit(-healthRestored);
+        Destroy(transform.parent.gameObject);
     }
     
 }
