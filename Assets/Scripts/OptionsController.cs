@@ -26,6 +26,7 @@ public class OptionsController : MonoBehaviour
 
 	    if (GvrViewer.Initialized)
 	    {
+	        print("GvrViewier is initialzed");
 	        _gvrViewer = true;
 	    }
         DisplayQualitySetting();
@@ -88,8 +89,13 @@ public class OptionsController : MonoBehaviour
     {
         if (showOptions)
         {
-            _firstPerson.enabled = false;
-
+            if (_firstPerson != null)
+            {
+                _firstPerson.enabled = false;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            
             // Place the canvas directly in front of the camera at a depth of .45
             var point = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, .45f));
             transform.position = point;
@@ -97,15 +103,17 @@ public class OptionsController : MonoBehaviour
             transform.rotation = Camera.main.transform.rotation;
 
             panel.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
         else
         {
             panel.SetActive(false);
-            _firstPerson.enabled = true;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            if (_firstPerson != null)
+            {
+                _firstPerson.enabled = true;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+
         }
     }
 

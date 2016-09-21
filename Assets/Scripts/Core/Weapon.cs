@@ -9,6 +9,7 @@ public class Weapon : MonoBehaviour {
     public AudioClip hitSound;
 
     protected Transform _parent;
+    protected Vector3 _startingPoint;
     protected Transform _weaponSlot;
     protected Animator _animator;
     protected AudioSource _audioSource;
@@ -30,6 +31,7 @@ public class Weapon : MonoBehaviour {
         _weaponSlot = _parent.parent; // Return the _parent to this transform when catching after a throw
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
+
     }
 
     public virtual void Equipped(bool equipped)
@@ -43,7 +45,8 @@ public class Weapon : MonoBehaviour {
             _state = WeaponState.Rest;
 
         }
-        _animator.SetBool("Equipped", equipped);
+        //_animator.SetBool("Equipped", equipped);
+        GetComponent<Animator>().SetBool("Equipped", equipped);
     }
 
     public virtual WeaponState GetState()
@@ -68,9 +71,10 @@ public class Weapon : MonoBehaviour {
     {
         if (_state == WeaponState.Idle)
         {
-            var position = transform.root.position;
+            //var position = transform.root.position;
             _parent.parent = null;
-            _parent.position = position;
+            _parent.rotation = Quaternion.identity;
+            //_parent.position = position;
             _target = target;
             _state = WeaponState.ThrowAway;
             _animator.SetBool("Flying", true);

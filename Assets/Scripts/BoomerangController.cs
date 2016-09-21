@@ -1,11 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Security.Cryptography.X509Certificates;
 
 public class BoomerangController : Weapon
 {
 
     public float throwSpeed;
+    private Vector3 _parentScale;
 
+    public override void Start()
+    {
+        base.Start();
+
+        _parentScale = _parent.localScale;
+    }
   
 	// Update is called once per frame
 	void Update () {
@@ -30,7 +38,7 @@ public class BoomerangController : Weapon
                 _parent.parent = _weaponSlot;
                 _parent.localPosition = Vector3.zero; // _parent.position is the global position
                 _parent.localRotation = Quaternion.identity;
-                _parent.localScale = Vector3.one;
+                //_parent.localScale = Vector3.one;
                 
                 _animator.SetBool("Flying", false);
 
@@ -63,13 +71,11 @@ public class BoomerangController : Weapon
             _state = WeaponState.ThrowReturn;
         }
     }
-
-
-
-
     
     public void ResetState()
     {
         _state = WeaponState.Idle;
+
     }
+
 }

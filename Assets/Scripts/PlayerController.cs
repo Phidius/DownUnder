@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityStandardAssets.Characters.FirstPerson;
+//using UnityStandardAssets.Characters.FirstPerson;
 using UnityStandardAssets.CrossPlatformInput;
 
 [RequireComponent(typeof(AudioSource))]
-[RequireComponent(typeof(FirstPersonController))]
+//[RequireComponent(typeof(FirstPersonController))]
 public class PlayerController : MonoBehaviour, IHitable
 {
     public enum PlayerState
@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour, IHitable
     public float maxThrowDistance = 50f;
     public float throwWindupSpeed = 10f;
     public AudioClip gruntSound;
-    public GameObject dot;
+    //public GameObject dot;
 
     private Vector3 _startingPosition;
     private float _currentHealth;
@@ -31,14 +31,14 @@ public class PlayerController : MonoBehaviour, IHitable
     private Text _message;
 
     private AudioSource _audioSource;
-    private Weapon _weapon;
+    public Weapon _weapon;
     private float _throwDistance = 0f;
     private float _stamina;
-    private FirstPersonController _firstPersonController;
-    private float _jumpSpeed;
-    private float _runSpeed;
+    //private FirstPersonController _firstPersonController;
+    //private float _jumpSpeed;
+    //private float _runSpeed;
     private GameObject _interactableGameObject;
-    private Vector3 _dotScale;
+    //private Vector3 _dotScale;
     private float interactableUpdate = 0f;
     private float maxInteractableUpdate = 0.5f;
     private Vector3 _aimPosition = new Vector3(0.5f, 0.4f, 0f);
@@ -49,25 +49,29 @@ public class PlayerController : MonoBehaviour, IHitable
     {
         options = GameObject.FindObjectOfType<OptionsController>();
 	    _audioSource = GetComponent<AudioSource>();
-	    _firstPersonController = GetComponent<FirstPersonController>();
-	    _jumpSpeed = _firstPersonController.GetJumpSpeed();
-	    _runSpeed = _firstPersonController.GetRunSpeed();
+	    //_firstPersonController = GetComponent<FirstPersonController>();
+	    //_jumpSpeed = _firstPersonController.GetJumpSpeed();
+	    //_runSpeed = _firstPersonController.GetRunSpeed();
 
         _startingPosition = transform.position;
 	    _startingPosition.y += 500f;
 	    _stamina = staminaMax;
         
         _weapon = GetComponentInChildren<Weapon>();
-        _weapon.Equipped(true);
-        _dotScale = dot.transform.localScale;
-        foreach (var component in GetComponentsInChildren<Text>())
+        if (_weapon != null)
+        {
+            _weapon.Equipped(true);
+        }
+        
+        //_dotScale = dot.transform.localScale;
+        foreach (var component in Camera.main.GetComponentsInChildren<Text>())
         {
             if (component.name == "Message")
             {
                 _message = component;
             }
         }
-        foreach (var component in GetComponentsInChildren<Image>())
+        foreach (var component in Camera.main.GetComponentsInChildren<Image>())
 	    {
             if (component.name == "Health")
             {
@@ -103,11 +107,11 @@ public class PlayerController : MonoBehaviour, IHitable
         RaycastHit hit;
         if (Physics.Raycast(gaze, out hit))
         {
-            dot.transform.position = hit.point;
-            var cameraPosition = Camera.main.transform.position;
-            var distance = Vector3.Distance(hit.point, cameraPosition);
-            var distanceMultiplier = _dotScale * distance;
-            dot.transform.localScale = distanceMultiplier;
+            //dot.transform.position = hit.point;
+            //var cameraPosition = Camera.main.transform.position;
+            //var distance = Vector3.Distance(hit.point, cameraPosition);
+            //var distanceMultiplier = _dotScale * distance;
+            //dot.transform.localScale = distanceMultiplier;
 
             var gazeObject = (Interactable)hit.transform.gameObject.GetComponent(typeof(Interactable));
             if (gazeObject != null)
@@ -132,7 +136,7 @@ public class PlayerController : MonoBehaviour, IHitable
         }
         else
         {
-            dot.transform.position = Vector3.zero;
+            //dot.transform.position = Vector3.zero;
             if (interactableUpdate < maxInteractableUpdate)
             {
                 return;
@@ -160,29 +164,29 @@ public class PlayerController : MonoBehaviour, IHitable
         GetIteractables();
         // Change back to prvious color.
         // Set/recharge the stamina
-        if (CrossPlatformInputManager.GetButtonDown("Jump"))
-	    {
-	        _stamina -= _jumpSpeed;
-	    }
+        //   if (CrossPlatformInputManager.GetButtonDown("Jump"))
+        //{
+        //    _stamina -= _jumpSpeed;
+        //}
 
-	    if (_firstPersonController.IsRunning())
-	    {
-	        _stamina -= _runSpeed * Time.deltaTime;
-	    }
+        //if (_firstPersonController.IsRunning())
+        //{
+        //    _stamina -= _runSpeed * Time.deltaTime;
+        //}
 
-	    if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
-	    {
-	        _firstPersonController.SetJumpSpeed(0);
-	        _firstPersonController.SetRunSpeed(_firstPersonController.GetWalkSpeed());
-	    }
-	    else
-	    {
-            _firstPersonController.SetJumpSpeed(_jumpSpeed);
-            _firstPersonController.SetRunSpeed(_runSpeed);
-        }
+        //if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
+        //{
+        //    _firstPersonController.SetJumpSpeed(0);
+        //    _firstPersonController.SetRunSpeed(_firstPersonController.GetWalkSpeed());
+        //}
+        //else
+        //{
+        //       _firstPersonController.SetJumpSpeed(_jumpSpeed);
+        //       _firstPersonController.SetRunSpeed(_runSpeed);
+        //   }
 
-	    _stamina += staminaRecover*Time.deltaTime;
-	    _stamina = Mathf.Clamp(_stamina, 0, staminaMax);
+        _stamina += staminaRecover * Time.deltaTime;
+        _stamina = Mathf.Clamp(_stamina, 0, staminaMax);
 
         var staminaScale = _staminaImage.transform.localScale;
         staminaScale.x = 1f;
@@ -203,14 +207,17 @@ public class PlayerController : MonoBehaviour, IHitable
                 _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
 
             }
-
+            var throwTarget = _aimPosition;
+            throwTarget.z = _throwDistance;
+            var point = Camera.main.ViewportToWorldPoint(throwTarget);
+            //dot.transform.position = point;
             if (CrossPlatformInputManager.GetButtonUp("Fire1"))
             {
                 if (_throwDistance > maxThrowDistance*.1f)
                 {
-                    var throwTarget = _aimPosition;
-                    throwTarget.z = _throwDistance;
-                    var point = Camera.main.ViewportToWorldPoint(throwTarget);
+                    //var throwTarget = _aimPosition;
+                    //throwTarget.z = _throwDistance;
+                    //var point = Camera.main.ViewportToWorldPoint(throwTarget);
                     _weapon.Throw(point);
                 }
                 else
