@@ -2,36 +2,25 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour {
-    private bool _gvrViewer = false;
+public class GameManager : MonoBehaviour
+{
+    private GameObject HUDisplay;
+
     // Use this for initialization
     void Start()
     {
-        if (GvrViewer.Initialized)
-        {
-            _gvrViewer = true;
-        }
+        var displayHolder = Camera.main.transform.FindChild("DisplayHolder");
+        HUDisplay = GameObject.Find("HUDisplay");
+        
+        HUDisplay.transform.parent = displayHolder.transform;
+
+        HUDisplay.transform.localScale = new Vector3(1f, 1f, 1f);
+        HUDisplay.transform.localPosition = new Vector3(0f, 0f, 0f);
+        HUDisplay.transform.localRotation = Quaternion.identity;
     }
 	
-	// Update is called once per frame
-	void Update () {
 
-        if (_gvrViewer && GvrViewer.Instance.VRModeEnabled)
-        {
-            var triggered = GvrViewer.Instance.Triggered;
-            if (triggered)
-            {
-                Application.Quit();
-            }
-        }
-        else
-        {
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                Application.Quit();
-            }
-        }
-    }
+
 
     
 }
