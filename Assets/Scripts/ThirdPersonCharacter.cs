@@ -83,6 +83,7 @@ namespace Assets.Scripts
         {
             if (m_IsGrounded && crouch)
             {
+                print("Set crouching1");
                 if (m_Crouching) return;
                 m_Capsule.height = m_Capsule.height/2f;
                 m_Capsule.center = m_Capsule.center/2f;
@@ -92,9 +93,11 @@ namespace Assets.Scripts
             {
                 Ray crouchRay = new Ray(m_Rigidbody.position + Vector3.up*m_Capsule.radius*k_Half, Vector3.up);
                 float crouchRayLength = m_CapsuleHeight - m_Capsule.radius*k_Half;
-                if (Physics.SphereCast(crouchRay, m_Capsule.radius*k_Half, crouchRayLength, ~0,
-                    QueryTriggerInteraction.Ignore))
+                //if (Physics.SphereCast(crouchRay, m_Capsule.radius * k_Half, crouchRayLength, ~0, QueryTriggerInteraction.Ignore))
+                RaycastHit hit;
+                if (Physics.SphereCast(crouchRay, m_Capsule.radius * k_Half, out hit, crouchRayLength, LayerMask.GetMask(new string[] { "Default", "Water", "Ground", "Enemey" }), QueryTriggerInteraction.Ignore))
                 {
+                    print("Set crouching2 : " + hit.collider.name);
                     m_Crouching = true;
                     return;
                 }
@@ -111,9 +114,11 @@ namespace Assets.Scripts
             {
                 Ray crouchRay = new Ray(m_Rigidbody.position + Vector3.up*m_Capsule.radius*k_Half, Vector3.up);
                 float crouchRayLength = m_CapsuleHeight - m_Capsule.radius*k_Half;
-                if (Physics.SphereCast(crouchRay, m_Capsule.radius*k_Half, crouchRayLength, ~0,
-                    QueryTriggerInteraction.Ignore))
+                RaycastHit hit;
+                //if (Physics.SphereCast(crouchRay, m_Capsule.radius*k_Half, crouchRayLength, ~0, QueryTriggerInteraction.Ignore))
+                if (Physics.SphereCast(crouchRay, m_Capsule.radius * k_Half, out hit, crouchRayLength, LayerMask.GetMask(new string[] { "Default", "Water", "Ground", "Enemey" }), QueryTriggerInteraction.Ignore))
                 {
+                    print("Low Headroom : " + hit.collider.name);
                     m_Crouching = true;
                 }
             }
@@ -125,6 +130,7 @@ namespace Assets.Scripts
             // update the animator parameters
             m_Animator.SetFloat("Forward", m_ForwardAmount, 0.1f, Time.deltaTime);
             m_Animator.SetFloat("Turn", m_TurnAmount, 0.1f, Time.deltaTime);
+
             m_Animator.SetBool("Crouch", m_Crouching);
             m_Animator.SetBool("OnGround", m_IsGrounded);
             

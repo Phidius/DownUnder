@@ -39,16 +39,19 @@ public class PlayerController : MonoBehaviour, IHitable
     //private float _runSpeed;
     private GameObject _interactableGameObject;
     //private Vector3 _dotScale;
-    private float interactableUpdate = 0f;
-    private float maxInteractableUpdate = 0.5f;
-    private Vector3 _aimPosition = new Vector3(0.5f, 0.4f, 0f);
+    //private float interactableUpdate = 0f;
+    //private float maxInteractableUpdate = 0.5f;
+    //private Vector3 _aimPosition = new Vector3(0.5f, 0.4f, 0f);
+    private VRReticle _reticle;
 
     private OptionsController options;
+
     // Use this for initialization
     void Start ()
     {
         options = GameObject.FindObjectOfType<OptionsController>();
 	    _audioSource = GetComponent<AudioSource>();
+        _reticle = GetComponent<VRReticle>();
 	    //_firstPersonController = GetComponent<FirstPersonController>();
 	    //_jumpSpeed = _firstPersonController.GetJumpSpeed();
 	    //_runSpeed = _firstPersonController.GetRunSpeed();
@@ -61,6 +64,11 @@ public class PlayerController : MonoBehaviour, IHitable
         if (_weapon != null)
         {
             _weapon.Equipped(true);
+            if (_reticle)
+            {
+                 _reticle.SetDistance(maxThrowDistance);
+            }
+           
         }
         
         //_dotScale = dot.transform.localScale;
@@ -97,39 +105,34 @@ public class PlayerController : MonoBehaviour, IHitable
 
     void GetIteractables()
     {
-        interactableUpdate += Time.deltaTime;
-        if (interactableUpdate < maxInteractableUpdate)
-        {
-            return;
-        }
+        //interactableUpdate += Time.deltaTime;
+        //if (interactableUpdate < maxInteractableUpdate)
+        //{
+        //    return;
+        //}
 
-        var gaze = Camera.main.ViewportPointToRay(_aimPosition);
-        RaycastHit hit;
-        if (Physics.Raycast(gaze, out hit))
+        //var gaze = Camera.main.ViewportPointToRay(_aimPosition);
+        //RaycastHit hit;
+        //if (Physics.Raycast(gaze, out hit))
+        var obstacle = _reticle.GetObstacle();
+        if (obstacle)
         {
-            //dot.transform.position = hit.point;
-            //var cameraPosition = Camera.main.transform.position;
-            //var distance = Vector3.Distance(hit.point, cameraPosition);
-            //var distanceMultiplier = _dotScale * distance;
-            //dot.transform.localScale = distanceMultiplier;
-
-            var gazeObject = (Interactable)hit.transform.gameObject.GetComponent(typeof(Interactable));
-            if (gazeObject != null)
+            if ((Interactable)obstacle.GetComponent(typeof(Interactable)) != null)
             {
                 // This is interactable
-                if (_interactableGameObject && hit.transform.gameObject.GetInstanceID() != _interactableGameObject.GetInstanceID())
+                if (_interactableGameObject && obstacle.GetInstanceID() != _interactableGameObject.GetInstanceID())
                 {
                     // This is a different object - turn off the last one used
                     ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable))).Highlight(this, false);
                 }
                 // Turn on this object
-                _interactableGameObject = hit.transform.gameObject;
+                _interactableGameObject = obstacle.gameObject;
                 ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable))).Highlight(this, true);
 
             }
             else if (_interactableGameObject)
             {
-                // This is not - turn off the last one used
+                // obstacle is not interactable is not - turn off the last one used
                 ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable))).Highlight(this, false);
                 _interactableGameObject = null;
             }
@@ -137,10 +140,6 @@ public class PlayerController : MonoBehaviour, IHitable
         else
         {
             //dot.transform.position = Vector3.zero;
-            if (interactableUpdate < maxInteractableUpdate)
-            {
-                return;
-            }
             if (_interactableGameObject)
             {
                 ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable))).Highlight(this, false);
@@ -207,18 +206,15 @@ public class PlayerController : MonoBehaviour, IHitable
                 _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
 
             }
-            var throwTarget = _aimPosition;
-            throwTarget.z = _throwDistance;
-            var point = Camera.main.ViewportToWorldPoint(throwTarget);
+
             //dot.transform.position = point;
             if (CrossPlatformInputManager.GetButtonUp("Fire1"))
             {
-                if (_throwDistance > maxThrowDistance*.1f)
+                if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
                 {
-                    //var throwTarget = _aimPosition;
-                    //throwTarget.z = _throwDistance;
-                    //var point = Camera.main.ViewportToWorldPoint(throwTarget);
-                    _weapon.Throw(point);
+                    var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());
+                    var fractionThrow = (_throwDistance < targetDistance) ? _throwDistance/targetDistance : 1f;
+                    _weapon.Throw(Vector3.Lerp(_weapon.transform.position, _reticle.GetAimPoint(), fractionThrow));
                 }
                 else
                 {

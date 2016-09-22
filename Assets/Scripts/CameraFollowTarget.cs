@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
 
-public class VRCursor : MonoBehaviour
+public class CameraFollowTarget : MonoBehaviour
 {
     [SerializeField] public Transform target;
     [SerializeField] private bool autoTargetPlayer = true;
@@ -11,12 +11,9 @@ public class VRCursor : MonoBehaviour
 	[SerializeField] private float tiltMax = 75f;
 	[SerializeField] private float tiltMin = 45f;
     [SerializeField]  private bool lockCursor = false;
-    [SerializeField] private bool showReticle = false;
-    public LayerMask layerMask;
 
     private float lookAngle;
 	private float tiltAngle;
-	private const float _lookDistance = 100f;
 	private float smoothX = 0;
 	private float smoothY = 0;
 	private float smoothXvelocity = 0;
@@ -26,12 +23,6 @@ public class VRCursor : MonoBehaviour
     //private Vector3 _lastTargetPosition;
     private float offsetX;
     private float offsetY;
-
-    // Reticle
-    private GameObject _reticle;
-    private Renderer _reticleRenderer;
-    private Vector3 _reticleScale = new Vector3(0.02f, 0.02f, 0.02f);
-    private Vector3 _aimPosition = new Vector3(0.5f, 0.4f, 0f);
 
     //add the singleton
     //private static VRCursor instance;
@@ -58,25 +49,6 @@ public class VRCursor : MonoBehaviour
 
     void Start()
     {
-        // Finding shader in Awake()
-        var transparent = Shader.Find("Transparent/Diffuse");
-
-        var alphaColor = Color.red;
-        alphaColor.a = 0.5f;
-
-        _reticle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        _reticleRenderer = _reticle.GetComponent<Renderer>();
-        _reticleRenderer.shadowCastingMode = ShadowCastingMode.Off;
-        var collider = _reticle.GetComponent<Collider>();
-        if (collider)
-        {
-            Destroy(collider);
-        }
-
-        // Changing  shader
-        _reticleRenderer.material.shader = transparent;
-
-        _reticleRenderer.material.color = alphaColor;
         if (autoTargetPlayer)
         {
             FindTargetPlayer();
@@ -100,25 +72,7 @@ public class VRCursor : MonoBehaviour
             Follow(Time.deltaTime);
         }
 
-        var gaze = Camera.main.ViewportPointToRay(_aimPosition);
-        RaycastHit hit;
-        Vector3 point;
-        if (Physics.Raycast(gaze, out hit, _lookDistance, layerMask))
-        {
-            point = hit.point;
-        }
-        else
-        {
-            var throwTarget = _aimPosition;
-            throwTarget.z = _lookDistance;
-            point = Camera.main.ViewportToWorldPoint(throwTarget);
-        }
-
-        _reticle.transform.position = point;
-        var cameraPosition = Camera.main.transform.position;
-        var distance = Vector3.Distance(hit.point, cameraPosition);
-        var distanceMultiplier = _reticleScale * distance;
-        _reticle.transform.localScale = distanceMultiplier;
+        
     }
     
     // Update is called once per frame

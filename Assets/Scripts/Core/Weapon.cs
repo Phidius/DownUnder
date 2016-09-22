@@ -75,6 +75,7 @@ public class Weapon : MonoBehaviour {
             _parent.parent = null;
             _parent.rotation = Quaternion.identity;
             //_parent.position = position;
+
             _target = target;
             _state = WeaponState.ThrowAway;
             _animator.SetBool("Flying", true);

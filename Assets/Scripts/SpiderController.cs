@@ -241,10 +241,15 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
         {
             return; // No use beating a dead horse
         }
+
         _currentHealth -= damage;
-        _audioSource.clip = hitSound;
-        _audioSource.loop = false;
-        _audioSource.Play();
+        if (damage > 0)
+        {
+            _audioSource.clip = hitSound;
+            _audioSource.loop = false;
+            _audioSource.Play();
+            Invoke("StartWalkingSound", hitSound.length);
+        }
 
         if (_currentHealth <= 0)
         {
@@ -260,7 +265,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             }
             return;
         }
-        Invoke("StartWalkingSound", hitSound.length);
+        
     }
 
     public void SetNextWaypoint(WayPointController waypoint)

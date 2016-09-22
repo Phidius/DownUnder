@@ -53,7 +53,6 @@ public class BoomerangController : Weapon
             return;
         }
         var hitables = collider.GetComponents(typeof(IHitable));
-
         if (hitables == null || hitables.Length == 0)
         {
             if (_state == WeaponState.ThrowAway)
