@@ -6,13 +6,14 @@ using UnityStandardAssets.CrossPlatformInput;
 public class OptionsController : MonoBehaviour
 {
     public bool showOptions = false;
-    public GameObject panel;
-    public Text quality;
+
+    private GameObject _panel;
+    private Text _quality;
 
     private bool _gvrViewer = false;
     private FirstPersonController _firstPerson;
     private Button[] _actions;
-    private string[] _qualitySettings;
+    public string[] _qualitySettings;
     private int _currentAction = 0;
     private bool _verticalInUse = false;
 
@@ -20,6 +21,11 @@ public class OptionsController : MonoBehaviour
     void Start ()
     {
         _qualitySettings = QualitySettings.names;
+        //print(_qualitySettings);
+        //if (_qualitySettings == null)
+        //{
+        //    _qualitySettings = new string[] {"Fastest", "Good", "Fantastic"};
+        //}
         _firstPerson = GameObject.FindObjectOfType<FirstPersonController>();
         _actions = GetComponentsInChildren<Button>();
         HighlightAction();
@@ -29,6 +35,15 @@ public class OptionsController : MonoBehaviour
 	        print("GvrViewier is initialzed");
 	        _gvrViewer = true;
 	    }
+
+        _panel = transform.FindChild("Options").gameObject;
+        foreach (var component in Camera.main.GetComponentsInChildren<Text>())
+        {
+            if (component.name == "Quality")
+            {
+                _quality = component;
+            }
+        }
         DisplayQualitySetting();
         ShowOptions();
 	}
@@ -97,16 +112,16 @@ public class OptionsController : MonoBehaviour
             }
             
             // Place the canvas directly in front of the camera at a depth of .45
-            var point = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, .45f));
-            transform.position = point;
-            //transform.rotation = _firstPerson.transform.rotation;
-            transform.rotation = Camera.main.transform.rotation;
+            //var point = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, .45f));
+            //transform.position = point;
+            ////transform.rotation = _firstPerson.transform.rotation;
+            //transform.rotation = Camera.main.transform.rotation;
 
-            panel.SetActive(true);
+            _panel.SetActive(true);
         }
         else
         {
-            panel.SetActive(false);
+            _panel.SetActive(false);
             if (_firstPerson != null)
             {
                 _firstPerson.enabled = true;
@@ -146,7 +161,19 @@ public class OptionsController : MonoBehaviour
 
     private void DisplayQualitySetting()
     {
-        quality.text = _qualitySettings[QualitySettings.GetQualityLevel()];
+        if (_qualitySettings == null || _qualitySettings.Length <= QualitySettings.GetQualityLevel())
+        {
+            print("What.  The.  Hell.");
+            _qualitySettings = QualitySettings.names;
+            print(_qualitySettings);
+        }
+        else
+        {
+            _quality.text = _qualitySettings[QualitySettings.GetQualityLevel()];
+            return;
+        }
+        
+
     }
 
     private void HighlightAction()
