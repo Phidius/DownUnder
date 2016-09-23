@@ -202,10 +202,50 @@ public class PlayerController : MonoBehaviour, IHitable
         {
             if (CrossPlatformInputManager.GetButton("Fire1"))
             {
-                _throwDistance += (throwWindupSpeed*Time.deltaTime);
+                _throwDistance += (throwWindupSpeed * Time.deltaTime);
                 _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
-
+                
             }
+            //if (CrossPlatformInputManager.GetButton("Fire2"))
+            //{
+            //    _message.text = "Fire2 pressed";
+            //}
+            //if (CrossPlatformInputManager.GetButton("Fire3"))
+            //{
+            //    _message.text = "Fire3 pressed";
+            //}
+            //if (CrossPlatformInputManager.GetButton("Fire4"))
+            //{
+            //    _message.text = "Fire4 pressed";
+            //}
+            //if (CrossPlatformInputManager.GetButton("Fire5"))
+            //{
+            //    _message.text = "Fire5 pressed";
+            //}
+            //if (CrossPlatformInputManager.GetButton("Fire6"))
+            //{
+            //    _message.text = "Fire6 pressed";
+            //}
+            //if (CrossPlatformInputManager.GetButton("Fire7"))
+            //{
+            //    _message.text = "Fire7 pressed";
+            //}
+            //if (CrossPlatformInputManager.GetButton("Fire8"))
+            //{
+            //    _message.text = "Fire8 pressed";
+            //}
+            //if (CrossPlatformInputManager.GetButton("Fire9"))
+            //{
+            //    _message.text = "Fire9 pressed";
+            //}
+            //if (CrossPlatformInputManager.GetButton("Fire10"))
+            //{
+            //    _message.text = "Fire10 pressed";
+            //}
+            //if (CrossPlatformInputManager.GetButton("Fire11"))
+            //{
+            //    _message.text = "Fire11 pressed";
+            //}
 
             //dot.transform.position = point;
             if (CrossPlatformInputManager.GetButtonUp("Fire1"))
@@ -223,7 +263,7 @@ public class PlayerController : MonoBehaviour, IHitable
                 _throwDistance = 0f;
             }
 
-            if (CrossPlatformInputManager.GetButtonDown("Fire2"))
+            if (CrossPlatformInputManager.GetButtonDown("Interact"))
             {
                 if (_interactableGameObject)
                 {

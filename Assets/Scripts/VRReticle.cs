@@ -13,7 +13,7 @@ public class VRReticle : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        _layerMask = LayerMask.GetMask(new string[] { "Default", "Ground", "Enemey" });
+        _layerMask = LayerMask.GetMask(new string[] { "Default", "Ground", "Enemey", "Interactable" });
         // Finding shader in Awake()
         var transparent = Shader.Find("Transparent/Diffuse");
 

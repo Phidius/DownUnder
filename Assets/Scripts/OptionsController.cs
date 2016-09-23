@@ -52,20 +52,24 @@ public class OptionsController : MonoBehaviour
 	void Update ()
 	{
         var changeOptions = showOptions;
-	    if (_gvrViewer && GvrViewer.Instance.VRModeEnabled)
-	    {
-	        var triggered = GvrViewer.Instance.Triggered;
-            if (triggered)
-            {
-                changeOptions = !showOptions;
-            }
-        }
-	    else
-	    {
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                changeOptions = !showOptions;
-            }
+	    //if (_gvrViewer && GvrViewer.Instance.VRModeEnabled)
+	    //{
+	    //    var triggered = GvrViewer.Instance.Triggered;
+     //       if (triggered)
+     //       {
+     //           changeOptions = !showOptions;
+     //       }
+     //   }
+	    //else
+	    //{
+     //       if (Input.GetKeyDown(KeyCode.Tab))
+     //       {
+     //           changeOptions = !showOptions;
+     //       }
+     //   }
+        if (CrossPlatformInputManager.GetButtonDown("Options"))
+        {
+            changeOptions = !showOptions;
         }
         
 	    if (changeOptions != showOptions)
