@@ -48,10 +48,15 @@ public class BoomerangController : Weapon
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.tag == "Event" || _state == WeaponState.Rest || _state == WeaponState.Idle)
+        if (_state == WeaponState.Rest || _state == WeaponState.Idle)
         {
             return;
         }
+        if (collider.tag == "Event" || collider.tag == "Player")
+        {
+            return;
+        }
+
         var hitables = collider.GetComponents(typeof(IHitable));
         if (hitables == null || hitables.Length == 0)
         {

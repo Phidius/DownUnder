@@ -2,6 +2,7 @@
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(Interactable))]
 public class Weapon : MonoBehaviour {
 
     public int meleeDamage;
@@ -15,6 +16,8 @@ public class Weapon : MonoBehaviour {
     protected AudioSource _audioSource;
     protected WeaponState _state = WeaponState.Rest;
     protected Vector3 _target;
+
+    protected Interactable _interactable;
 
     public enum WeaponState
     {
@@ -31,6 +34,7 @@ public class Weapon : MonoBehaviour {
         _weaponSlot = _parent.parent; // Return the _parent to this transform when catching after a throw
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
+        _interactable = (Interactable)GetComponent(typeof(Interactable));
 
     }
 
@@ -39,10 +43,12 @@ public class Weapon : MonoBehaviour {
         if (equipped)
         {
             _state = WeaponState.Idle;
+            _interactable.Enable(false);
         }
         else
         {
             _state = WeaponState.Rest;
+            _interactable.Enable(true);
 
         }
         //_animator.SetBool("Equipped", equipped);

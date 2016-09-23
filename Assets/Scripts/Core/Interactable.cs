@@ -12,19 +12,18 @@ public class Interactable : MonoBehaviour {
     protected bool _highlighted = false;
 
     private Renderer _renderer;
-    //private Material _outlinedMaterial;
     private Material[] _materials;
 
     private bool _enable = true;
     
     public virtual void Start()
     {
-        var _outlinedMaterial = (Material)Resources.Load("Outlined_Material", typeof(Material));
-        // Use the current object to find the MeshRenderer by default
+        // Use the current object to find the first renderer in the children
         _renderer = GetComponentInChildren<Renderer>();
         _materials = _renderer.materials;
         foreach (var mat in _materials)
         {
+            // Enable the ability to set the "_EmissionColor"
             mat.EnableKeyword("_EMISSION");
             mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
         }
@@ -45,28 +44,20 @@ public class Interactable : MonoBehaviour {
         if (IsEnabled() && show && Vector3.Distance(player.transform.position, transform.position) < 5f)
         {
             _highlighted = true;
-            //_renderer.materials = _highlightedMaterials.ToArray<Material>();
 
             for (var index = 0; index < _materials.Length; index++)
             {
-                //_materials[index].EnableKeyword("_EMISSION");
-                //_materials[index].globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
                 _materials[index].SetColor("_EmissionColor", Color.green);
             }
         }
         else
         {
             _highlighted = false;
-            if (_renderer != null)
+            for (var index = 0; index < _materials.Length; index++)
             {
-                _renderer.materials = _materials;
-                for (var index = 0; index < _materials.Length; index++)
-                {
-                    //_materials[index].EnableKeyword("_EMISSION");
-                    //_materials[index].globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
-                    _materials[index].SetColor("_EmissionColor", Color.black);
-                }
+                _materials[index].SetColor("_EmissionColor", Color.black);
             }
+
         }
     }
 

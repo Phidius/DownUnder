@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class BottleHealthController : Interactable {
+public class InteractionHealth : Interactable {
 
     public float healthRestored = 10;
 
@@ -8,7 +8,7 @@ public class BottleHealthController : Interactable {
     {
         base.Interact(player);
         player.Hit(-healthRestored);
-        Destroy(transform.parent.gameObject);
+        Destroy(gameObject);
     }
     
 }

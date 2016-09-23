@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-//using UnityStandardAssets.Characters.FirstPerson;
+using UnityStandardAssets.Characters.FirstPerson;
 using UnityStandardAssets.CrossPlatformInput;
 
 [RequireComponent(typeof(AudioSource))]
@@ -21,7 +21,6 @@ public class PlayerController : MonoBehaviour, IHitable
     public float maxThrowDistance = 50f;
     public float throwWindupSpeed = 10f;
     public AudioClip gruntSound;
-    //public GameObject dot;
 
     private Vector3 _startingPosition;
     private float _currentHealth;
@@ -34,14 +33,10 @@ public class PlayerController : MonoBehaviour, IHitable
     public Weapon _weapon;
     private float _throwDistance = 0f;
     private float _stamina;
-    //private FirstPersonController _firstPersonController;
-    //private float _jumpSpeed;
-    //private float _runSpeed;
+    private FirstPersonController _firstPersonController;
+    private float _jumpSpeed;
+    private float _runSpeed;
     private GameObject _interactableGameObject;
-    //private Vector3 _dotScale;
-    //private float interactableUpdate = 0f;
-    //private float maxInteractableUpdate = 0.5f;
-    //private Vector3 _aimPosition = new Vector3(0.5f, 0.4f, 0f);
     private VRReticle _reticle;
 
     private OptionsController options;
@@ -52,9 +47,13 @@ public class PlayerController : MonoBehaviour, IHitable
         options = GameObject.FindObjectOfType<OptionsController>();
 	    _audioSource = GetComponent<AudioSource>();
         _reticle = GetComponent<VRReticle>();
-	    //_firstPersonController = GetComponent<FirstPersonController>();
-	    //_jumpSpeed = _firstPersonController.GetJumpSpeed();
-	    //_runSpeed = _firstPersonController.GetRunSpeed();
+        _firstPersonController = GetComponent<FirstPersonController>();
+        if (_firstPersonController)
+        {
+            _jumpSpeed = _firstPersonController.GetJumpSpeed();
+            _runSpeed = _firstPersonController.GetRunSpeed();
+        }
+
 
         _startingPosition = transform.position;
 	    _startingPosition.y += 500f;
@@ -111,9 +110,6 @@ public class PlayerController : MonoBehaviour, IHitable
         //    return;
         //}
 
-        //var gaze = Camera.main.ViewportPointToRay(_aimPosition);
-        //RaycastHit hit;
-        //if (Physics.Raycast(gaze, out hit))
         var obstacle = _reticle.GetObstacle();
         if (obstacle)
         {
@@ -149,10 +145,7 @@ public class PlayerController : MonoBehaviour, IHitable
     }
     // Update is called once per frame
     void Update () {
-	    //if (GvrViewer.Instance.VRModeEnabled && GvrViewer.Instance.Triggered)
-	    //{
-     //       GvrViewer.Instance.Recenter();
-	    //}
+
 
         if (_currentHealth <= 0)
         {
@@ -161,28 +154,31 @@ public class PlayerController : MonoBehaviour, IHitable
         }
 
         GetIteractables();
-        // Change back to prvious color.
-        // Set/recharge the stamina
-        //   if (CrossPlatformInputManager.GetButtonDown("Jump"))
-        //{
-        //    _stamina -= _jumpSpeed;
-        //}
+        //Change back to prvious color.
+        //Set / recharge the stamina
+        if (CrossPlatformInputManager.GetButtonDown("Jump"))
+        {
+            _stamina -= _jumpSpeed;
+        }
 
-        //if (_firstPersonController.IsRunning())
-        //{
-        //    _stamina -= _runSpeed * Time.deltaTime;
-        //}
+        if (_firstPersonController)
+        {
+            if (_firstPersonController.IsRunning())
+            {
+                _stamina -= _runSpeed * Time.deltaTime;
+            }
 
-        //if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
-        //{
-        //    _firstPersonController.SetJumpSpeed(0);
-        //    _firstPersonController.SetRunSpeed(_firstPersonController.GetWalkSpeed());
-        //}
-        //else
-        //{
-        //       _firstPersonController.SetJumpSpeed(_jumpSpeed);
-        //       _firstPersonController.SetRunSpeed(_runSpeed);
-        //   }
+            if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
+            {
+                _firstPersonController.SetJumpSpeed(0);
+                _firstPersonController.SetRunSpeed(_firstPersonController.GetWalkSpeed());
+            }
+            else
+            {
+                _firstPersonController.SetJumpSpeed(_jumpSpeed);
+                _firstPersonController.SetRunSpeed(_runSpeed);
+            }
+        }
 
         _stamina += staminaRecover * Time.deltaTime;
         _stamina = Mathf.Clamp(_stamina, 0, staminaMax);
@@ -246,8 +242,7 @@ public class PlayerController : MonoBehaviour, IHitable
             //{
             //    _message.text = "Fire11 pressed";
             //}
-
-            //dot.transform.position = point;
+            
             if (CrossPlatformInputManager.GetButtonUp("Fire1"))
             {
                 if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
@@ -271,18 +266,6 @@ public class PlayerController : MonoBehaviour, IHitable
                     {
                         interactable.Interact(this);
                     }
-                    //_interactableObject.GetComponent<InteractionSpider>().Interact(this);
-
-                    //var healthLoot = _interactableObject.GetComponent<BottleHealthController>();
-                    //if (healthLoot)
-                    //{
-                    //    healthLoot.Interact(this);
-                    //}
-                    //var staminaLoot = _interactableObject.GetComponent<BottleStaminaController>();
-                    //if (staminaLoot)
-                    //{
-                    //    staminaLoot.Interact(this);
-                    //}
                 }
             }
         }

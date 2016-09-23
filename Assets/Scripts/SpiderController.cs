@@ -189,11 +189,9 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
         {
             return;
         }
-        //print("Is _interactionSpider != null? " + _interactionSpider != null);  
 
         if (_interactionSpider != null)
         {
-            //print("Is !_interactionSpider.IsEnabled()? " + !_interactionSpider.IsEnabled());
             if (!_interactionSpider.IsEnabled())
             {
                 Destroy(gameObject);

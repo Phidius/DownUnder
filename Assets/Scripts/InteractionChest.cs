@@ -33,12 +33,13 @@ public class InteractionChest : Interactable
                 print(collider.bounds.size);
             }
             var rndPosWithin = new Vector3(Random.Range(-.38f, .38f), 0.1f, Random.Range(-1.3f, 1.3f));
-            //rndPosWithin = container.transform.TransformPoint(rndPosWithin * .5f);
+
             obj.transform.parent = container.transform;
             obj.transform.localPosition = rndPosWithin;
         }
         _isOpened = true;
         _animator.SetTrigger("Open");
+        Enable(false);
 
     }
 

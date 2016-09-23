@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class BottleStaminaController : Interactable
+public class InteractionStamina : Interactable
 {
     public float staminaRestored = 50;
 
@@ -10,7 +10,7 @@ public class BottleStaminaController : Interactable
     {
         base.Interact(player);
         player.ApplyStamina(staminaRestored);
-        Destroy(transform.parent.gameObject);
+        Destroy(gameObject);
     }
 
 }
