@@ -8,7 +8,7 @@ public class DrownController : MonoBehaviour {
         var player = collider.GetComponent<PlayerController>();
         if (player)
         {
-            player.Reset(PlayerController.PlayerState.Drowned);
+            ((GameManager)GameObject.FindObjectOfType<GameManager>()).showHasDied = true;
         }
     }
 }

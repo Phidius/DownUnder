@@ -22,8 +22,8 @@ public class PlayerController : MonoBehaviour, IHitable
     public float throwWindupSpeed = 10f;
     public AudioClip gruntSound;
 
-    private Vector3 _startingPosition;
-    private float _currentHealth;
+    public Vector3 _startingPosition;
+    public float _currentHealth;
     private Image _healthImage;
     private Image _throwImage;
     private Image _staminaImage;
@@ -149,7 +149,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
         if (_currentHealth <= 0)
         {
-            Reset(PlayerState.Died);
+            ((GameManager)GameObject.FindObjectOfType<GameManager>()).showHasDied = true;
             return;
         }
 
@@ -286,17 +286,17 @@ public class PlayerController : MonoBehaviour, IHitable
         }
     }
 
-    public void Reset(PlayerState state)
-    {
-        SceneManager.LoadScene("GameOver");
-        //_message.text = "You have " + state;
-        //Invoke("ClearMessage", 2f);
-        //_currentHealth = startingHealth;
-        //Hit(0);
-        //_currentHealth = startingHealth;
-        //transform.position = _startingPosition;
-        //transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-    }
+    //public void Reset(PlayerState state)
+    //{
+    //    SceneManager.LoadScene("GameOver");
+    //    //_message.text = "You have " + state;
+    //    //Invoke("ClearMessage", 2f);
+    //    //_currentHealth = startingHealth;
+    //    //Hit(0);
+    //    //_currentHealth = startingHealth;
+    //    //transform.position = _startingPosition;
+    //    //transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+    //}
 
     public void FinishLevel()
     {

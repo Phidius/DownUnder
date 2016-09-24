@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityStandardAssets.Characters.FirstPerson;
 using UnityStandardAssets.CrossPlatformInput;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class OptionsController : MonoBehaviour
 {
     public bool showOptions = false;
-
-    private GameObject _panel;
+    
     private Text _quality;
 
     private bool _gvrViewer = false;
@@ -21,91 +20,38 @@ public class OptionsController : MonoBehaviour
     void Start ()
     {
         _qualitySettings = QualitySettings.names;
-        //print(_qualitySettings);
-        //if (_qualitySettings == null)
-        //{
-        //    _qualitySettings = new string[] {"Fastest", "Good", "Fantastic"};
-        //}
-        _firstPerson = GameObject.FindObjectOfType<FirstPersonController>();
-        _actions = GetComponentsInChildren<Button>();
-        HighlightAction();
 
+        _firstPerson = GameObject.FindObjectOfType<FirstPersonController>();
+        
 	    if (GvrViewer.Initialized)
 	    {
 	        print("GvrViewier is initialzed");
 	        _gvrViewer = true;
 	    }
 
-        _panel = transform.FindChild("Options").gameObject;
-        foreach (var component in Camera.main.GetComponentsInChildren<Text>())
+        foreach (var component in GetComponentsInChildren<Text>())
         {
             if (component.name == "Quality")
             {
                 _quality = component;
             }
         }
-        DisplayQualitySetting();
-        ShowOptions();
-	}
-	
+    }
+
+    public void SetActive(bool active)
+    {
+        SetActive(active);
+    }
+
+    public bool GetActive()
+    {
+        return GetActive();
+    }
 	// Update is called once per frame
 	void Update ()
 	{
         var changeOptions = showOptions;
-	    //if (_gvrViewer && GvrViewer.Instance.VRModeEnabled)
-	    //{
-	    //    var triggered = GvrViewer.Instance.Triggered;
-     //       if (triggered)
-     //       {
-     //           changeOptions = !showOptions;
-     //       }
-     //   }
-	    //else
-	    //{
-     //       if (Input.GetKeyDown(KeyCode.Tab))
-     //       {
-     //           changeOptions = !showOptions;
-     //       }
-     //   }
-        if (CrossPlatformInputManager.GetButtonDown("Options"))
-        {
-            changeOptions = !showOptions;
-        }
-        
-	    if (changeOptions != showOptions)
-	    {
-	        showOptions = changeOptions;
-	        ShowOptions();
-	    }
 
-        if (showOptions)
-        {
-            if (CrossPlatformInputManager.GetAxisRaw("Vertical") != 0)
-            {
-                if (_verticalInUse == false)
-                {
-                    _verticalInUse = true;
-                    _currentAction = _currentAction + 1;
-                    if (_currentAction > _actions.Length - 1)
-                    {
-                        _currentAction = 0;
-                    }
-                    HighlightAction();
-                }
-            }
-            if (CrossPlatformInputManager.GetAxisRaw("Vertical") == 0)
-            {
-                _verticalInUse = false;
-            }
-            if (CrossPlatformInputManager.GetButtonDown("Submit"))
-            {
-                UseAction();
-            }
-        }
-    }
-
-    private void ShowOptions()
-    {
         if (showOptions)
         {
             if (_firstPerson != null)
@@ -114,18 +60,11 @@ public class OptionsController : MonoBehaviour
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
             }
-            
-            // Place the canvas directly in front of the camera at a depth of .45
-            //var point = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, .45f));
-            //transform.position = point;
-            ////transform.rotation = _firstPerson.transform.rotation;
-            //transform.rotation = Camera.main.transform.rotation;
-
-            _panel.SetActive(true);
+            _actions = GetComponentsInChildren<Button>();
+            HighlightAction();
         }
         else
         {
-            _panel.SetActive(false);
             if (_firstPerson != null)
             {
                 _firstPerson.enabled = true;
@@ -134,16 +73,33 @@ public class OptionsController : MonoBehaviour
             }
 
         }
+
+        if (CrossPlatformInputManager.GetAxisRaw("Vertical") != 0)
+        {
+            if (_verticalInUse == false)
+            {
+                _verticalInUse = true;
+                _currentAction = _currentAction + 1;
+                if (_currentAction > _actions.Length - 1)
+                {
+                    _currentAction = 0;
+                }
+                HighlightAction();
+            }
+        }
+        if (CrossPlatformInputManager.GetAxisRaw("Vertical") == 0)
+        {
+            _verticalInUse = false;
+        }
+        if (CrossPlatformInputManager.GetButtonDown("Submit"))
+        {
+            UseAction();
+        }
     }
 
-    public void ExitGame()
+    public static void CycleQualitySettings()
     {
-        // TODO: Confirm exiting?
-        Application.Quit();
-    }
-
-    public void CycleQualitySettings()
-    {
+        var _qualitySettings = QualitySettings.names;
         var qualityIndex = 0;
         for (qualityIndex = 0; qualityIndex < _qualitySettings.Length; qualityIndex++)
         {
@@ -160,24 +116,12 @@ public class OptionsController : MonoBehaviour
         // Get the next one
         qualityIndex++;
         QualitySettings.SetQualityLevel(qualityIndex, true);
-        DisplayQualitySetting();
     }
 
     private void DisplayQualitySetting()
     {
-        if (_qualitySettings == null || _qualitySettings.Length <= QualitySettings.GetQualityLevel())
-        {
-            print("What.  The.  Hell.");
-            _qualitySettings = QualitySettings.names;
-            print(_qualitySettings);
-        }
-        else
-        {
-            _quality.text = _qualitySettings[QualitySettings.GetQualityLevel()];
-            return;
-        }
+        _quality.text = _qualitySettings[QualitySettings.GetQualityLevel()];
         
-
     }
 
     private void HighlightAction()
