@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.Characters.FirstPerson;
@@ -30,7 +31,7 @@ public class PlayerController : MonoBehaviour, IHitable
     private Text _message;
 
     private AudioSource _audioSource;
-    public Weapon _weapon;
+    private Weapon _weapon;
     private float _throwDistance = 0f;
     private float _stamina;
     private FirstPersonController _firstPersonController;
@@ -38,13 +39,11 @@ public class PlayerController : MonoBehaviour, IHitable
     private float _runSpeed;
     private GameObject _interactableGameObject;
     private VRReticle _reticle;
-
-    private OptionsController options;
+    
 
     // Use this for initialization
     void Start ()
     {
-        options = GameObject.FindObjectOfType<OptionsController>();
 	    _audioSource = GetComponent<AudioSource>();
         _reticle = GetComponent<VRReticle>();
         _firstPersonController = GetComponent<FirstPersonController>();
@@ -56,7 +55,6 @@ public class PlayerController : MonoBehaviour, IHitable
 
 
         _startingPosition = transform.position;
-	    _startingPosition.y += 500f;
 	    _stamina = staminaMax;
         
         _weapon = GetComponentInChildren<Weapon>();
@@ -146,10 +144,9 @@ public class PlayerController : MonoBehaviour, IHitable
     // Update is called once per frame
     void Update () {
 
-
         if (_currentHealth <= 0)
         {
-            ((GameManager)GameObject.FindObjectOfType<GameManager>()).showHasDied = true;
+            GameManager.Instance.showHasDied = true;
             return;
         }
 
@@ -189,83 +186,80 @@ public class PlayerController : MonoBehaviour, IHitable
 
         _staminaImage.transform.localScale = staminaScale;
 
-        if (_weapon.GetState() != BoomerangController.WeaponState.Idle)
+        if (_weapon.GetState() != Weapon.WeaponState.Idle)
 	    {
 	        return;// The following code requires the state Rest
 	    }
 
-        if (!options.showOptions)
+        if (CrossPlatformInputManager.GetButton("Fire1"))
         {
-            if (CrossPlatformInputManager.GetButton("Fire1"))
-            {
-                _throwDistance += (throwWindupSpeed * Time.deltaTime);
-                _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
+            _throwDistance += (throwWindupSpeed * Time.deltaTime);
+            _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
                 
-            }
-            //if (CrossPlatformInputManager.GetButton("Fire2"))
-            //{
-            //    _message.text = "Fire2 pressed";
-            //}
-            //if (CrossPlatformInputManager.GetButton("Fire3"))
-            //{
-            //    _message.text = "Fire3 pressed";
-            //}
-            //if (CrossPlatformInputManager.GetButton("Fire4"))
-            //{
-            //    _message.text = "Fire4 pressed";
-            //}
-            //if (CrossPlatformInputManager.GetButton("Fire5"))
-            //{
-            //    _message.text = "Fire5 pressed";
-            //}
-            //if (CrossPlatformInputManager.GetButton("Fire6"))
-            //{
-            //    _message.text = "Fire6 pressed";
-            //}
-            //if (CrossPlatformInputManager.GetButton("Fire7"))
-            //{
-            //    _message.text = "Fire7 pressed";
-            //}
-            //if (CrossPlatformInputManager.GetButton("Fire8"))
-            //{
-            //    _message.text = "Fire8 pressed";
-            //}
-            //if (CrossPlatformInputManager.GetButton("Fire9"))
-            //{
-            //    _message.text = "Fire9 pressed";
-            //}
-            //if (CrossPlatformInputManager.GetButton("Fire10"))
-            //{
-            //    _message.text = "Fire10 pressed";
-            //}
-            //if (CrossPlatformInputManager.GetButton("Fire11"))
-            //{
-            //    _message.text = "Fire11 pressed";
-            //}
+        }
+        //if (CrossPlatformInputManager.GetButton("Fire2"))
+        //{
+        //    _message.text = "Fire2 pressed";
+        //}
+        //if (CrossPlatformInputManager.GetButton("Fire3"))
+        //{
+        //    _message.text = "Fire3 pressed";
+        //}
+        //if (CrossPlatformInputManager.GetButton("Fire4"))
+        //{
+        //    _message.text = "Fire4 pressed";
+        //}
+        //if (CrossPlatformInputManager.GetButton("Fire5"))
+        //{
+        //    _message.text = "Fire5 pressed";
+        //}
+        //if (CrossPlatformInputManager.GetButton("Fire6"))
+        //{
+        //    _message.text = "Fire6 pressed";
+        //}
+        //if (CrossPlatformInputManager.GetButton("Fire7"))
+        //{
+        //    _message.text = "Fire7 pressed";
+        //}
+        //if (CrossPlatformInputManager.GetButton("Fire8"))
+        //{
+        //    _message.text = "Fire8 pressed";
+        //}
+        //if (CrossPlatformInputManager.GetButton("Fire9"))
+        //{
+        //    _message.text = "Fire9 pressed";
+        //}
+        //if (CrossPlatformInputManager.GetButton("Fire10"))
+        //{
+        //    _message.text = "Fire10 pressed";
+        //}
+        //if (CrossPlatformInputManager.GetButton("Fire11"))
+        //{
+        //    _message.text = "Fire11 pressed";
+        //}
             
-            if (CrossPlatformInputManager.GetButtonUp("Fire1"))
+        if (CrossPlatformInputManager.GetButtonUp("Fire1"))
+        {
+            if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
             {
-                if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
-                {
-                    var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());
-                    var fractionThrow = (_throwDistance < targetDistance) ? _throwDistance/targetDistance : 1f;
-                    _weapon.Throw(Vector3.Lerp(_weapon.transform.position, _reticle.GetAimPoint(), fractionThrow));
-                }
-                else
-                {
-                    _weapon.Swing();
-                }
-                _throwDistance = 0f;
+                var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());
+                var fractionThrow = (_throwDistance < targetDistance) ? _throwDistance/targetDistance : 1f;
+                _weapon.Throw(Vector3.Lerp(_weapon.transform.position, _reticle.GetAimPoint(), fractionThrow));
             }
-
-            if (CrossPlatformInputManager.GetButtonDown("Interact"))
+            else
             {
-                if (_interactableGameObject)
+                _weapon.Swing();
+            }
+            _throwDistance = 0f;
+        }
+
+        if (CrossPlatformInputManager.GetButtonDown("Interact"))
+        {
+            if (_interactableGameObject)
+            {
+                foreach (Interactable interactable in _interactableGameObject.GetComponents(typeof (Interactable)))
                 {
-                    foreach (Interactable interactable in _interactableGameObject.GetComponents(typeof (Interactable)))
-                    {
-                        interactable.Interact(this);
-                    }
+                    interactable.Interact(this);
                 }
             }
         }

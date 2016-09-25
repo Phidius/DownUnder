@@ -32,6 +32,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     //values for internal use
     private Animator _animator;
     private AudioSource _audioSource;
+    private ParticleSystem _particle;
     private EndFight _endFight;
     private float _currentHealth;
     public SpiderState _state = SpiderState.Idle;
@@ -52,7 +53,16 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
 
         // Child components
         var spiderSense = GetComponentInChildren<SpiderSense>();
-
+        _particle = GetComponentInChildren<ParticleSystem>();
+        if (_particle == null)
+        {
+            Debug.Log("Particle system not found in " + name);
+        }
+        //else
+        //{
+        //    _particle.Stop();
+        //}
+        
         // Optional components
         _interactionSpider = (InteractionSpider)GetComponent(typeof(Interactable));
 
@@ -246,7 +256,8 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             _audioSource.clip = hitSound;
             _audioSource.loop = false;
             _audioSource.Play();
-            Invoke("StartWalkingSound", hitSound.length);
+            _particle.Play();
+            Invoke("FinishHit", hitSound.length);
         }
 
         if (_currentHealth <= 0)
@@ -275,12 +286,13 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
 
     }
 
-    private void StartWalkingSound()
+    private void FinishHit()
     {
         if (_state == SpiderState.Dying || _state != SpiderState.Dead)
         {
             return;
         }
+        _particle.Stop();
         _audioSource.clip = walkSound;
         _audioSource.loop = true;
         _audioSource.Play();

@@ -9,7 +9,22 @@ public class GameManager : MonoBehaviour
     private PlayerController _player;
     private GameObject _optionsPanel;
     private GameObject _hasDiedPanel;
+    private bool _lockControllerState = false;
 
+    private static GameManager _gameManager;
+    public static GameManager Instance {  get { return _gameManager; } }
+
+    private void Awake()
+    {
+        if (_gameManager != null && _gameManager != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _gameManager = this;
+        }
+    }
     // Use this for initialization
     void Start()
     {
@@ -59,22 +74,54 @@ public class GameManager : MonoBehaviour
         {
             showOptions = false;
         }
+        
+        if (showOptions != _optionsPanel.activeInHierarchy)
+        {
+            _optionsPanel.SetActive(showOptions);
+        }
+        if (showHasDied != _hasDiedPanel.activeInHierarchy)
+        {
+            _hasDiedPanel.SetActive(showHasDied);
+        }
 
-        _optionsPanel.SetActive(showOptions);
-        _hasDiedPanel.SetActive(showHasDied);
+        var lockController = showOptions || showHasDied;
+
+        if (lockController != _lockControllerState) // Change the state
+        {
+            if (lockController) // Lock the controls
+            {
+                Time.timeScale = 0;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else // Unlock the controls
+            {
+                Time.timeScale = 1;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            _lockControllerState = lockController;
+        }
+
+        
     }
     public void ExitGame()
     {
         // TODO: Confirm exiting?
+        Debug.Log("Application.Quit();");
         Application.Quit();
     }
 
-    public void RespawnPlayer(PlayerController player)
+    public void RespawnPlayer()
     {
-        player._currentHealth = player.startingHealth;
-        player.Hit(0);
-        player.transform.position = player._startingPosition;
-        player.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        _player._currentHealth = _player.startingHealth;
+        _player.Hit(0);
+        _player.transform.position = _player._startingPosition;
+        _player.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        if (showHasDied)
+        {
+            showHasDied = false;
+        }
     }
 
 }
