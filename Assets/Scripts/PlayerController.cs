@@ -30,6 +30,9 @@ public class PlayerController : MonoBehaviour, IHitable
     private Image _staminaImage;
     private Text _message;
 
+    private Transform _firstPerspective;
+    private Transform _thirdPerspective;
+
     private Animator _animator;
     private AudioSource _audioSource;
     private Weapon _weapon;
@@ -46,10 +49,14 @@ public class PlayerController : MonoBehaviour, IHitable
     // Use this for initialization
     void Start ()
     {
+        _firstPerspective = transform.FindChild("First");
+        _thirdPerspective = transform.FindChild("Third");
+
         var avatar = transform.FindChild("avatar");
         _animator = avatar.GetComponentInChildren<Animator>();
 	    _audioSource = GetComponent<AudioSource>();
         _reticle = GetComponent<VRReticle>();
+        
         _firstPersonController = GetComponent<FirstPersonController>();
         if (_firstPersonController)
         {
@@ -168,17 +175,41 @@ public class PlayerController : MonoBehaviour, IHitable
         {
             var cameraPosition = Camera.main.transform.localPosition;
             cameraPosition.z += scroll;
+            cameraPosition.z = Mathf.Clamp(cameraPosition.z, -10f, 0f);
+            //z = 0 is the furthest forward... z = -1 is the limit to avoid seeing the avatar mesh
+            if (cameraPosition.z > -1f && Camera.main.transform.parent.gameObject.name == "Third")
+            {
+                Camera.main.transform.parent = _firstPerspective;
+                cameraPosition.z = 0.0f;
+            }
+            else
+            if (cameraPosition.z < 0f && Camera.main.transform.parent.gameObject.name == "First")
+            {
+                Camera.main.transform.parent = _thirdPerspective;
+                cameraPosition.z = -1.1f;
+            }
             Camera.main.transform.localPosition = cameraPosition;
         }
         //if (_firstPersonController)
         //{
-            _animator.SetFloat("Forward", _firstPersonController.desiredMove.magnitude, 0.1f, Time.deltaTime);
+        var forwardSpeed = 0f;
+       
+        if (_firstPersonController.desiredMove.magnitude > 0.0f)
+        {
             if (_firstPersonController.IsRunning())
             {
                 _stamina -= _runSpeed * Time.deltaTime;
+                forwardSpeed = 1f;
             }
+            else
+            {
+                forwardSpeed = 0.5f;
+            }
+        }
 
-            if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
+        _animator.SetFloat("Forward", forwardSpeed, 0.1f, Time.deltaTime);
+
+        if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
             {
                 _firstPersonController.SetJumpSpeed(0);
                 _firstPersonController.SetRunSpeed(_firstPersonController.GetWalkSpeed());
@@ -188,7 +219,7 @@ public class PlayerController : MonoBehaviour, IHitable
                 _firstPersonController.SetJumpSpeed(_jumpSpeed);
                 _firstPersonController.SetRunSpeed(_runSpeed);
             }
-        //}
+
 
         _stamina += staminaRecover * Time.deltaTime;
         _stamina = Mathf.Clamp(_stamina, 0, staminaMax);
