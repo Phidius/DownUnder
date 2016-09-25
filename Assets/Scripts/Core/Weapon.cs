@@ -28,7 +28,7 @@ public class Weapon : MonoBehaviour {
         ThrowReturn
     };
 
-    public virtual void Start()
+    public virtual void Awake()
     {
         _parent = transform.parent; // Use _parent to move the Weapon... the transform will be locked by the _animator
         _weaponSlot = _parent.parent; // Return the _parent to this transform when catching after a throw

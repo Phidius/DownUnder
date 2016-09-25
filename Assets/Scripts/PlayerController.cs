@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour, IHitable
     public float maxThrowDistance = 50f;
     public float throwWindupSpeed = 10f;
     public AudioClip gruntSound;
+    public Transform cameraTransform;
 
     public Vector3 _startingPosition;
     public float _currentHealth;
@@ -173,22 +174,23 @@ public class PlayerController : MonoBehaviour, IHitable
         var scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll != 0)
         {
-            var cameraPosition = Camera.main.transform.localPosition;
+            var cameraPosition = cameraTransform.localPosition;// Camera.main.transform.localPosition;
             cameraPosition.z += scroll;
             cameraPosition.z = Mathf.Clamp(cameraPosition.z, -10f, 0f);
+
             //z = 0 is the furthest forward... z = -1 is the limit to avoid seeing the avatar mesh
-            if (cameraPosition.z > -1f && Camera.main.transform.parent.gameObject.name == "Third")
+            if (cameraPosition.z > -1f && cameraTransform.parent.gameObject.name == "Third") // Camera.main.transform.parent.gameObject.name == "Third")
             {
-                Camera.main.transform.parent = _firstPerspective;
+                cameraTransform.parent = _firstPerspective;// Camera.main.transform.parent = _firstPerspective;
                 cameraPosition.z = 0.0f;
             }
             else
-            if (cameraPosition.z < 0f && Camera.main.transform.parent.gameObject.name == "First")
+            if (cameraPosition.z < 0f && cameraTransform.parent.gameObject.name == "First") //Camera.main.transform.parent.gameObject.name == "First")
             {
-                Camera.main.transform.parent = _thirdPerspective;
+                cameraTransform.parent = _thirdPerspective; //Camera.main.transform.parent = _thirdPerspective;
                 cameraPosition.z = -1.1f;
             }
-            Camera.main.transform.localPosition = cameraPosition;
+            cameraTransform.localPosition = cameraPosition; //Camera.main.transform.localPosition = cameraPosition;
         }
         //if (_firstPersonController)
         //{
