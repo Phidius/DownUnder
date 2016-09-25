@@ -30,11 +30,13 @@ public class PlayerController : MonoBehaviour, IHitable
     private Image _staminaImage;
     private Text _message;
 
+    private Animator _animator;
     private AudioSource _audioSource;
     private Weapon _weapon;
     private float _throwDistance = 0f;
     private float _stamina;
     private FirstPersonController _firstPersonController;
+
     private float _jumpSpeed;
     private float _runSpeed;
     private GameObject _interactableGameObject;
@@ -44,6 +46,8 @@ public class PlayerController : MonoBehaviour, IHitable
     // Use this for initialization
     void Start ()
     {
+        var avatar = transform.FindChild("avatar");
+        _animator = avatar.GetComponentInChildren<Animator>();
 	    _audioSource = GetComponent<AudioSource>();
         _reticle = GetComponent<VRReticle>();
         _firstPersonController = GetComponent<FirstPersonController>();
@@ -53,6 +57,7 @@ public class PlayerController : MonoBehaviour, IHitable
             _runSpeed = _firstPersonController.GetRunSpeed();
         }
 
+        _animator.applyRootMotion = false;
 
         _startingPosition = transform.position;
 	    _stamina = staminaMax;
@@ -158,8 +163,16 @@ public class PlayerController : MonoBehaviour, IHitable
             _stamina -= _jumpSpeed;
         }
 
-        if (_firstPersonController)
+        var scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll != 0)
         {
+            var cameraPosition = Camera.main.transform.localPosition;
+            cameraPosition.z += scroll;
+            Camera.main.transform.localPosition = cameraPosition;
+        }
+        //if (_firstPersonController)
+        //{
+            _animator.SetFloat("Forward", _firstPersonController.desiredMove.magnitude, 0.1f, Time.deltaTime);
             if (_firstPersonController.IsRunning())
             {
                 _stamina -= _runSpeed * Time.deltaTime;
@@ -175,7 +188,7 @@ public class PlayerController : MonoBehaviour, IHitable
                 _firstPersonController.SetJumpSpeed(_jumpSpeed);
                 _firstPersonController.SetRunSpeed(_runSpeed);
             }
-        }
+        //}
 
         _stamina += staminaRecover * Time.deltaTime;
         _stamina = Mathf.Clamp(_stamina, 0, staminaMax);
