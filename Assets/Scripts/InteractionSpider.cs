@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class InteractionSpider: Interactable {
+public class InteractionSpider : Interactable
+{
 
     public List<GameObject> contents;
-    
+
     public override void Start()
     {
         base.Start();
@@ -16,12 +17,15 @@ public class InteractionSpider: Interactable {
         {
             return;
         }
-        foreach (var prefab in contents)
+
+        // Determine what (if anything) will be dropped
+        var index = Random.Range(0, contents.Count);
+        if (contents[index] != null)
         {
-            Instantiate(prefab, transform.position + new Vector3(0f, .2f, 0f), Quaternion.identity);
+            Instantiate(contents[index], transform.position + new Vector3(0f, .2f, 0f), Quaternion.identity);
         }
         contents.Clear(); // Can only get the loot once
         Enable(false);
-        
+
     }
 }

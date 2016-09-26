@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
+using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
     public bool showOptions = false;
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour
     private GameObject _optionsPanel;
     private GameObject _hasDiedPanel;
     private bool _lockControllerState = false;
+    private List<string> _beenPlayed = new List<string>();
 
     private static GameManager _gameManager;
     public static GameManager Instance {  get { return _gameManager; } }
@@ -121,6 +123,23 @@ public class GameManager : MonoBehaviour
         if (showHasDied)
         {
             showHasDied = false;
+        }
+    }
+
+    public bool HasBeenPlayed(string name)
+    {
+        if (_beenPlayed.Contains(name))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void BeenPlayed(string name)
+    {
+        if (!HasBeenPlayed(name))
+        {
+            _beenPlayed.Add(name);
         }
     }
 

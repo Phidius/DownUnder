@@ -195,21 +195,29 @@ public class PlayerController : MonoBehaviour, IHitable
         //if (_firstPersonController)
         //{
         var forwardSpeed = 0f;
-       
-        if (_firstPersonController.desiredMove.magnitude > 0.0f)
+        if (_firstPersonController.m_MoveDir.y == -1f)
         {
-            if (_firstPersonController.IsRunning())
+            _animator.SetBool("OnGround", true);
+            if (_firstPersonController.desiredMove.magnitude > 0.0f)
             {
-                _stamina -= _runSpeed * Time.deltaTime;
-                forwardSpeed = 1f;
+                if (_firstPersonController.IsRunning() && _firstPersonController.GetRunSpeed() != _firstPersonController.GetWalkSpeed())
+                {
+                    _stamina -= _runSpeed * Time.deltaTime;
+                    forwardSpeed = 1f;
+                }
+                else
+                {
+                    forwardSpeed = 0.5f;
+                }
             }
-            else
-            {
-                forwardSpeed = 0.5f;
-            }
-        }
 
-        _animator.SetFloat("Forward", forwardSpeed, 0.1f, Time.deltaTime);
+            _animator.SetFloat("Forward", forwardSpeed, 0.1f, Time.deltaTime);
+        }
+        else
+        {
+            _animator.SetBool("OnGround", false);
+            _animator.SetFloat("Jump", _firstPersonController.m_MoveDir.y);
+        }
 
         if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
             {
@@ -373,7 +381,7 @@ public class PlayerController : MonoBehaviour, IHitable
         healthScale.x = _currentHealth / startingHealth;
         _healthImage.transform.localScale = healthScale;
 
-        if (_currentHealth > 0)
+        if (_currentHealth > 0f && damage > 0f)
         {
             _audioSource.clip = gruntSound;
             _audioSource.Play();
