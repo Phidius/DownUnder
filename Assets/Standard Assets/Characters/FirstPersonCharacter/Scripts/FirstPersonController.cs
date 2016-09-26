@@ -43,7 +43,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_NextStep;
         private bool m_Jumping;
         private AudioSource m_AudioSource;
-        public GameObject head;
+        public Transform head;
         private float _delayLandingSound = 0f;
 
         // Use this for initialization
@@ -136,7 +136,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             float speed;
             GetInput(out speed);
             // always move along the camera forward as it is the direction that it being aimed at
-            desiredMove = head.transform.forward*m_Input.y + head.transform.right*m_Input.x;
+            desiredMove = head.forward*m_Input.y + head.right*m_Input.x;
 
             // get a normal for the surface that is being touched to move along it
             RaycastHit hitInfo;
@@ -273,7 +273,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         }
 
 
-        private void RotateView()
+        public void RotateView()
         {
             m_MouseLook.LookRotation (transform, m_Camera.transform);
         }

@@ -30,6 +30,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         public void LookRotation(Transform character, Transform camera)
         {
+            //TODO: This is why the CardboardViewer is not matching the PC... it is not using the "CrossPlatformInputManager.GetAxis("Mouse X")"
             float yRot = CrossPlatformInputManager.GetAxis("Mouse X") * XSensitivity;
             float xRot = CrossPlatformInputManager.GetAxis("Mouse Y") * YSensitivity;
 

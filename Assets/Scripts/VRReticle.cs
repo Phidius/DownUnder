@@ -21,6 +21,8 @@ public class VRReticle : MonoBehaviour {
         alphaColor.a = 0.5f;
 
         _reticle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        _reticle.tag = "Event";
+        _reticle.layer = LayerMask.NameToLayer("Ignore Raycast");
         _reticleRenderer = _reticle.GetComponent<Renderer>();
         _reticleRenderer.shadowCastingMode = ShadowCastingMode.Off;
         var collider = _reticle.GetComponent<Collider>();
