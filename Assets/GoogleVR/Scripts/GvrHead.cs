@@ -52,6 +52,10 @@ public class GvrHead : MonoBehaviour {
   /// grandparent or higher ancestor is a suitable target.
   public Transform target;
 
+
+    public Transform alternateRotationObject;
+    /// If specified, this Transform will be rotated instead of the GvrHead transform
+    
   /// Determines whether the head tracking is applied during `LateUpdate()` or
   /// `Update()`.  The default is false, which means it is applied during `LateUpdate()`
   /// to reduce latency.
@@ -99,19 +103,31 @@ public class GvrHead : MonoBehaviour {
 
   // Compute new head pose.
   private void UpdateHead() {
-    if (updated) {  // Only one update per frame, please.
-      return;
-    }
-    updated = true;
-    GvrViewer.Instance.UpdateState();
+        if (updated) {  // Only one update per frame, please.
+            return;
+        }
+        updated = true;
+        GvrViewer.Instance.UpdateState();
 
-    if (trackRotation) {
-      var rot = GvrViewer.Instance.HeadPose.Orientation;
-      if (target == null) {
-        transform.localRotation = rot;
-      } else {
-        transform.rotation = target.rotation * rot;
-      }
+        if (trackRotation) {
+            var transformToRotate = transform;
+            if (alternateRotationObject)
+            {
+                transformToRotate = alternateRotationObject;
+            }
+
+            var rot = GvrViewer.Instance.HeadPose.Orientation;
+
+            if (target == null)
+            {
+                //transform.localRotation = rot;
+                transformToRotate.localRotation = rot;
+            }
+            else
+            {
+                //transform.rotation = target.rotation * rot;
+                transformToRotate.rotation = target.rotation * rot;
+            }
     }
 
     if (trackPosition) {

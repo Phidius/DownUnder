@@ -8,6 +8,7 @@ public class MenuController : MonoBehaviour {
     protected int currentAction = 0;
     protected Button[] actions;
     protected bool verticalInUse = false;
+    protected bool horizontalInUse = false;
 
     // Use this for initialization
     protected virtual void Start () {
@@ -37,9 +38,17 @@ public class MenuController : MonoBehaviour {
         {
             verticalInUse = false;
         }
-        if (CrossPlatformInputManager.GetButtonDown("Submit"))
+        if (CrossPlatformInputManager.GetAxisRaw("Horizontal") != 0)
         {
-            UseAction();
+            if (horizontalInUse == false)
+            {
+                horizontalInUse = true;
+                UseAction();
+            }
+        }
+        if (CrossPlatformInputManager.GetAxisRaw("Horizontal") == 0)
+        {
+            horizontalInUse = false;
         }
     }
     public virtual void SetActive(bool active)

@@ -12,10 +12,12 @@ public class GameManager : MonoBehaviour
     private GameObject _hasDiedPanel;
     private bool _lockControllerState = false;
     private List<string> _beenPlayed = new List<string>();
+    private GameDifficulty _difficulty = GameDifficulty.Normal;
 
     private static GameManager _gameManager;
     public static GameManager Instance {  get { return _gameManager; } }
 
+    public enum GameDifficulty { Easy, Normal, Hard }
     private void Awake()
     {
         if (_gameManager != null && _gameManager != this)
@@ -141,6 +143,16 @@ public class GameManager : MonoBehaviour
         {
             _beenPlayed.Add(name);
         }
+    }
+
+    public GameDifficulty GetDifficulty()
+    {
+        return _difficulty;
+    }
+
+    public void SetDifficulty(GameDifficulty difficulty)
+    {
+        _difficulty = difficulty;
     }
 
 }
