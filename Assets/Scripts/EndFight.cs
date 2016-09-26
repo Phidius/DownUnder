@@ -24,7 +24,7 @@ public class EndFight : MonoBehaviour
                 {
                     spider.SetTarget(collider.transform);
                 }
-                spider.agent.speed = spider.runSpeed;
+                spider.agent.speed = spider._runSpeed;
             }
         }
     }

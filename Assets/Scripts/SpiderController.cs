@@ -20,9 +20,9 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     };
 
     //values that will be set in the Inspector
-    public int startingHealth;
-    public float runSpeed = 0.0f;
-    public int damage;
+    public int initialHealthMultiplier = 1;
+    public float initialRunSpeedMultiplier = 3f;
+    public int initialDamageMultiplier = 1;
     public AudioClip walkSound;
     public AudioClip deathCry;
     public AudioClip hitSound;
@@ -32,9 +32,10 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     //values for internal use
     private Animator _animator;
     private AudioSource _audioSource;
-    //private ParticleSystem _particle;
     private EndFight _endFight;
-    private float _currentHealth;
+    public float _currentHealth = 0;
+    public float _runSpeed = 0;
+    public float _damage = 0;
     public SpiderState _state = SpiderState.Idle;
     public Transform _target;
     private float _navDelayMax = .5f;
@@ -42,6 +43,8 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     private Quaternion lookRotation;
     private InteractionSpider _interactionSpider;
     private float _spiderSenseRadius = 5.0f;
+    private int _gameDifficulty = -1;
+    private ParticleSystem _webShooter;
 
     // Use this for initialization
     void Start()
@@ -53,15 +56,13 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
 
         // Child components
         var spiderSense = GetComponentInChildren<SpiderSense>();
-        //_particle = GetComponentInChildren<ParticleSystem>();
-        //if (_particle == null)
-        //{
-        //    Debug.Log("Particle system not found in " + name);
-        //}
-        //else
-        //{
-        //    _particle.Stop();
-        //}
+        _webShooter = GetComponentInChildren<ParticleSystem>();
+
+        if (_webShooter)
+        {
+            print(_webShooter);
+        }
+        
         
         // Optional components
         _interactionSpider = (InteractionSpider)GetComponent(typeof(Interactable));
@@ -73,6 +74,10 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
         {
             Debug.Log("This level is missing an EndFight!");
         }
+        _gameDifficulty = (int)(GameManager.Instance.GetDifficulty());
+        _currentHealth = initialHealthMultiplier * (_gameDifficulty + 1);
+        _runSpeed = initialRunSpeedMultiplier * (_gameDifficulty + 1);
+        _damage = initialDamageMultiplier * (_gameDifficulty + 1);
 
         agent.updateRotation = false;
         agent.updatePosition = true;
@@ -82,21 +87,39 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             _spiderSenseRadius = spiderSense.GetComponent<SphereCollider>().radius;
         }
 
-        _currentHealth = startingHealth;
         _navDelay = _navDelayMax + .1f;
 
-        if (runSpeed < agent.speed)
-        {
-            runSpeed = agent.speed*2;
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.Instance.IsGamePaused())
+        {
+            return;
+        }
+
+        if (_gameDifficulty != (int)(GameManager.Instance.GetDifficulty()))
+        {
+            // calculate maxHealth based on previous game difficulty
+            var maxHealth = (initialHealthMultiplier*(_gameDifficulty + 1));
+            var healthRatio = 1f;
+            if (_currentHealth > 0)
+            {
+                healthRatio = _currentHealth/maxHealth;
+            }
+            _gameDifficulty = (int)(GameManager.Instance.GetDifficulty());
+            // Recalculate the maxHealth based on current game difficulty
+            maxHealth = (initialHealthMultiplier * (_gameDifficulty + 1));
+            // Recalculate health and spawn rate
+            _currentHealth = healthRatio*maxHealth;
+            _runSpeed = initialRunSpeedMultiplier * (_gameDifficulty + 1);
+            _damage = initialDamageMultiplier * (_gameDifficulty + 1);
+        }
+
         if (_endFight.hasBegun)
         {
-            agent.speed = runSpeed;
+            agent.speed = _runSpeed;
             _target = _endFight.target;
         }
         if (_state == SpiderState.Dead)
@@ -117,11 +140,15 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             _state = SpiderState.Attacking;
             _animator.speed = 1f;
             _animator.SetTrigger("IsAttacking");
+            if (_webShooter != null)
+            {
+                _webShooter.Play();
+            }
         }
 
         if (_state == SpiderState.Walking)// || _state == SpiderState.Attacking)
         {
-            Vector3 desiredVelocity = Vector3.zero;
+            var desiredVelocity = Vector3.zero;
             _navDelay += Time.deltaTime;
             
             if (distance < _spiderSenseRadius)
@@ -133,7 +160,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
                 //create the rotation we need to be in to look at the _target
                 lookRotation = Quaternion.LookRotation(_direction);
 
-                var distanceCovered = (Time.deltaTime) * runSpeed;
+                var distanceCovered = (Time.deltaTime) * _runSpeed;
                 var fractionalMovement = distanceCovered / distance;
                 transform.position = Vector3.Lerp(transform.position, _target.position, fractionalMovement);
             }
@@ -159,7 +186,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
                 
             }
             //rotate us over time according to speed until we are in the required rotation
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 360 / agent.angularSpeed); // TODO: use the agent.angularSpeed instead
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 360 / agent.angularSpeed);
 
         }
     }
@@ -188,7 +215,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             var hitable = (IHitable)_target.GetComponent(typeof(IHitable));
             if (hitable != null)
             {
-                hitable.Hit(damage);
+                hitable.Hit(_damage);
             }
         }
     }

@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour
     private GameObject _hasDiedPanel;
     private bool _lockControllerState = false;
     private List<string> _beenPlayed = new List<string>();
-    private GameDifficulty _difficulty = GameDifficulty.Normal;
+    private GameDifficulty _difficulty = GameDifficulty.Easy;
+    private bool _gamePaused;
 
     private static GameManager _gameManager;
     public static GameManager Instance {  get { return _gameManager; } }
@@ -94,21 +95,33 @@ public class GameManager : MonoBehaviour
         {
             if (lockController) // Lock the controls
             {
-                Time.timeScale = 0;
+                PauseGame(true);
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
             }
             else // Unlock the controls
             {
-                Time.timeScale = 1;
+                PauseGame(false);
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
             _lockControllerState = lockController;
         }
-
-        
     }
+
+    private void PauseGame(bool pause)
+    {
+        if (pause)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
+        _gamePaused = pause;
+    }
+
     public void ExitGame()
     {
         // TODO: Confirm exiting?
@@ -155,4 +168,8 @@ public class GameManager : MonoBehaviour
         _difficulty = difficulty;
     }
 
+    public bool IsGamePaused()
+    {
+        return _gamePaused;
+    }
 }
