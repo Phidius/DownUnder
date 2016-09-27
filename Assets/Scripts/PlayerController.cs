@@ -45,7 +45,9 @@ public class PlayerController : MonoBehaviour, IHitable
     private float _runSpeed;
     private GameObject _interactableGameObject;
     private VRReticle _reticle;
-    
+    private float _maxInteractableUpdate = .1f;
+    private float _interactableUpdate = 0f;
+
 
     // Use this for initialization
     void Start ()
@@ -115,11 +117,12 @@ public class PlayerController : MonoBehaviour, IHitable
 
     void GetIteractables()
     {
-        //interactableUpdate += Time.deltaTime;
-        //if (interactableUpdate < maxInteractableUpdate)
-        //{
-        //    return;
-        //}
+        _interactableUpdate += Time.deltaTime;
+        if (_interactableUpdate < _maxInteractableUpdate)
+        {
+            return;
+        }
+        _interactableUpdate = 0f;
 
         var obstacle = _reticle.GetObstacle();
         if (obstacle)

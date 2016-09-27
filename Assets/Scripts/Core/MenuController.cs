@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class MenuController : MonoBehaviour {
+public abstract class MenuController : MonoBehaviour {
 
     protected int currentAction = 0;
     protected Button[] actions;
@@ -19,16 +19,21 @@ public class MenuController : MonoBehaviour {
     {
         if (CrossPlatformInputManager.GetAxisRaw("Vertical") != 0)
         {
+            var direction = (int) CrossPlatformInputManager.GetAxisRaw("Vertical") * -1; // Previous actions are up, not down
             if (verticalInUse == false)
             {
                 verticalInUse = true;
-                //EventSystem.current.SetSelectedGameObject(null);
+
                 actions[currentAction].enabled = false;
                 actions[currentAction].enabled = true;
-                currentAction = currentAction + 1;
+                currentAction = currentAction + direction;
                 if (currentAction > actions.Length - 1)
                 {
                     currentAction = 0;
+                }
+                else if (currentAction < 0)
+                {
+                    currentAction = actions.Length - 1;
                 }
                 actions[currentAction].Select();
                 ActionChanged();
@@ -52,16 +57,9 @@ public class MenuController : MonoBehaviour {
         }
     }
 
-    public virtual void ActionChanged()
-    {
-        // Left blank - inherited classes can override to be notified when the selected Action is changed
-    }
+    public abstract void ActionChanged();
 
-    public virtual void ActionUsed()
-    {
-        // Left blank - inherited classes can override to be notified when the selected Action is  used
-
-    }
+    public abstract void ActionUsed();
 
     public virtual void SetActive(bool active)
     {
@@ -76,7 +74,7 @@ public class MenuController : MonoBehaviour {
     protected virtual void UseAction()
     {
         if (actions.Length > currentAction)
-        {
+        { 
             actions[currentAction].onClick.Invoke();
         }
 

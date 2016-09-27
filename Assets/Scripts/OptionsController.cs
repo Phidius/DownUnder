@@ -11,7 +11,7 @@ public class OptionsController : MenuController
 
     public string[] _qualitySettings;
     public List<GameManager.GameDifficulty> _difficulties = new List<GameManager.GameDifficulty> ();
-    private string _confirmExit = "Press \"Fire\" to confirm, or scroll to another choice";
+    private string _confirmExit = "Press 'Fire' to confirm, or scroll to another choice";
     private string _initialExit;
     // Use this for initialization
     protected override void Start ()
@@ -37,6 +37,7 @@ public class OptionsController : MenuController
             if (component.name == "Exit")
             {
                 _textExit = component;
+                _initialExit = _textExit.text;
             }
         }
 
@@ -56,13 +57,31 @@ public class OptionsController : MenuController
         DisplayValues();
     }
 
+    protected override void Update()
+    {
+        base.Update();
+        if (CrossPlatformInputManager.GetButtonDown("Fire1") && _textExit.text == _confirmExit)
+        {
+            GameManager.Instance.ExitGame();
+        }    
+    }
+
     public override void ActionChanged()
     {
-        base.ActionChanged();
         _textExit.text = _initialExit;
     }
 
-    public void CycleQualitySettings()
+    public override void ActionUsed()
+    {
+        // May not be needed
+    }
+
+    public void ExitGame()
+    {
+        _textExit.text = _confirmExit;
+    }
+
+    public void CycleQualitySettings(int direction)
     {
         //var _qualitySettings = QualitySettings.names;
         var qualityIndex = 0;
@@ -70,16 +89,24 @@ public class OptionsController : MenuController
         {
             if (QualitySettings.GetQualityLevel() == qualityIndex)
             {
-                if (qualityIndex == _qualitySettings.Length - 1)
-                {
-                    qualityIndex = -1; // If this is the last one, set it to -1 so that the "next" setting will be index = 0
-                }
+                //if (qualityIndex == _qualitySettings.Length - 1)
+                //{
+                //    qualityIndex = -1; // If this is the last one, set it to -1 so that the "next" setting will be index = 0
+                //}
                 break;
             }
 
         }
-        // Get the next one
-        qualityIndex++;
+        // Go in the indicated direction
+        qualityIndex += direction;
+        if (qualityIndex > _qualitySettings.Length - 1)
+        {
+            qualityIndex = 0;
+        } else if (qualityIndex < 0)
+        {
+            qualityIndex = _qualitySettings.Length - 1;
+        }
+
         QualitySettings.SetQualityLevel(qualityIndex, true);
         DisplayValues();
     }
