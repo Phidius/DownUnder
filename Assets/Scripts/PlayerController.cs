@@ -68,6 +68,10 @@ public class PlayerController : MonoBehaviour, IHitable
         }
 
         _animator.applyRootMotion = false;
+        if (_animator.layerCount >= 2)
+        {
+            _animator.SetLayerWeight(1, 1);
+        }
 
         _startingPosition = transform.position;
 	    _stamina = staminaMax;
@@ -250,6 +254,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
         if (CrossPlatformInputManager.GetButton("Fire1"))
         {
+            _animator.SetBool("Windup", true);
             _throwDistance += (throwWindupSpeed * Time.deltaTime);
             _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
                 
@@ -297,6 +302,7 @@ public class PlayerController : MonoBehaviour, IHitable
             
         if (CrossPlatformInputManager.GetButtonUp("Fire1"))
         {
+            _animator.SetBool("Windup", false);
             if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
             {
                 var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());

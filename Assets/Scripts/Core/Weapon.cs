@@ -64,8 +64,8 @@ public class Weapon : MonoBehaviour {
         if (_state == WeaponState.Idle)
         {
             _state = WeaponState.Swing;
-            _animator.SetTrigger("Swing");
-            Invoke("ResetState", _animator.GetCurrentAnimatorStateInfo(0).length);
+            //_animator.SetTrigger("Swing");
+            Invoke("ResetState", 1f);
 
             _audioSource.clip = swingSound;
             _audioSource.Play();
