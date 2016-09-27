@@ -52,7 +52,7 @@ public class Weapon : MonoBehaviour {
 
         }
         //_animator.SetBool("Equipped", equipped);
-        GetComponent<Animator>().SetBool("Equipped", equipped);
+        //GetComponent<Animator>().SetBool("Equipped", equipped);
     }
 
     public virtual WeaponState GetState()
