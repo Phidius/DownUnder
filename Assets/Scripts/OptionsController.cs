@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class OptionsController : MenuController
 {
-    private Text _quality;
-    private Text _difficulty;
+    private Text _textQuality;
+    private Text _textDifficulty;
+    private Text _textExit;
 
     public string[] _qualitySettings;
     public List<GameManager.GameDifficulty> _difficulties = new List<GameManager.GameDifficulty> ();
-
+    private string _confirmExit = "Press \"Fire\" to confirm, or scroll to another choice";
+    private string _initialExit;
     // Use this for initialization
     protected override void Start ()
     {
@@ -25,15 +28,38 @@ public class OptionsController : MenuController
         {
             if (component.name == "Quality")
             {
-                _quality = component;
+                _textQuality = component;
             }
             if (component.name == "Difficulty")
             {
-                _difficulty = component;
+                _textDifficulty = component;
+            }
+            if (component.name == "Exit")
+            {
+                _textExit = component;
             }
         }
 
+        if (_textQuality == null)
+        {
+            throw new UnassignedReferenceException("Quality text object not found in " + name);
+        }
+        if (_textDifficulty == null)
+        {
+            throw new UnassignedReferenceException("Difficulty text object not found in " + name);
+        }
+        if (_textExit == null)
+        {
+            throw new UnassignedReferenceException("Exit text object not found in " + name);
+        }
+
         DisplayValues();
+    }
+
+    public override void ActionChanged()
+    {
+        base.ActionChanged();
+        _textExit.text = _initialExit;
     }
 
     public void CycleQualitySettings()
@@ -81,7 +107,7 @@ public class OptionsController : MenuController
     }
     private void DisplayValues()
     {
-        _quality.text = _qualitySettings[QualitySettings.GetQualityLevel()];
-        _difficulty.text = GameManager.Instance.GetDifficulty().ToString();
+        _textQuality.text = _qualitySettings[QualitySettings.GetQualityLevel()];
+        _textDifficulty.text = GameManager.Instance.GetDifficulty().ToString();
     }
 }

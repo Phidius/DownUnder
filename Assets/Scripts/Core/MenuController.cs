@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
 
@@ -32,6 +31,7 @@ public class MenuController : MonoBehaviour {
                     currentAction = 0;
                 }
                 actions[currentAction].Select();
+                ActionChanged();
             }
         }
         if (CrossPlatformInputManager.GetAxisRaw("Vertical") == 0)
@@ -51,6 +51,18 @@ public class MenuController : MonoBehaviour {
             horizontalInUse = false;
         }
     }
+
+    public virtual void ActionChanged()
+    {
+        // Left blank - inherited classes can override to be notified when the selected Action is changed
+    }
+
+    public virtual void ActionUsed()
+    {
+        // Left blank - inherited classes can override to be notified when the selected Action is  used
+
+    }
+
     public virtual void SetActive(bool active)
     {
         SetActive(active);
