@@ -48,15 +48,16 @@ public class PlayerController : MonoBehaviour, IHitable
     private float _maxInteractableUpdate = .1f;
     private float _interactableUpdate = 0f;
 
-
+    private bool _isCatching = false;
     // Use this for initialization
     void Start ()
     {
         _firstPerspective = transform.FindChild("First");
         _thirdPerspective = transform.FindChild("Third");
 
-        var avatar = transform.FindChild("avatar");
-        _animator = avatar.GetComponentInChildren<Animator>();
+        //var avatar = transform.FindChild("avatar");
+        //_animator = avatar.GetComponentInChildren<Animator>();
+        _animator = GetComponent<Animator>();
 	    _audioSource = GetComponent<AudioSource>();
         _reticle = GetComponent<VRReticle>();
         
@@ -170,6 +171,14 @@ public class PlayerController : MonoBehaviour, IHitable
             return;
         }
 
+        var weaponDistance = Vector3.Distance(transform.position, _weapon.transform.position);
+
+        if (weaponDistance < 15f && _weapon.GetState() == Weapon.WeaponState.ThrowReturn && _isCatching == false)
+        {
+            _animator.SetBool("Catch", true);
+            _isCatching = true;
+        }
+
         GetIteractables();
         //Change back to prvious color.
         //Set / recharge the stamina
@@ -259,61 +268,22 @@ public class PlayerController : MonoBehaviour, IHitable
             _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
                 
         }
-        //if (CrossPlatformInputManager.GetButton("Fire2"))
-        //{
-        //    _message.text = "Fire2 pressed";
-        //}
-        //if (CrossPlatformInputManager.GetButton("Fire3"))
-        //{
-        //    _message.text = "Fire3 pressed";
-        //}
-        //if (CrossPlatformInputManager.GetButton("Fire4"))
-        //{
-        //    _message.text = "Fire4 pressed";
-        //}
-        //if (CrossPlatformInputManager.GetButton("Fire5"))
-        //{
-        //    _message.text = "Fire5 pressed";
-        //}
-        //if (CrossPlatformInputManager.GetButton("Fire6"))
-        //{
-        //    _message.text = "Fire6 pressed";
-        //}
-        //if (CrossPlatformInputManager.GetButton("Fire7"))
-        //{
-        //    _message.text = "Fire7 pressed";
-        //}
-        //if (CrossPlatformInputManager.GetButton("Fire8"))
-        //{
-        //    _message.text = "Fire8 pressed";
-        //}
-        //if (CrossPlatformInputManager.GetButton("Fire9"))
-        //{
-        //    _message.text = "Fire9 pressed";
-        //}
-        //if (CrossPlatformInputManager.GetButton("Fire10"))
-        //{
-        //    _message.text = "Fire10 pressed";
-        //}
-        //if (CrossPlatformInputManager.GetButton("Fire11"))
-        //{
-        //    _message.text = "Fire11 pressed";
-        //}
             
         if (CrossPlatformInputManager.GetButtonUp("Fire1"))
         {
             _animator.SetBool("Windup", false);
-            if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
-            {
-                var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());
-                var fractionThrow = (_throwDistance < targetDistance) ? _throwDistance/targetDistance : 1f;
-                _weapon.Throw(Vector3.Lerp(_weapon.transform.position, _reticle.GetAimPoint(), fractionThrow));
-            }
-            else
-            {
-                _weapon.Swing();
-            }
-            _throwDistance = 0f;
+            _weapon.Swing();
+            //if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
+            //{
+            //    var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());
+            //    var fractionThrow = (_throwDistance < targetDistance) ? _throwDistance/targetDistance : 1f;
+            //    _weapon.Throw(Vector3.Lerp(_weapon.transform.position, _reticle.GetAimPoint(), fractionThrow));
+            //}
+            //else
+            //{
+            //    _weapon.Swing();
+            //}
+            //_throwDistance = 0f;
         }
 
         if (CrossPlatformInputManager.GetButtonDown("Interact"))
@@ -341,8 +311,30 @@ public class PlayerController : MonoBehaviour, IHitable
 	    {
             _throwImage.color = Color.grey;
         }
+
     }
 
+    public void ReleaseBoomerang()
+    {
+        if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
+        {
+            var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());
+            var fractionThrow = (_throwDistance < targetDistance) ? _throwDistance/targetDistance : 1f;
+            _weapon.Throw(Vector3.Lerp(_weapon.transform.position, _reticle.GetAimPoint(), fractionThrow));
+        }
+        else
+        {
+            _weapon.ResetState();
+        }
+
+        _throwDistance = 0f;
+    }
+
+    public void HasCaught()
+    {
+        _isCatching = false;
+        _animator.SetBool("Catch", false);
+    }
     public void FinishLevel()
     {
         _message.text = "You have won the game!";

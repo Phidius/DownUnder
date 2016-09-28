@@ -3,7 +3,7 @@
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Interactable))]
-public class Weapon : MonoBehaviour {
+public abstract class Weapon : MonoBehaviour {
 
     public int meleeDamage;
     public AudioClip swingSound;
@@ -24,8 +24,8 @@ public class Weapon : MonoBehaviour {
         Rest,
         Idle,
         Swing,
-        ThrowAway,
-        ThrowReturn
+        ThrowAway
+            ,ThrowReturn
     };
 
     public virtual void Awake()
@@ -51,21 +51,23 @@ public class Weapon : MonoBehaviour {
             _interactable.Enable(true);
 
         }
-        //_animator.SetBool("Equipped", equipped);
-        //GetComponent<Animator>().SetBool("Equipped", equipped);
     }
 
     public virtual WeaponState GetState()
     {
         return _state;
     }
+
+    public void ResetState()
+    {
+        _state = WeaponState.Idle;
+
+    }
     public virtual void Swing()
     {
         if (_state == WeaponState.Idle)
         {
             _state = WeaponState.Swing;
-            //_animator.SetTrigger("Swing");
-            Invoke("ResetState", 1f);
 
             _audioSource.clip = swingSound;
             _audioSource.Play();
@@ -75,19 +77,17 @@ public class Weapon : MonoBehaviour {
 
     public virtual void Throw(Vector3 target)
     {
-        if (_state == WeaponState.Idle)
-        {
-            //var position = transform.root.position;
-            _parent.parent = null;
-            _parent.rotation = Quaternion.identity;
-            //_parent.position = position;
+        //var position = transform.root.position;
+        _parent.parent = null;
+        _parent.rotation = Quaternion.identity;
+        //_parent.position = position;
 
-            _target = target;
-            _state = WeaponState.ThrowAway;
-            _animator.SetBool("Flying", true);
-            _audioSource.clip = swingSound;
-            _audioSource.Play();
-
-        }
+        _target = target;
+        _state = WeaponState.ThrowAway;
+        _animator.SetBool("Flying", true);
+        _audioSource.clip = swingSound;
+        _audioSource.Play();
+        
     }
+    
 }

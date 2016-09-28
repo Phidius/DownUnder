@@ -6,9 +6,10 @@ namespace Assets.Scripts
     {
 
         public float throwSpeed;
-
+        
         // Update is called once per frame
-        private void Update () {
+        private void Update ()
+        {
             var step = throwSpeed * Time.deltaTime;
             if (_state == WeaponState.ThrowAway)
             {
@@ -33,6 +34,7 @@ namespace Assets.Scripts
                     //_parent.localScale = Vector3.one;
                 
                     _animator.SetBool("Flying", false);
+                    _weaponSlot.root.gameObject.GetComponent<PlayerController>().HasCaught();
 
                 }
             }
@@ -67,12 +69,5 @@ namespace Assets.Scripts
                 _state = WeaponState.ThrowReturn;
             }
         }
-    
-        public void ResetState()
-        {
-            _state = WeaponState.Idle;
-
-        }
-
     }
 }
