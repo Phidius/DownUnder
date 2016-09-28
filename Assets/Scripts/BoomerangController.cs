@@ -26,7 +26,6 @@ namespace Assets.Scripts
                 _parent.position = Vector3.MoveTowards(_parent.position, _weaponSlot.position, step);
                 if (Vector3.Distance(transform.position, _weaponSlot.position) < .01f)
                 {
-                    print("Return to player's hand");
                     // Return to player's "hand"
                     ResetState();
                     _parent.parent = _weaponSlot;

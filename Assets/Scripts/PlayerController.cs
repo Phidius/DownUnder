@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
     private bool _isCatching = false;
     private bool _isCrouching = false;
+    private bool _isJumping = false;
     
     // Use this for initialization
     void Start ()
@@ -186,6 +187,7 @@ public class PlayerController : MonoBehaviour, IHitable
         //Set / recharge the stamina
         if (CrossPlatformInputManager.GetButtonDown("Jump"))
         {
+            _isJumping = true;
             _stamina -= _jumpSpeed;
         }
 
@@ -219,9 +221,14 @@ public class PlayerController : MonoBehaviour, IHitable
         //if (_firstPersonController)
         //{
         var forwardSpeed = 0f;
+        if (_firstPersonController.m_MoveDir.y == 0f)
+        {
+            _isJumping = false;
+            _animator.SetBool("OnGround", true);
+        }
+
         if (_firstPersonController.m_MoveDir.y == -1f)
         {
-            _animator.SetBool("OnGround", true);
             if (_firstPersonController.desiredMove.magnitude > 0.0f)
             {
                 if (_firstPersonController.IsRunning() && _firstPersonController.GetRunSpeed() != _firstPersonController.GetWalkSpeed())
@@ -237,7 +244,8 @@ public class PlayerController : MonoBehaviour, IHitable
 
             _animator.SetFloat("Forward", forwardSpeed, 0.1f, Time.deltaTime);
         }
-        else
+
+        if (_isJumping)
         {
             _animator.SetBool("OnGround", false);
             _animator.SetFloat("Jump", _firstPersonController.m_MoveDir.y);
@@ -302,11 +310,7 @@ public class PlayerController : MonoBehaviour, IHitable
             _throwDistance += (throwWindupSpeed * Time.deltaTime);
             _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
 
-            var throwScale = _throwImage.transform.localScale;
-            throwScale.x = 1f;
-            throwScale.y = _throwDistance / maxThrowDistance;
-
-            _throwImage.transform.localScale = throwScale;
+            
 
             if (_throwDistance > maxThrowDistance * .1f)
             {
@@ -317,13 +321,17 @@ public class PlayerController : MonoBehaviour, IHitable
                 _throwImage.color = Color.grey;
             }
         }
+        var throwScale = _throwImage.transform.localScale;
+        throwScale.x = 1f;
+        throwScale.y = _throwDistance / maxThrowDistance;
+
+        _throwImage.transform.localScale = throwScale;
     }
 
     public void ReleaseBoomerang()
     {
         _animator.SetBool("Windup", false);
         _animator.SetBool("Swing", false);
-        print("Release Boomerang");
         if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
         {
             var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());

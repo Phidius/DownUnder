@@ -43,7 +43,6 @@ public abstract class Weapon : MonoBehaviour {
     {
         if (equipped)
         {
-            print("Equipped");
             ResetState();
             _interactable.Enable(false);
         }
@@ -62,20 +61,17 @@ public abstract class Weapon : MonoBehaviour {
 
     public void ResetState()
     {
-        print("Reset");
         _state = WeaponState.Idle;
 
     }
 
     public virtual void Charge()
     {
-        print("Charge");
         _state = WeaponState.Charging;
     }
 
     public virtual void Swing()
     {
-        print("Swing");
         if (_state == WeaponState.Charging)
         {
             _state = WeaponState.Swing;
