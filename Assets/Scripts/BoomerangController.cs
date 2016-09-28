@@ -24,10 +24,11 @@ namespace Assets.Scripts
             else if (_state == WeaponState.ThrowReturn)
             {
                 _parent.position = Vector3.MoveTowards(_parent.position, _weaponSlot.position, step);
-                if (Vector3.Distance(_parent.position, _weaponSlot.position) < .01f)
+                if (Vector3.Distance(transform.position, _weaponSlot.position) < .01f)
                 {
+                    print("Return to player's hand");
                     // Return to player's "hand"
-                    _state = WeaponState.Idle;
+                    ResetState();
                     _parent.parent = _weaponSlot;
                     _parent.localPosition = Vector3.zero; // _parent.position is the global position
                     _parent.localRotation = Quaternion.identity;
@@ -42,7 +43,8 @@ namespace Assets.Scripts
 
         private void OnTriggerEnter(Collider coll)
         {
-            if (_state == WeaponState.Rest || _state == WeaponState.Idle)
+            
+            if (_state == WeaponState.Rest || _state == WeaponState.Idle || _state == WeaponState.Charging)
             {
                 return;
             }
@@ -50,7 +52,6 @@ namespace Assets.Scripts
             {
                 return;
             }
-
             var hitables = coll.GetComponents(typeof(IHitable));
             if (hitables == null || hitables.Length == 0)
             {

@@ -49,6 +49,8 @@ public class PlayerController : MonoBehaviour, IHitable
     private float _interactableUpdate = 0f;
 
     private bool _isCatching = false;
+    private bool _isCrouching = false;
+    
     // Use this for initialization
     void Start ()
     {
@@ -173,7 +175,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
         var weaponDistance = Vector3.Distance(transform.position, _weapon.transform.position);
 
-        if (weaponDistance < 15f && _weapon.GetState() == Weapon.WeaponState.ThrowReturn && _isCatching == false)
+        if (weaponDistance < 10f && _weapon.GetState() == Weapon.WeaponState.ThrowReturn && _isCatching == false)
         {
             _animator.SetBool("Catch", true);
             _isCatching = true;
@@ -185,6 +187,12 @@ public class PlayerController : MonoBehaviour, IHitable
         if (CrossPlatformInputManager.GetButtonDown("Jump"))
         {
             _stamina -= _jumpSpeed;
+        }
+
+        if (CrossPlatformInputManager.GetButtonDown("Crouch"))
+        {
+            _isCrouching = !_isCrouching; // Toggle the state
+            _animator.SetBool("Crouch", _isCrouching);
         }
 
         var scroll = Input.GetAxis("Mouse ScrollWheel");
@@ -256,66 +264,66 @@ public class PlayerController : MonoBehaviour, IHitable
 
         _staminaImage.transform.localScale = staminaScale;
 
-        if (_weapon.GetState() != Weapon.WeaponState.Idle)
-	    {
-	        return;// The following code requires the state Rest
-	    }
-
-        if (CrossPlatformInputManager.GetButton("Fire1"))
-        {
-            _animator.SetBool("Windup", true);
-            _throwDistance += (throwWindupSpeed * Time.deltaTime);
-            _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
-                
-        }
-            
-        if (CrossPlatformInputManager.GetButtonUp("Fire1"))
-        {
-            _animator.SetBool("Windup", false);
-            _weapon.Swing();
-            //if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
-            //{
-            //    var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());
-            //    var fractionThrow = (_throwDistance < targetDistance) ? _throwDistance/targetDistance : 1f;
-            //    _weapon.Throw(Vector3.Lerp(_weapon.transform.position, _reticle.GetAimPoint(), fractionThrow));
-            //}
-            //else
-            //{
-            //    _weapon.Swing();
-            //}
-            //_throwDistance = 0f;
-        }
 
         if (CrossPlatformInputManager.GetButtonDown("Interact"))
         {
             if (_interactableGameObject)
             {
-                foreach (Interactable interactable in _interactableGameObject.GetComponents(typeof (Interactable)))
+                foreach (Interactable interactable in _interactableGameObject.GetComponents(typeof(Interactable)))
                 {
                     interactable.Interact(this);
                 }
             }
         }
 
-        var throwScale = _throwImage.transform.localScale;
-	    throwScale.x = 1f;
-        throwScale.y = _throwDistance / maxThrowDistance;
-	    
-        _throwImage.transform.localScale = throwScale;
-
-	    if (_throwDistance > maxThrowDistance*.1f)
-	    {
-	        _throwImage.color = Color.green;
-	    }
-	    else
-	    {
-            _throwImage.color = Color.grey;
+        if (_weapon.GetState() == Weapon.WeaponState.Idle)
+        {
+            _animator.SetBool("Windup", false);
+            _animator.SetBool("Swing", false);
         }
 
+        var fireButtonPressed = CrossPlatformInputManager.GetButton("Fire1");
+
+        if (fireButtonPressed && _weapon.GetState() == Weapon.WeaponState.Idle)
+        {
+            _weapon.Charge();
+            _animator.SetBool("Windup", true);
+        }
+
+        if (!fireButtonPressed && _weapon.GetState() == Weapon.WeaponState.Charging)
+        {
+            // Button released
+            _animator.SetBool("Swing", true);
+            _weapon.Swing();
+        }
+
+        if (_weapon.GetState() == Weapon.WeaponState.Charging)
+        {
+            _throwDistance += (throwWindupSpeed * Time.deltaTime);
+            _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
+
+            var throwScale = _throwImage.transform.localScale;
+            throwScale.x = 1f;
+            throwScale.y = _throwDistance / maxThrowDistance;
+
+            _throwImage.transform.localScale = throwScale;
+
+            if (_throwDistance > maxThrowDistance * .1f)
+            {
+                _throwImage.color = Color.green;
+            }
+            else
+            {
+                _throwImage.color = Color.grey;
+            }
+        }
     }
 
     public void ReleaseBoomerang()
     {
+        _animator.SetBool("Windup", false);
+        _animator.SetBool("Swing", false);
+        print("Release Boomerang");
         if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
         {
             var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());
@@ -352,7 +360,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
     public void Hit(float damage)
     {
-        _currentHealth -= damage;
+        //_currentHealth -= damage;
         if (_currentHealth > startingHealth * .75)
         {
             _healthImage.color = Color.green;

@@ -14,7 +14,7 @@ public abstract class Weapon : MonoBehaviour {
     protected Transform _weaponSlot;
     protected Animator _animator;
     protected AudioSource _audioSource;
-    protected WeaponState _state = WeaponState.Rest;
+    public WeaponState _state = WeaponState.Rest;
     protected Vector3 _target;
 
     protected Interactable _interactable;
@@ -23,9 +23,10 @@ public abstract class Weapon : MonoBehaviour {
     {
         Rest,
         Idle,
+        Charging,
         Swing,
         ThrowAway
-            ,ThrowReturn
+        ,ThrowReturn
     };
 
     public virtual void Awake()
@@ -42,7 +43,8 @@ public abstract class Weapon : MonoBehaviour {
     {
         if (equipped)
         {
-            _state = WeaponState.Idle;
+            print("Equipped");
+            ResetState();
             _interactable.Enable(false);
         }
         else
@@ -60,12 +62,21 @@ public abstract class Weapon : MonoBehaviour {
 
     public void ResetState()
     {
+        print("Reset");
         _state = WeaponState.Idle;
 
     }
+
+    public virtual void Charge()
+    {
+        print("Charge");
+        _state = WeaponState.Charging;
+    }
+
     public virtual void Swing()
     {
-        if (_state == WeaponState.Idle)
+        print("Swing");
+        if (_state == WeaponState.Charging)
         {
             _state = WeaponState.Swing;
 
