@@ -22,6 +22,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     //values that will be set in the Inspector
     public int initialHealthMultiplier = 1;
     public float initialRunSpeedMultiplier = 3f;
+    public float initialWalkSpeedMultiplier = 2f;
     public int initialDamageMultiplier = 1;
     public AudioClip walkSound;
     public AudioClip deathCry;
@@ -42,7 +43,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     private float _navDelay;
     private Quaternion lookRotation;
     private InteractionSpider _interactionSpider;
-    private float _spiderSenseRadius = 5.0f;
+    public float _spiderSenseRadius = 5.0f;
     private int _gameDifficulty = -1;
     private ParticleSystem _webShooter;
 
@@ -84,7 +85,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
 
         if (spiderSense)
         {
-            _spiderSenseRadius = spiderSense.GetComponent<SphereCollider>().radius;
+            _spiderSenseRadius = spiderSense.GetComponent<SphereCollider>().radius * 2;
         }
 
         _navDelay = _navDelayMax + .1f;
@@ -114,6 +115,8 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             // Recalculate health and spawn rate
             _currentHealth = healthRatio*maxHealth;
             _runSpeed = initialRunSpeedMultiplier * (_gameDifficulty + 1);
+
+            agent.speed = initialWalkSpeedMultiplier * (_gameDifficulty + 1);
             _damage = initialDamageMultiplier * (_gameDifficulty + 1);
         }
 

@@ -6,7 +6,7 @@ public class VRReticle : MonoBehaviour {
     private float _lookDistance = 50f;
     private LayerMask _layerMask;
     private GameObject _reticle;
-    private GameObject _obstacle;
+    public GameObject _obstacle;
     private Renderer _reticleRenderer;
     private readonly Vector3 _reticleScale = new Vector3(0.02f, 0.02f, 0.02f);
     private readonly Vector3 _aimPosition = new Vector3(0.5f, 0.4f, 0f);

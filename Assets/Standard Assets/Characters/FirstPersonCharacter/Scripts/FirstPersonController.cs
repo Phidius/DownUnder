@@ -71,7 +71,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
             }
 
-            if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
+            if (!m_PreviouslyGrounded && m_CharacterController.isGrounded && m_Jumping)
             {
                 StartCoroutine(m_JumpBob.DoBobCycle());
                 PlayLandingSound();
@@ -98,6 +98,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public float GetWalkSpeed()
         {
             return m_WalkSpeed;
+        }
+
+        public void SetWalkSpeed(float walkSpeed)
+        {
+            m_WalkSpeed = walkSpeed;
         }
 
         public float GetRunSpeed()

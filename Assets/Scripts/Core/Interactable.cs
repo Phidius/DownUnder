@@ -61,6 +61,11 @@ public class Interactable : MonoBehaviour {
         }
     }
 
+    public virtual bool IsHighlighted()
+    {
+        return _highlighted;
+    }
+
     public virtual void Interact(PlayerController player)
     {
         if (_highlighted == false || _enable == false)

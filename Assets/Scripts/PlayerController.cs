@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour, IHitable
     public float staminaMax = 20;
     public float staminaRecover = 1;
     public float maxThrowDistance = 50f;
-    public float throwWindupSpeed = 10f;
     public AudioClip gruntSound;
     public Transform cameraTransform;
 
@@ -41,8 +40,11 @@ public class PlayerController : MonoBehaviour, IHitable
     private float _stamina;
     private FirstPersonController _firstPersonController;
 
+    private float _throwWindupSpeed = 40f;
     private float _jumpSpeed;
     private float _runSpeed;
+    private float _walkSpeed;
+    public float crouchSpeed = .3f;
     private GameObject _interactableGameObject;
     private VRReticle _reticle;
     private float _maxInteractableUpdate = .1f;
@@ -69,6 +71,7 @@ public class PlayerController : MonoBehaviour, IHitable
         {
             _jumpSpeed = _firstPersonController.GetJumpSpeed();
             _runSpeed = _firstPersonController.GetRunSpeed();
+            _walkSpeed = _firstPersonController.GetWalkSpeed();
         }
 
         _animator.applyRootMotion = false;
@@ -143,14 +146,20 @@ public class PlayerController : MonoBehaviour, IHitable
                     // This is a different object - turn off the last one used
                     ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable))).Highlight(this, false);
                 }
+                
                 // Turn on this object
                 _interactableGameObject = obstacle.gameObject;
-                ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable))).Highlight(this, true);
+                
+                var interactable = ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable)));
+                if (interactable.IsHighlighted() == false)
+                {
+                    interactable.Highlight(this, true);
+                }
 
             }
             else if (_interactableGameObject)
             {
-                // obstacle is not interactable is not - turn off the last one used
+                // obstacle is not interactable - turn off the last one used
                 ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable))).Highlight(this, false);
                 _interactableGameObject = null;
             }
@@ -245,27 +254,37 @@ public class PlayerController : MonoBehaviour, IHitable
             _animator.SetFloat("Forward", forwardSpeed, 0.1f, Time.deltaTime);
         }
 
-        if (_isJumping)
+        if (_isCrouching)
         {
-            _animator.SetBool("OnGround", false);
-            _animator.SetFloat("Jump", _firstPersonController.m_MoveDir.y);
+            _firstPersonController.SetJumpSpeed(0);
+            _firstPersonController.SetRunSpeed(crouchSpeed);
+            _firstPersonController.SetWalkSpeed(crouchSpeed);
         }
+        else
+        {
+            _firstPersonController.SetWalkSpeed(_walkSpeed);
+            _stamina += staminaRecover * Time.deltaTime;
 
-        if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
+            if (_isJumping)
+            {
+                _animator.SetBool("OnGround", false);
+                _animator.SetFloat("Jump", _firstPersonController.m_MoveDir.y);
+            }
+
+            if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
             {
                 _firstPersonController.SetJumpSpeed(0);
-                _firstPersonController.SetRunSpeed(_firstPersonController.GetWalkSpeed());
+                _firstPersonController.SetRunSpeed(_walkSpeed);
+
             }
             else
             {
                 _firstPersonController.SetJumpSpeed(_jumpSpeed);
                 _firstPersonController.SetRunSpeed(_runSpeed);
             }
+        }
 
-
-        _stamina += staminaRecover * Time.deltaTime;
         _stamina = Mathf.Clamp(_stamina, 0, staminaMax);
-
         var staminaScale = _staminaImage.transform.localScale;
         staminaScale.x = 1f;
         staminaScale.y = _stamina / staminaMax;
@@ -307,7 +326,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
         if (_weapon.GetState() == Weapon.WeaponState.Charging)
         {
-            _throwDistance += (throwWindupSpeed * Time.deltaTime);
+            _throwDistance += (_throwWindupSpeed * Time.deltaTime);
             _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
 
             
@@ -368,7 +387,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
     public void Hit(float damage)
     {
-        //_currentHealth -= damage;
+        _currentHealth -= damage;
         if (_currentHealth > startingHealth * .75)
         {
             _healthImage.color = Color.green;
