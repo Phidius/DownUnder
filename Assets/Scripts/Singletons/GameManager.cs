@@ -5,7 +5,9 @@ public class GameManager : MonoBehaviour
 {
     public bool showOptions = false;
     public bool showHasDied = false;
+    public AudioClip winningSound;
 
+    private AudioSource _audioSource;
     private GameObject HUDisplay;
     private PlayerController _player;
     private GameObject _optionsPanel;
@@ -14,6 +16,8 @@ public class GameManager : MonoBehaviour
     private List<string> _beenPlayed = new List<string>();
     private GameDifficulty _difficulty = GameDifficulty.Easy;
     private bool _gamePaused;
+    private bool _levelFinished = false;
+    private int _targetFrameRate;
 
     private static GameManager _gameManager;
     public static GameManager Instance {  get { return _gameManager; } }
@@ -21,6 +25,13 @@ public class GameManager : MonoBehaviour
     public enum GameDifficulty { Easy, Normal, Hard }
     private void Awake()
     {
+        _targetFrameRate = 300;
+        if (GvrViewer.Instance)
+        {
+            _targetFrameRate = 20;
+        }
+
+        Application.targetFrameRate = _targetFrameRate;
         if (_gameManager != null && _gameManager != this)
         {
             Destroy(this.gameObject);
@@ -29,6 +40,8 @@ public class GameManager : MonoBehaviour
         {
             _gameManager = this;
         }
+
+        _audioSource = GetComponent<AudioSource>();
     }
     // Use this for initialization
     void Start()
@@ -171,5 +184,22 @@ public class GameManager : MonoBehaviour
     public bool IsGamePaused()
     {
         return _gamePaused;
+    }
+
+    public void FinishLevel(PlayerController playerController)
+    {
+        if (!_levelFinished && playerController != null)
+        {
+            _audioSource.clip = winningSound;
+            _audioSource.loop = false;
+            _audioSource.volume = 0.9f;
+            _audioSource.Play();
+            playerController.FinishLevel();
+        }
+    }
+
+    public int TargetFrameRate()
+    {
+        return _targetFrameRate;
     }
 }

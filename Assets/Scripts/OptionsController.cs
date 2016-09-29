@@ -7,6 +7,7 @@ public class OptionsController : MenuController
 {
     private Text _textQuality;
     private Text _textDifficulty;
+    private Text _textFPSCap;
     private Text _textExit;
 
     public string[] _qualitySettings;
@@ -33,6 +34,10 @@ public class OptionsController : MenuController
             if (component.name == "Difficulty")
             {
                 _textDifficulty = component;
+            }
+            if (component.name == "FPSCap")
+            {
+                _textFPSCap = component;
             }
             if (component.name == "Exit")
             {
@@ -136,5 +141,6 @@ public class OptionsController : MenuController
     {
         _textQuality.text = _qualitySettings[QualitySettings.GetQualityLevel()];
         _textDifficulty.text = GameManager.Instance.GetDifficulty().ToString();
+        _textFPSCap.text = GameManager.Instance.TargetFrameRate().ToString();
     }
 }
