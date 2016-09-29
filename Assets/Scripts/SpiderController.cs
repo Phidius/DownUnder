@@ -3,7 +3,6 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Animator))]
-//[RequireComponent(typeof(Rigidbody))] // Required to detect collisions
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(AudioSource))]
@@ -171,6 +170,21 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             {
                 agent.Resume();
                 _animator.speed = 1f;
+                _navDelayMax = .5f;
+
+                if (distance < _spiderSenseRadius * 3)
+                {
+                    _navDelayMax = 1f;
+                }
+                else if (distance < _spiderSenseRadius*6)
+                {
+                    _navDelayMax = 2f;
+                }
+                else if (distance < _spiderSenseRadius*10)
+                {
+                    _navDelayMax = 3f;
+                }
+
                 if (_navDelay > _navDelayMax)
                 {
                     _navDelay = 0f;

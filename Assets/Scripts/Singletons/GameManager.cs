@@ -5,7 +5,9 @@ public class GameManager : MonoBehaviour
 {
     public bool showOptions = false;
     public bool showHasDied = false;
+    public AudioClip gameMusic;
     public AudioClip winningSound;
+    public AudioClip dieingSound;
 
     private AudioSource _audioSource;
     private GameObject HUDisplay;
@@ -78,6 +80,7 @@ public class GameManager : MonoBehaviour
         HUDisplay.transform.localScale = new Vector3(1f, 1f, 1f);
         HUDisplay.transform.localPosition = new Vector3(0f, 0f, 0f);
         HUDisplay.transform.localRotation = Quaternion.identity;
+        print("AudioSource is null? " + (_audioSource == null));
     }
 
     void Update()
@@ -90,7 +93,22 @@ public class GameManager : MonoBehaviour
 
         if (showHasDied)
         {
+            if (_audioSource.clip.name != dieingSound.name)
+            {
+                _audioSource.Stop();
+                _audioSource.clip = dieingSound;
+                _audioSource.Play();
+            }
             showOptions = false;
+        }
+        else
+        {
+            if (_audioSource.clip.name != gameMusic.name)
+            {
+                _audioSource.Stop();
+                _audioSource.clip = gameMusic;
+                _audioSource.Play();
+            }
         }
         
         if (showOptions != _optionsPanel.activeInHierarchy)
