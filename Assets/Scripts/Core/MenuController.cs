@@ -17,9 +17,9 @@ public abstract class MenuController : MonoBehaviour {
 
     protected virtual void Update()
     {
-        if (CrossPlatformInputManager.GetAxisRaw("Vertical") != 0)
+        if (CrossPlatformInputManager.GetAxisRaw("MenuNavigation") != 0f)
         {
-            var direction = (int) CrossPlatformInputManager.GetAxisRaw("Vertical") * -1; // Previous actions are up, not down
+            var direction = (int) CrossPlatformInputManager.GetAxisRaw("MenuNavigation");
             if (verticalInUse == false)
             {
                 verticalInUse = true;
@@ -39,11 +39,11 @@ public abstract class MenuController : MonoBehaviour {
                 ActionChanged();
             }
         }
-        if (CrossPlatformInputManager.GetAxisRaw("Vertical") == 0)
+        if (CrossPlatformInputManager.GetAxisRaw("MenuNavigation") == 0f)
         {
             verticalInUse = false;
         }
-        if (CrossPlatformInputManager.GetAxisRaw("Horizontal") != 0)
+        if (CrossPlatformInputManager.GetAxisRaw("MenuActivation") != 0f)
         {
             if (horizontalInUse == false)
             {
@@ -51,7 +51,7 @@ public abstract class MenuController : MonoBehaviour {
                 UseAction();
             }
         }
-        if (CrossPlatformInputManager.GetAxisRaw("Horizontal") == 0)
+        if (CrossPlatformInputManager.GetAxisRaw("MenuActivation") == 0f)
         {
             horizontalInUse = false;
         }
