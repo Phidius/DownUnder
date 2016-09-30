@@ -116,6 +116,8 @@ public class GvrHead : MonoBehaviour {
             eulerRot.x = 0f;
             eulerRot.z = 0f;
             eulerRot.y += alternateRotationObject.rotationOffset;
+            var headRot = rot.eulerAngles;
+            headRot.y = 0f;
             //var transformToRotate = transform;
             //if (alternateRotationObject)
             //{
@@ -135,6 +137,7 @@ public class GvrHead : MonoBehaviour {
             //{
                 //transform.rotation = target.rotation * rot;
                 //transformToRotate.rotation = target.rotation * rot;
+                Camera.main.transform.Rotate(headRot);
                 alternateRotationObject.transform.Rotate(eulerRot);
             //}
         }
