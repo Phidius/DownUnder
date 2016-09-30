@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
         _targetFrameRate = 300;
         if (GvrViewer.Instance)
         {
-            _targetFrameRate = 20;
+            _targetFrameRate = 30;
         }
 
         Application.targetFrameRate = _targetFrameRate;
@@ -80,7 +80,6 @@ public class GameManager : MonoBehaviour
         HUDisplay.transform.localScale = new Vector3(1f, 1f, 1f);
         HUDisplay.transform.localPosition = new Vector3(0f, 0f, 0f);
         HUDisplay.transform.localRotation = Quaternion.identity;
-        print("AudioSource is null? " + (_audioSource == null));
     }
 
     void Update()
@@ -103,7 +102,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            if (_audioSource.clip.name != gameMusic.name)
+            if (_audioSource.clip != null && _audioSource.clip.name != gameMusic.name)
             {
                 _audioSource.Stop();
                 _audioSource.clip = gameMusic;

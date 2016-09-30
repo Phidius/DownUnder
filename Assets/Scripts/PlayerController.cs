@@ -6,7 +6,7 @@ using UnityStandardAssets.Characters.FirstPerson;
 using UnityStandardAssets.CrossPlatformInput;
 
 [RequireComponent(typeof(AudioSource))]
-//[RequireComponent(typeof(FirstPersonController))]
+[RequireComponent(typeof(FirstPersonController))]
 public class PlayerController : MonoBehaviour, IHitable
 {
     public enum PlayerState
@@ -59,20 +59,17 @@ public class PlayerController : MonoBehaviour, IHitable
     {
         _firstPerspective = transform.FindChild("First");
         _thirdPerspective = transform.FindChild("Third");
+        _startingPosition = transform.position;
 
-        //var avatar = transform.FindChild("avatar");
-        //_animator = avatar.GetComponentInChildren<Animator>();
         _animator = GetComponent<Animator>();
 	    _audioSource = GetComponent<AudioSource>();
         _reticle = GetComponent<VRReticle>();
         
         _firstPersonController = GetComponent<FirstPersonController>();
-        if (_firstPersonController)
-        {
-            _jumpSpeed = _firstPersonController.GetJumpSpeed();
-            _runSpeed = _firstPersonController.GetRunSpeed();
-            _walkSpeed = _firstPersonController.GetWalkSpeed();
-        }
+
+        _jumpSpeed = _firstPersonController.GetJumpSpeed();
+        _runSpeed = _firstPersonController.GetRunSpeed();
+        _walkSpeed = _firstPersonController.GetWalkSpeed();
 
         _animator.applyRootMotion = false;
         if (_animator.layerCount >= 2)
@@ -80,8 +77,8 @@ public class PlayerController : MonoBehaviour, IHitable
             _animator.SetLayerWeight(1, 1);
         }
 
-        _startingPosition = transform.position;
-	    _stamina = staminaMax;
+        _currentHealth = startingHealth;
+        _stamina = staminaMax;
         
         _weapon = GetComponentInChildren<Weapon>();
         if (_weapon != null)
@@ -94,7 +91,6 @@ public class PlayerController : MonoBehaviour, IHitable
            
         }
         
-        //_dotScale = dot.transform.localScale;
         foreach (var component in Camera.main.GetComponentsInChildren<Text>())
         {
             if (component.name == "Message")
@@ -102,6 +98,7 @@ public class PlayerController : MonoBehaviour, IHitable
                 _message = component;
             }
         }
+
         foreach (var component in Camera.main.GetComponentsInChildren<Image>())
 	    {
             if (component.name == "Health")
@@ -117,13 +114,6 @@ public class PlayerController : MonoBehaviour, IHitable
                 _staminaImage = component;
             }
         }
-
-        _currentHealth = startingHealth;
-
-        var throwScale = _throwImage.transform.localScale;
-        throwScale.x = _throwDistance / maxThrowDistance;
-        _throwImage.transform.localScale = throwScale;
-
     }
 
     void GetIteractables()
@@ -183,6 +173,8 @@ public class PlayerController : MonoBehaviour, IHitable
             return;
         }
 
+        GetIteractables();
+
         var weaponDistance = Vector3.Distance(transform.position, _weapon.transform.position);
 
         if (weaponDistance < 10f && _weapon.GetState() == Weapon.WeaponState.ThrowReturn && _isCatching == false)
@@ -190,118 +182,28 @@ public class PlayerController : MonoBehaviour, IHitable
             _animator.SetBool("Catch", true);
             _isCatching = true;
         }
-
-        GetIteractables();
-        //Change back to prvious color.
-        //Set / recharge the stamina
+        
         if (CrossPlatformInputManager.GetButtonDown("Jump"))
         {
             _isJumping = true;
             _stamina -= _jumpSpeed;
         }
-
+        
         if (CrossPlatformInputManager.GetButtonDown("Crouch"))
         {
-            _isCrouching = !_isCrouching; // Toggle the state
-            _animator.SetBool("Crouch", _isCrouching);
+            ToggleCrouching();
         }
 
-        var scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll != 0)
+        if (!_isCrouching)
         {
-            var cameraPosition = cameraTransform.localPosition;// Camera.main.transform.localPosition;
-            cameraPosition.z += scroll;
-            cameraPosition.z = Mathf.Clamp(cameraPosition.z, -10f, 0f);
-
-            //z = 0 is the furthest forward... z = -1 is the limit to avoid seeing the avatar mesh
-            if (cameraPosition.z > -1f && cameraTransform.parent.gameObject.name == "Third") // Camera.main.transform.parent.gameObject.name == "Third")
-            {
-                cameraTransform.parent = _firstPerspective;// Camera.main.transform.parent = _firstPerspective;
-                cameraPosition.z = 0.0f;
-            }
-            else
-            if (cameraPosition.z < 0f && cameraTransform.parent.gameObject.name == "First") //Camera.main.transform.parent.gameObject.name == "First")
-            {
-                cameraTransform.parent = _thirdPerspective; //Camera.main.transform.parent = _thirdPerspective;
-                cameraPosition.z = -1.1f;
-            }
-            cameraTransform.localPosition = cameraPosition; //Camera.main.transform.localPosition = cameraPosition;
-        }
-        //if (_firstPersonController)
-        //{
-        var forwardSpeed = 0f;
-        if (_firstPersonController.m_MoveDir.y == 0f)
-        {
-            _isJumping = false;
-            _animator.SetBool("OnGround", true);
-        }
-
-        if (_firstPersonController.m_MoveDir.y == -1f)
-        {
-            if (_firstPersonController.desiredMove.magnitude > 0.0f)
-            {
-                if (_firstPersonController.IsRunning() && _firstPersonController.GetRunSpeed() != _firstPersonController.GetWalkSpeed())
-                {
-                    _stamina -= _runSpeed * Time.deltaTime;
-                    forwardSpeed = 1f;
-                }
-                else
-                {
-                    forwardSpeed = 0.5f;
-                }
-            }
-
-            _animator.SetFloat("Forward", forwardSpeed, 0.1f, Time.deltaTime);
-        }
-
-        if (_isCrouching)
-        {
-            _firstPersonController.SetJumpSpeed(0);
-            _firstPersonController.SetRunSpeed(crouchSpeed);
-            _firstPersonController.SetWalkSpeed(crouchSpeed);
-        }
-        else
-        {
-            _firstPersonController.SetWalkSpeed(_walkSpeed);
             _stamina += staminaRecover * Time.deltaTime;
-
-            if (_isJumping)
-            {
-                _animator.SetBool("OnGround", false);
-                _animator.SetFloat("Jump", _firstPersonController.m_MoveDir.y);
-            }
-
-            if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
-            {
-                _firstPersonController.SetJumpSpeed(0);
-                _firstPersonController.SetRunSpeed(_walkSpeed);
-
-            }
-            else
-            {
-                _firstPersonController.SetJumpSpeed(_jumpSpeed);
-                _firstPersonController.SetRunSpeed(_runSpeed);
-            }
         }
 
-        _stamina = Mathf.Clamp(_stamina, 0, staminaMax);
-        var staminaScale = _staminaImage.transform.localScale;
-        staminaScale.x = 1f;
-        staminaScale.y = _stamina / staminaMax;
+        MovePerspective();
 
-        _staminaImage.transform.localScale = staminaScale;
+        MovePlayer();
 
-
-        if (CrossPlatformInputManager.GetButtonDown("Interact"))
-        {
-            if (_interactableGameObject)
-            {
-                foreach (Interactable interactable in _interactableGameObject.GetComponents(typeof(Interactable)))
-                {
-                    interactable.Interact(this);
-                }
-            }
-        }
+        Interact(CrossPlatformInputManager.GetButtonDown("Interact"));
 
         if (_weapon.GetState() == Weapon.WeaponState.Idle)
         {
@@ -329,9 +231,7 @@ public class PlayerController : MonoBehaviour, IHitable
             _throwDistance += (_throwWindupSpeed * Time.deltaTime);
             _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
 
-            
-
-            if (_throwDistance > maxThrowDistance * .1f)
+            if (_throwDistance > maxThrowDistance * .2f)
             {
                 _throwImage.color = Color.green;
             }
@@ -340,22 +240,156 @@ public class PlayerController : MonoBehaviour, IHitable
                 _throwImage.color = Color.grey;
             }
         }
+
+        UpdateHUDisplay();
+    }
+
+    private void UpdateHUDisplay()
+    {
+        _stamina = Mathf.Clamp(_stamina, 0, staminaMax);
+        var staminaScale = _staminaImage.transform.localScale;
+        staminaScale.x = 1f;
+        staminaScale.y = _stamina/staminaMax;
+
+        _staminaImage.transform.localScale = staminaScale;
+
         var throwScale = _throwImage.transform.localScale;
         throwScale.x = 1f;
-        throwScale.y = _throwDistance / maxThrowDistance;
+        throwScale.y = _throwDistance/maxThrowDistance;
 
         _throwImage.transform.localScale = throwScale;
     }
 
+    private void MovePlayer()
+    {
+        var forwardSpeed = 0f;
+        if (_firstPersonController.m_MoveDir.y > 0f)
+        {
+            _isJumping = true;
+            _animator.SetBool("OnGround", false);
+        }
+        if (_firstPersonController.m_MoveDir.y == 0f)
+        {
+            _isJumping = false;
+            _animator.SetBool("OnGround", true);
+        }
+
+        if (_firstPersonController.m_MoveDir.y == -1f)
+        {
+            if (_firstPersonController.desiredMove.magnitude > 0.0f)
+            {
+                if (_firstPersonController.IsRunning() &&
+                    _firstPersonController.GetRunSpeed() != _firstPersonController.GetWalkSpeed())
+                {
+                    _stamina -= _runSpeed*Time.deltaTime;
+                    forwardSpeed = 1f;
+                }
+                else
+                {
+                    forwardSpeed = 0.5f;
+                }
+            }
+
+            _animator.SetFloat("Forward", forwardSpeed, 0.1f, Time.deltaTime);
+        }
+        _animator.SetFloat("Jump", _firstPersonController.m_MoveDir.y);
+    }
+
+    private void ToggleCrouching()
+    {
+        _isCrouching = !_isCrouching; // Toggle the state
+        if (_isCrouching)
+        {
+            _firstPersonController.SetJumpSpeed(0);
+            _firstPersonController.SetRunSpeed(crouchSpeed);
+            _firstPersonController.SetWalkSpeed(crouchSpeed);
+        }
+        else
+        {
+            _firstPersonController.SetWalkSpeed(_walkSpeed);
+
+            if (_isJumping)
+            {
+                _animator.SetBool("OnGround", false);
+                _animator.SetFloat("Jump", _firstPersonController.m_MoveDir.y);
+            }
+
+            if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
+            {
+                _firstPersonController.SetJumpSpeed(0);
+                _firstPersonController.SetRunSpeed(_walkSpeed);
+            }
+            else
+            {
+                _firstPersonController.SetJumpSpeed(_jumpSpeed);
+                _firstPersonController.SetRunSpeed(_runSpeed);
+            }
+        }
+        _animator.SetBool("Crouch", _isCrouching);
+    }
+
+    private void Interact(bool clicked)
+    {
+        if (clicked)
+        {
+            if (_interactableGameObject)
+            {
+                foreach (Interactable interactable in _interactableGameObject.GetComponents(typeof (Interactable)))
+                {
+                    interactable.Interact(this);
+                }
+            }
+        }
+    }
+
+    private void MovePerspective()
+    {
+        var zoomCamera = Input.GetAxis("ZoomCamera");
+        if (zoomCamera != 0)
+        {
+            var cameraPosition = cameraTransform.localPosition; // Camera.main.transform.localPosition;
+            cameraPosition.z += zoomCamera;
+            cameraPosition.z = Mathf.Clamp(cameraPosition.z, -10f, 0f);
+
+            //z = 0 is the furthest forward... z = -1 is the limit to avoid seeing the avatar mesh
+            if (cameraPosition.z > -1f && cameraTransform.parent.gameObject.name == "Third")
+                // Camera.main.transform.parent.gameObject.name == "Third")
+            {
+                cameraTransform.parent = _firstPerspective; // Camera.main.transform.parent = _firstPerspective;
+                cameraPosition.z = 0.0f;
+            }
+            else if (cameraPosition.z < 0f && cameraTransform.parent.gameObject.name == "First")
+                //Camera.main.transform.parent.gameObject.name == "First")
+            {
+                cameraTransform.parent = _thirdPerspective; //Camera.main.transform.parent = _thirdPerspective;
+                cameraPosition.z = -1.1f;
+            }
+            cameraTransform.localPosition = cameraPosition; //Camera.main.transform.localPosition = cameraPosition;
+        }
+
+        //if (cameraTransform.parent == _thirdPerspective)
+        //{
+        //    var rotateCamera = Input.GetAxis("RotateController");
+        //    if (rotateCamera != 0f)
+        //    {
+        //        _firstPersonController.rotationOffset += (rotateCamera*3);
+        //    }
+        //}
+        var rotateCamera = Input.GetAxis("RotateController");
+        if (rotateCamera != 0f)
+        {
+            _firstPersonController.rotationOffset += (rotateCamera * 3);
+        }
+
+    }
+
     public void ReleaseBoomerang()
     {
-        _animator.SetBool("Windup", false);
-        _animator.SetBool("Swing", false);
-        if (_throwDistance > maxThrowDistance*.1f) // TODO: base this on the player's collider, perhaps?
+        if (_throwDistance > maxThrowDistance*.2f) // TODO: base this on the player's collider, perhaps?
         {
             var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());
             var fractionThrow = (_throwDistance < targetDistance) ? _throwDistance/targetDistance : 1f;
-            _weapon.Throw(Vector3.Lerp(_weapon.transform.position, _reticle.GetAimPoint(), fractionThrow));
+            _weapon.Throw(Vector3.Lerp(_weapon.transform.parent.position, _reticle.GetAimPoint(), fractionThrow));
         }
         else
         {
@@ -363,6 +397,8 @@ public class PlayerController : MonoBehaviour, IHitable
         }
 
         _throwDistance = 0f;
+        _animator.SetBool("Windup", false);
+        _animator.SetBool("Swing", false);
     }
 
     public void HasCaught()

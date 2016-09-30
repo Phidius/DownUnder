@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using UnityEngine;
+using UnityStandardAssets.Characters.FirstPerson;
 
 /// This script provides head tracking support for a camera.
 ///
@@ -53,7 +54,7 @@ public class GvrHead : MonoBehaviour {
   public Transform target;
 
 
-    public Transform alternateRotationObject;
+    public FirstPersonController alternateRotationObject;
     /// If specified, this Transform will be rotated instead of the GvrHead transform
     
   /// Determines whether the head tracking is applied during `LateUpdate()` or
@@ -110,25 +111,33 @@ public class GvrHead : MonoBehaviour {
         GvrViewer.Instance.UpdateState();
 
         if (trackRotation) {
-            var transformToRotate = transform;
-            if (alternateRotationObject)
-            {
-                transformToRotate = alternateRotationObject;
-            }
-
             var rot = GvrViewer.Instance.HeadPose.Orientation;
+            var eulerRot = rot.eulerAngles;
+            eulerRot.x = 0f;
+            eulerRot.z = 0f;
+            eulerRot.y += alternateRotationObject.rotationOffset;
+            //var transformToRotate = transform;
+            //if (alternateRotationObject)
+            //{
+            //    transformToRotate = alternateRotationObject.transform;
+            //    var eulerRot = rot.eulerAngles;
+            //    eulerRot.x = 0f;
+            //    eulerRot.z = 0f;
+            //    rot = Quaternion.Euler(eulerRot);
+            //}
 
-            if (target == null)
-            {
-                //transform.localRotation = rot;
-                transformToRotate.localRotation = rot;
-            }
-            else
-            {
+            //if (target == null)
+            //{
+            //    //transform.localRotation = rot;
+            //    transformToRotate.localRotation = rot;
+            //}
+            //else
+            //{
                 //transform.rotation = target.rotation * rot;
-                transformToRotate.rotation = target.rotation * rot;
-            }
-    }
+                //transformToRotate.rotation = target.rotation * rot;
+                alternateRotationObject.transform.Rotate(eulerRot);
+            //}
+        }
 
     if (trackPosition) {
       Vector3 pos = GvrViewer.Instance.HeadPose.Position;

@@ -87,7 +87,6 @@ public abstract class Weapon : MonoBehaviour {
         //var position = transform.root.position;
         _parent.parent = null;
         _parent.rotation = Quaternion.identity;
-        //_parent.position = position;
 
         _target = target;
         _state = WeaponState.ThrowAway;
