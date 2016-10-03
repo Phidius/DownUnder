@@ -227,7 +227,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     public void DoDamage()
     {
         var distance = Vector3.Distance(transform.position, _target.position);
-        if (distance <= agent.stoppingDistance)
+        if (distance <= agent.stoppingDistance * 1.5f)
         {
             var hitable = (IHitable)_target.GetComponent(typeof(IHitable));
             if (hitable != null)

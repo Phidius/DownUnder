@@ -92,17 +92,18 @@ public class GameManager : MonoBehaviour
 
         if (showHasDied)
         {
-            if (_audioSource.clip.name != dieingSound.name)
+            if (_audioSource.clip == null || _audioSource.clip.name != dieingSound.name)
             {
                 _audioSource.Stop();
                 _audioSource.clip = dieingSound;
                 _audioSource.Play();
             }
+
             showOptions = false;
         }
         else
         {
-            if (_audioSource.clip != null && _audioSource.clip.name != gameMusic.name)
+            if (_audioSource.clip == null || _audioSource.clip.name != gameMusic.name)
             {
                 _audioSource.Stop();
                 _audioSource.clip = gameMusic;

@@ -191,14 +191,33 @@ public class PlayerController : MonoBehaviour, IHitable
         
         if (CrossPlatformInputManager.GetButtonDown("Crouch"))
         {
-            ToggleCrouching();
+            _isCrouching = !_isCrouching; // Toggle the state
+            _animator.SetBool("Crouch", _isCrouching);
+        }
+
+        if (_isCrouching)
+        {
+            _firstPersonController.SetJumpSpeed(0);
+            _firstPersonController.SetRunSpeed(crouchSpeed);
+            _firstPersonController.SetWalkSpeed(crouchSpeed);
+        }
+        else if(_stamina <= _jumpSpeed && _stamina <= _runSpeed)
+        {
+            _firstPersonController.SetJumpSpeed(0);
+            _firstPersonController.SetRunSpeed(_walkSpeed);
+        }
+        else
+        {
+            _firstPersonController.SetJumpSpeed(_jumpSpeed);
+            _firstPersonController.SetRunSpeed(_runSpeed);
+            _firstPersonController.SetWalkSpeed(_walkSpeed);
         }
 
         if (!_isCrouching)
         {
             _stamina += staminaRecover * Time.deltaTime;
         }
-
+        
         MovePerspective();
 
         MovePlayer();
@@ -293,39 +312,6 @@ public class PlayerController : MonoBehaviour, IHitable
             _animator.SetFloat("Forward", forwardSpeed, 0.1f, Time.deltaTime);
         }
         _animator.SetFloat("Jump", _firstPersonController.m_MoveDir.y);
-    }
-
-    private void ToggleCrouching()
-    {
-        _isCrouching = !_isCrouching; // Toggle the state
-        if (_isCrouching)
-        {
-            _firstPersonController.SetJumpSpeed(0);
-            _firstPersonController.SetRunSpeed(crouchSpeed);
-            _firstPersonController.SetWalkSpeed(crouchSpeed);
-        }
-        else
-        {
-            _firstPersonController.SetWalkSpeed(_walkSpeed);
-
-            if (_isJumping)
-            {
-                _animator.SetBool("OnGround", false);
-                _animator.SetFloat("Jump", _firstPersonController.m_MoveDir.y);
-            }
-
-            if (_stamina <= _jumpSpeed && _stamina <= _runSpeed)
-            {
-                _firstPersonController.SetJumpSpeed(0);
-                _firstPersonController.SetRunSpeed(_walkSpeed);
-            }
-            else
-            {
-                _firstPersonController.SetJumpSpeed(_jumpSpeed);
-                _firstPersonController.SetRunSpeed(_runSpeed);
-            }
-        }
-        _animator.SetBool("Crouch", _isCrouching);
     }
 
     private void Interact(bool clicked)
