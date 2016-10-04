@@ -60,6 +60,7 @@ public class TrapdoorController : MonoBehaviour, IHitable
             _currentHealth = healthRatio*maxHealth;
             _currentSpawns = initialSpawnsMultiplier*(_gameDifficulty + 1);
             _currentDelay = (initialSpawnDelay / (_gameDifficulty + 1));
+
         }
 
         if (_currentHealth <= 0)

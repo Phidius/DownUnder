@@ -43,7 +43,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     private Quaternion lookRotation;
     private InteractionSpider _interactionSpider;
     public float _spiderSenseRadius = 5.0f;
-    private int _gameDifficulty = -1;
+    public int _gameDifficulty = -1;
     private ParticleSystem _webShooter;
 
     // Use this for initialization
@@ -63,7 +63,6 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
             print(_webShooter);
         }
         
-        
         // Optional components
         _interactionSpider = (InteractionSpider)GetComponent(typeof(Interactable));
 
@@ -74,13 +73,10 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
         {
             Debug.Log("This level is missing an EndFight!");
         }
-        _gameDifficulty = (int)(GameManager.Instance.GetDifficulty());
-        _currentHealth = initialHealthMultiplier * (_gameDifficulty + 1);
-        _runSpeed = initialRunSpeedMultiplier * (_gameDifficulty + 1);
-        _damage = initialDamageMultiplier * (_gameDifficulty + 1);
 
         agent.updateRotation = false;
         agent.updatePosition = true;
+        
 
         if (spiderSense)
         {
