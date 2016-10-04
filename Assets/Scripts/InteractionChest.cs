@@ -41,11 +41,11 @@ public class InteractionChest : Interactable
             var collider = obj.GetComponentInChildren<Collider>();
             if (collider != null)
             {
-                print(collider.bounds.size);
+                print(obj.name + " collider size: " + collider.bounds.size);
             }
-            var rndPosWithin = new Vector3(Random.Range(-.38f, .38f), 0.1f, Random.Range(-1.3f, 1.3f));
+            var rndPosWithin = new Vector3(Random.Range(-.38f, .38f), Random.Range(-1.3f, 1.3f), 0.1f);
 
-            obj.transform.parent = container.transform;
+            obj.transform.SetParent(container.transform, false);
             obj.transform.localPosition = rndPosWithin;
         }
         _isOpened = true;
