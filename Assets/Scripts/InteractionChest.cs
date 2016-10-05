@@ -38,12 +38,12 @@ public class InteractionChest : Interactable
                     weapon.gameObject.layer = LayerMask.NameToLayer("Default");
                 }
             }
-            var collider = obj.GetComponentInChildren<Collider>();
-            if (collider != null)
-            {
-                print(obj.name + " collider size: " + collider.bounds.size);
-            }
-            var rndPosWithin = new Vector3(Random.Range(-.38f, .38f), Random.Range(-1.3f, 1.3f), 0.1f);
+            //var collider = obj.GetComponentInChildren<Collider>();
+            //if (collider != null)
+            //{
+            //    print(obj.name + " collider size: " + collider.bounds.size);
+            //}
+            var rndPosWithin = new Vector3(Random.Range(-.19f, .19f), Random.Range(-.65f, .65f), 0.1f);
 
             obj.transform.SetParent(container.transform, false);
             obj.transform.localPosition = rndPosWithin;

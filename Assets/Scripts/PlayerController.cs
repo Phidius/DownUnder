@@ -169,7 +169,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
         if (_currentHealth <= 0)
         {
-            GameManager.Instance.showHasDied = true;
+            GameManager.Instance.gameState = GameManager.GameState.Dead;
             return;
         }
 

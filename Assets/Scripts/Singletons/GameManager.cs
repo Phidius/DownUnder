@@ -3,17 +3,19 @@ using UnityStandardAssets.CrossPlatformInput;
 using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
-    public bool showOptions = false;
-    public bool showHasDied = false;
+    public enum GameState { Play, Options, Dead, Inventory }
+
     public AudioClip gameMusic;
     public AudioClip winningSound;
     public AudioClip dieingSound;
+    public GameState gameState = GameState.Play;
 
     private AudioSource _audioSource;
     private GameObject HUDisplay;
     private PlayerController _player;
     private GameObject _optionsPanel;
     private GameObject _hasDiedPanel;
+    private GameObject _inventoryPanel;
     private bool _lockControllerState = false;
     private List<string> _beenPlayed = new List<string>();
     private GameDifficulty _difficulty = GameDifficulty.Easy;
@@ -53,6 +55,7 @@ public class GameManager : MonoBehaviour
         _player =(PlayerController) GameObject.FindObjectOfType<PlayerController>();
         _optionsPanel = GameObject.Find("Options");
         _hasDiedPanel = GameObject.Find("HasDied");
+        _inventoryPanel = GameObject.Find("Inventory");
 
         if (_player == null)
         {
@@ -74,6 +77,10 @@ public class GameManager : MonoBehaviour
         {
             throw new System.NotImplementedException("Unable to locate the transform \"HasDied\" inside the \"HUDisplay\"");
         }
+        if (_hasDiedPanel == null)
+        {
+            throw new System.NotImplementedException("Unable to locate the transform \"Inventory\" inside the \"HUDisplay\"");
+        }
 
         HUDisplay.transform.parent = displayHolder.transform;
 
@@ -84,13 +91,34 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        
+
         if (CrossPlatformInputManager.GetButtonDown("Options"))
         {
-            showOptions = !showOptions;
+            if (gameState == GameState.Options)
+            {
+                gameState = GameState.Play;
+            }
+            else
+            {
+                gameState = GameState.Options;
+            }
+            //showOptions = !showOptions;
         }
 
-        if (showHasDied)
+        if (CrossPlatformInputManager.GetButtonDown("Inventory"))
+        {
+            if (gameState == GameState.Inventory)
+            {
+                gameState = GameState.Play;
+            }
+            else
+            {
+                gameState = GameState.Inventory;
+            }
+        }
+
+        //if (showHasDied)
+        if (gameState == GameState.Dead)
         {
             if (_audioSource.clip == null || _audioSource.clip.name != dieingSound.name)
             {
@@ -98,8 +126,6 @@ public class GameManager : MonoBehaviour
                 _audioSource.clip = dieingSound;
                 _audioSource.Play();
             }
-
-            showOptions = false;
         }
         else
         {
@@ -111,16 +137,50 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        if (showOptions != _optionsPanel.activeInHierarchy)
+        if (gameState == GameState.Options)
         {
-            _optionsPanel.SetActive(showOptions);
+            if (!_optionsPanel.activeInHierarchy)
+            {
+                _hasDiedPanel.SetActive(false);
+                _inventoryPanel.SetActive(false);
+            }
+            _optionsPanel.SetActive(true);
         }
-        if (showHasDied != _hasDiedPanel.activeInHierarchy)
+        if (gameState == GameState.Dead)
         {
-            _hasDiedPanel.SetActive(showHasDied);
+            if (!_hasDiedPanel.activeInHierarchy)
+            {
+                _optionsPanel.SetActive(false);
+                _inventoryPanel.SetActive(false);
+            }
+            _hasDiedPanel.SetActive(true);
+        }
+        if (gameState == GameState.Inventory)
+        {
+            if (!_inventoryPanel.activeInHierarchy)
+            {
+                _hasDiedPanel.SetActive(false);
+                _optionsPanel.SetActive(false);
+            }
+            _inventoryPanel.SetActive(true);
+        }
+        if (gameState == GameState.Play)
+        {
+            if (_optionsPanel.activeInHierarchy)
+            {
+                _optionsPanel.SetActive(false);
+            }
+            if (_hasDiedPanel.activeInHierarchy)
+            {
+                _hasDiedPanel.SetActive(false);
+            }
+            if (_inventoryPanel.activeInHierarchy)
+            {
+                _inventoryPanel.SetActive(false);
+            }
         }
 
-        var lockController = showOptions || showHasDied;
+        var lockController = gameState == GameState.Options || gameState == GameState.Dead;
 
         if (lockController != _lockControllerState) // Change the state
         {
@@ -166,10 +226,7 @@ public class GameManager : MonoBehaviour
         _player.Hit(0);
         _player.transform.position = _player._startingPosition;
         _player.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-        if (showHasDied)
-        {
-            showHasDied = false;
-        }
+        gameState = GameState.Play;
     }
 
     public bool HasBeenPlayed(string name)
