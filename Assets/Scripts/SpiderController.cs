@@ -285,7 +285,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
 
     public void Hit(float damage)
     {
-        if (_state == SpiderState.Dying || _state == SpiderState.Dead)
+        if (_state == SpiderState.Dying || _state == SpiderState.Dead || _state == SpiderState.Idle)
         {
             return; // No use beating a dead horse
         }

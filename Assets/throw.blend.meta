@@ -314,7 +314,7 @@ ModelImporter:
       name: Windup
       takeName: Default Take
       firstFrame: 0
-      lastFrame: 30
+      lastFrame: 27
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -461,7 +461,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Swing
       takeName: Default Take
-      firstFrame: 31
+      firstFrame: 28
       lastFrame: 49
       wrapMode: 0
       orientationOffsetY: 0

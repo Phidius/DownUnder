@@ -174,14 +174,6 @@ public class PlayerController : MonoBehaviour, IHitable
         }
 
         GetIteractables();
-
-        var weaponDistance = Vector3.Distance(transform.position, _weapon.transform.position);
-
-        if (weaponDistance < 10f && _weapon.GetState() == Weapon.WeaponState.ThrowReturn && _isCatching == false)
-        {
-            _animator.SetBool("Catch", true);
-            _isCatching = true;
-        }
         
         if (CrossPlatformInputManager.GetButtonDown("Jump"))
         {
@@ -223,6 +215,15 @@ public class PlayerController : MonoBehaviour, IHitable
         MovePlayer();
 
         Interact(CrossPlatformInputManager.GetButtonDown("Interact"));
+
+        // This should be handled by the _weapon.PleaseCatch method
+        var weaponDistance = Vector3.Distance(transform.position, _weapon.transform.position);
+
+        if (weaponDistance < 10f && _weapon.GetState() == Weapon.WeaponState.ThrowReturn && _isCatching == false)
+        {
+            _animator.SetBool("Catch", true);
+            _isCatching = true;
+        }
 
         if (_weapon.GetState() == Weapon.WeaponState.Idle)
         {
@@ -379,6 +380,7 @@ public class PlayerController : MonoBehaviour, IHitable
         }
         else
         {
+            //print("PlayerController");
             _weapon.ResetState();
         }
 

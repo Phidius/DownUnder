@@ -265,10 +265,6 @@ public class GameManager : MonoBehaviour
     {
         if (!_levelFinished && playerController != null)
         {
-            _audioSource.clip = winningSound;
-            _audioSource.loop = false;
-            _audioSource.volume = 0.9f;
-            _audioSource.Play();
             playerController.FinishLevel();
         }
     }

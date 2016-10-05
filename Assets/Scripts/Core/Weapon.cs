@@ -16,7 +16,6 @@ public abstract class Weapon : MonoBehaviour {
     protected AudioSource _audioSource;
     public WeaponState _state = WeaponState.Rest;
     protected Vector3 _target;
-
     protected Interactable _interactable;
 
     public enum WeaponState
@@ -61,6 +60,7 @@ public abstract class Weapon : MonoBehaviour {
 
     public void ResetState()
     {
+        //print("Reset State");
         _state = WeaponState.Idle;
 
     }
@@ -84,26 +84,14 @@ public abstract class Weapon : MonoBehaviour {
 
     public virtual void Throw(Vector3 target)
     {
-        //var position = transform.root.position;
         _animator.SetBool("Flying", true);
         _target = target;
-    }
 
-    public virtual void Release()
-    {
-        if (_state != WeaponState.Swing)
-        {
-            return;
-        }
-
-        // Called by the "Throw" animation - we wait until the transition between "Rest" and "Throw" animations is complete,
-        // or else we get a weird artifact where the boomerang is rotated for resting while being thrown.
-        // TODO: clean up the boomerang so that the X rotation is the same for rest and for throw??
         _parent.parent = null;
         _parent.rotation = Quaternion.identity;
-
         _state = WeaponState.ThrowAway;
         _audioSource.clip = swingSound;
         _audioSource.Play();
     }
+    
 }

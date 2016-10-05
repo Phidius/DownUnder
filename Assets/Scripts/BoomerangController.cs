@@ -18,6 +18,7 @@ namespace Assets.Scripts
                 if (Vector3.Distance(transform.position, _target) < .01f)
                 {
                     // Turn around
+                    //print("Weapon close to target at (" + _target + ")");
                     _state = WeaponState.ThrowReturn;
                 }
             }
@@ -27,6 +28,7 @@ namespace Assets.Scripts
                 if (Vector3.Distance(transform.position, _weaponSlot.position) < .01f)
                 {
                     // Return to player's "hand"
+                    //print("Return to players hand");
                     ResetState();
                     transform.parent = _weaponSlot;
                     transform.localPosition = Vector3.zero; // _parent.position is the global position
@@ -51,6 +53,7 @@ namespace Assets.Scripts
             {
                 return;
             }
+            
             var hitables = coll.GetComponents(typeof(IHitable));
             if (hitables == null || hitables.Length == 0)
             {
