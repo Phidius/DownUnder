@@ -31,8 +31,8 @@ public abstract class Weapon : MonoBehaviour {
 
     public virtual void Awake()
     {
-        _parent = transform.parent; // Use _parent to move the Weapon... the transform will be locked by the _animator
-        _weaponSlot = _parent.parent; // Return the _parent to this transform when catching after a throw
+        _parent = transform; // Use _parent to move the Weapon... the transform will be locked by the _animator
+        _weaponSlot = transform.parent; // Return the _parent to this transform when catching after a throw
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
         _interactable = (Interactable)GetComponent(typeof(Interactable));
@@ -85,15 +85,25 @@ public abstract class Weapon : MonoBehaviour {
     public virtual void Throw(Vector3 target)
     {
         //var position = transform.root.position;
+        _animator.SetBool("Flying", true);
+        _target = target;
+    }
+
+    public virtual void Release()
+    {
+        if (_state != WeaponState.Swing)
+        {
+            return;
+        }
+
+        // Called by the "Throw" animation - we wait until the transition between "Rest" and "Throw" animations is complete,
+        // or else we get a weird artifact where the boomerang is rotated for resting while being thrown.
+        // TODO: clean up the boomerang so that the X rotation is the same for rest and for throw??
         _parent.parent = null;
         _parent.rotation = Quaternion.identity;
 
-        _target = target;
         _state = WeaponState.ThrowAway;
-        _animator.SetBool("Flying", true);
         _audioSource.clip = swingSound;
         _audioSource.Play();
-        
     }
-    
 }

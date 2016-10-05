@@ -14,8 +14,8 @@ namespace Assets.Scripts
             if (_state == WeaponState.ThrowAway)
             {
             
-                _parent.position = Vector3.MoveTowards(_parent.position, _target, step);
-                if (Vector3.Distance(_parent.position, _target) < .01f)
+                transform.position = Vector3.MoveTowards(transform.position, _target, step);
+                if (Vector3.Distance(transform.position, _target) < .01f)
                 {
                     // Turn around
                     _state = WeaponState.ThrowReturn;
@@ -23,14 +23,14 @@ namespace Assets.Scripts
             }
             else if (_state == WeaponState.ThrowReturn)
             {
-                _parent.position = Vector3.MoveTowards(_parent.position, _weaponSlot.position, step);
+                transform.position = Vector3.MoveTowards(transform.position, _weaponSlot.position, step);
                 if (Vector3.Distance(transform.position, _weaponSlot.position) < .01f)
                 {
                     // Return to player's "hand"
                     ResetState();
-                    _parent.parent = _weaponSlot;
-                    _parent.localPosition = Vector3.zero; // _parent.position is the global position
-                    _parent.localRotation = Quaternion.identity;
+                    transform.parent = _weaponSlot;
+                    transform.localPosition = Vector3.zero; // _parent.position is the global position
+                    transform.localRotation = Quaternion.identity;
                     //_parent.localScale = Vector3.one;
                 
                     _animator.SetBool("Flying", false);
