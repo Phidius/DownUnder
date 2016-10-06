@@ -84,13 +84,13 @@ public class PlayerController : MonoBehaviour, IHitable
         if (_weapon != null)
         {
             _weapon.Equipped(true);
-            if (_reticle)
-            {
-                 _reticle.SetDistance(maxThrowDistance);
-            }
-           
         }
-        
+
+        if (_reticle)
+        {
+            _reticle.SetDistance(maxThrowDistance);
+        }
+
         foreach (var component in Camera.main.GetComponentsInChildren<Text>())
         {
             if (component.name == "Message")
@@ -372,6 +372,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
     public void ReleaseBoomerang()
     {
+        // TODO: this should be handled by the weapon
         if (_throwDistance > maxThrowDistance*.2f) // TODO: base this on the player's collider, perhaps?
         {
             var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());
