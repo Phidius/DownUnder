@@ -19,14 +19,13 @@ public class PlayerController : MonoBehaviour, IHitable
     public float startingHealth = 20;
     public float staminaMax = 20;
     public float staminaRecover = 1;
-    public float maxThrowDistance = 50f;
     public AudioClip gruntSound;
     public Transform cameraTransform;
 
     public Vector3 _startingPosition;
     public float _currentHealth;
     private Image _healthImage;
-    private Image _throwImage;
+    
     private Image _staminaImage;
     private Text _message;
 
@@ -36,11 +35,10 @@ public class PlayerController : MonoBehaviour, IHitable
     private Animator _animator;
     private AudioSource _audioSource;
     private Weapon _weapon;
-    private float _throwDistance = 0f;
+    
     private float _stamina;
     private FirstPersonController _firstPersonController;
 
-    private float _throwWindupSpeed = 40f;
     private float _jumpSpeed;
     private float _runSpeed;
     private float _walkSpeed;
@@ -88,7 +86,7 @@ public class PlayerController : MonoBehaviour, IHitable
 
         if (_reticle)
         {
-            _reticle.SetDistance(maxThrowDistance);
+            _reticle.SetDistance(50f);
         }
 
         foreach (var component in Camera.main.GetComponentsInChildren<Text>())
@@ -104,10 +102,6 @@ public class PlayerController : MonoBehaviour, IHitable
             if (component.name == "Health")
             {
                 _healthImage = component;
-            }
-            if (component.name == "Throw")
-            {
-                _throwImage = component;
             }
             if (component.name == "Stamina")
             {
@@ -215,8 +209,7 @@ public class PlayerController : MonoBehaviour, IHitable
         MovePlayer();
 
         Interact(CrossPlatformInputManager.GetButtonDown("Interact"));
-
-        // This should be handled by the _weapon.PleaseCatch method
+        
         var weaponDistance = Vector3.Distance(transform.position, _weapon.transform.position);
 
         if (weaponDistance < 10f && _weapon.GetState() == Weapon.WeaponState.ThrowReturn && _isCatching == false)
@@ -246,21 +239,6 @@ public class PlayerController : MonoBehaviour, IHitable
             _weapon.Swing();
         }
 
-        if (_weapon.GetState() == Weapon.WeaponState.Charging)
-        {
-            _throwDistance += (_throwWindupSpeed * Time.deltaTime);
-            _throwDistance = Mathf.Clamp(_throwDistance, 0f, 50f);
-
-            if (_throwDistance > maxThrowDistance * .2f)
-            {
-                _throwImage.color = Color.green;
-            }
-            else
-            {
-                _throwImage.color = Color.grey;
-            }
-        }
-
         UpdateHUDisplay();
     }
 
@@ -273,11 +251,6 @@ public class PlayerController : MonoBehaviour, IHitable
 
         _staminaImage.transform.localScale = staminaScale;
 
-        var throwScale = _throwImage.transform.localScale;
-        throwScale.x = 1f;
-        throwScale.y = _throwDistance/maxThrowDistance;
-
-        _throwImage.transform.localScale = throwScale;
     }
 
     private void MovePlayer()
@@ -340,13 +313,11 @@ public class PlayerController : MonoBehaviour, IHitable
 
             //z = 0 is the furthest forward... z = -1 is the limit to avoid seeing the avatar mesh
             if (cameraPosition.z > -1f && cameraTransform.parent.gameObject.name == "Third")
-                // Camera.main.transform.parent.gameObject.name == "Third")
             {
                 cameraTransform.parent = _firstPerspective; // Camera.main.transform.parent = _firstPerspective;
                 cameraPosition.z = 0.0f;
             }
             else if (cameraPosition.z < 0f && cameraTransform.parent.gameObject.name == "First")
-                //Camera.main.transform.parent.gameObject.name == "First")
             {
                 cameraTransform.parent = _thirdPerspective; //Camera.main.transform.parent = _thirdPerspective;
                 cameraPosition.z = -1.1f;
@@ -372,20 +343,8 @@ public class PlayerController : MonoBehaviour, IHitable
 
     public void ReleaseBoomerang()
     {
-        // TODO: this should be handled by the weapon
-        if (_throwDistance > maxThrowDistance*.2f) // TODO: base this on the player's collider, perhaps?
-        {
-            var targetDistance = Vector3.Distance(_weapon.transform.position, _reticle.GetAimPoint());
-            var fractionThrow = (_throwDistance < targetDistance) ? _throwDistance/targetDistance : 1f;
-            _weapon.Throw(Vector3.Lerp(_weapon.transform.parent.position, _reticle.GetAimPoint(), fractionThrow));
-        }
-        else
-        {
-            //print("PlayerController");
-            _weapon.ResetState();
-        }
+        _weapon.Throw(_reticle.GetAimPoint());
 
-        _throwDistance = 0f;
         _animator.SetBool("Windup", false);
         _animator.SetBool("Swing", false);
     }

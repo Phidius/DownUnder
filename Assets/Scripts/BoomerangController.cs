@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
     public class BoomerangController : Weapon
     {
 
-        public float throwSpeed;
-        
         // Update is called once per frame
-        private void Update ()
+        public override void Update ()
         {
+            base.Update();
             var step = throwSpeed * Time.deltaTime;
             if (_state == WeaponState.ThrowAway)
             {
@@ -18,7 +18,6 @@ namespace Assets.Scripts
                 if (Vector3.Distance(transform.position, _target) < .01f)
                 {
                     // Turn around
-                    //print("Weapon close to target at (" + _target + ")");
                     _state = WeaponState.ThrowReturn;
                 }
             }
@@ -28,13 +27,8 @@ namespace Assets.Scripts
                 if (Vector3.Distance(transform.position, _weaponSlot.position) < .01f)
                 {
                     // Return to player's "hand"
-                    //print("Return to players hand");
-                    ResetState();
-                    transform.parent = _weaponSlot;
-                    transform.localPosition = Vector3.zero; // _parent.position is the global position
-                    transform.localRotation = Quaternion.identity;
-                    //_parent.localScale = Vector3.one;
-                
+                    PlaceInHand();
+                                    
                     _animator.SetBool("Flying", false);
                     _weaponSlot.root.gameObject.GetComponent<PlayerController>().HasCaught();
 
@@ -72,17 +66,6 @@ namespace Assets.Scripts
                 _state = WeaponState.ThrowReturn;
             }
         }
-
-        public override void Throw(Vector3 target)
-        {
-            _animator.SetBool("Flying", true);
-            _target = target;
-
-            _parent.parent = null;
-            _parent.rotation = Quaternion.identity;
-            _state = WeaponState.ThrowAway;
-            _audioSource.clip = swingSound;
-            _audioSource.Play();
-        }
+        
     }
 }
