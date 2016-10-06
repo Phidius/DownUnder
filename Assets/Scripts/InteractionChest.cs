@@ -29,13 +29,11 @@ public class InteractionChest : Interactable
             var obj = (GameObject) Instantiate(content, Vector3.zero, Quaternion.identity);//Quaternion.Euler(270f, 0f, 0f));
             if (obj.GetComponentInChildren<Weapon>())
             {
-                // Weapons are scaled up by 5 to fit the avatar, so we need to reduce the scale to 1
-                obj.transform.localScale = Vector3.one;
                 foreach (var weapon in obj.GetComponentsInChildren<Weapon>())
                 {
-                    // We need to change the layer to "Default" as the layer "Weapon" is invisible to the Reticle (to avoid the weapon
+                    // We need to change the layer to "Interactable" as the layer "Weapon" is invisible to the Reticle (to avoid the weapon
                     // flashing when it passes between the camera and the reticle
-                    weapon.gameObject.layer = LayerMask.NameToLayer("Default");
+                    weapon.gameObject.layer = LayerMask.NameToLayer("Interactable");
                 }
             }
             //var collider = obj.GetComponentInChildren<Collider>();
@@ -43,7 +41,7 @@ public class InteractionChest : Interactable
             //{
             //    print(obj.name + " collider size: " + collider.bounds.size);
             //}
-            var rndPosWithin = new Vector3(Random.Range(-.19f, .19f), Random.Range(-.65f, .65f), 0.1f);
+            var rndPosWithin = new Vector3(Random.Range(-.19f, .19f), 0.1f, Random.Range(-.65f, .65f));
 
             obj.transform.SetParent(container.transform, false);
             obj.transform.localPosition = rndPosWithin;

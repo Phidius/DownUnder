@@ -19,6 +19,7 @@ ModelImporter:
     3300004: Cube
     4300000: Boomerang
     4300002: Cube
+    4300004: Knife
     7400000: Default Take
     9500000: //RootNode
   materials:
