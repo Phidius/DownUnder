@@ -5,6 +5,10 @@ public class KnifeController : Weapon {
     
     private void OnTriggerEnter(Collider coll)
     {
+        if (coll.tag == "Player")
+        {
+            return;
+        }
 
         var hitables = coll.GetComponents(typeof(IHitable));
 
@@ -12,8 +16,12 @@ public class KnifeController : Weapon {
         {
             var hitable = (IHitable)component;
             hitable.Hit(meleeDamage);
-            _state = WeaponState.ThrowReturn;
+            _state = WeaponState.Idle;
         }
     }
 
+    public override void Throw(Vector3 target)
+    {
+        _state = WeaponState.Idle;
+    }
 }

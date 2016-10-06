@@ -84,14 +84,6 @@ public abstract class Weapon : MonoBehaviour {
 
     public virtual void Throw(Vector3 target)
     {
-        _animator.SetBool("Flying", true);
-        _target = target;
-
-        _parent.parent = null;
-        _parent.rotation = Quaternion.identity;
-        _state = WeaponState.ThrowAway;
-        _audioSource.clip = swingSound;
-        _audioSource.Play();
     }
     
 }
