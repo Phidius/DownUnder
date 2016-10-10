@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour, IHitable
         }
         
         boomerang = GameObject.Find("boomerang");
-        knife = GameObject.Find("knife");
+        knife = GameObject.Find("Knife");
 
         knife.SetActive(false);
     }
@@ -173,7 +173,6 @@ public class PlayerController : MonoBehaviour, IHitable
 
         if (CrossPlatformInputManager.GetButtonDown("SwitchWeapon"))
         {
-            print ("SwitchWeapon");
             if (boomerang.activeInHierarchy)
             {
                 boomerang.SetActive(false);

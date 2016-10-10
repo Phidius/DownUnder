@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
         _player =(PlayerController) GameObject.FindObjectOfType<PlayerController>();
         _optionsPanel = GameObject.Find("Options");
         _hasDiedPanel = GameObject.Find("HasDied");
-        _inventoryPanel = GameObject.Find("Inventory");
+        _inventoryPanel = GameObject.Find("InventoryManagement");
 
         if (_player == null)
         {

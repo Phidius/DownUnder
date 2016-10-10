@@ -1,15 +1,28 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
-public class InventoryController : MonoBehaviour {
+public class InventoryController : MenuController
+{
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public Image selector;
+    private int primaryItem;
+    private int secondaryItem;
+
+    public void EquipItem()
+    {
+        
+    }
+
+    public override void ActionChanged()
+    {
+
+
+        selector.transform.SetParent(actions[currentAction].gameObject.transform, false);
+        print(actions[currentAction] + " selected");
+    }
+
+    public override void ActionUsed()
+    {
+        print(actions[currentAction] + " used");
+    }
 }

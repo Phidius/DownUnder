@@ -36,6 +36,7 @@ public abstract class MenuController : MonoBehaviour {
                     currentAction = actions.Length - 1;
                 }
                 actions[currentAction].Select();
+                print("MenuController - ActionChanged");
                 ActionChanged();
             }
         }
