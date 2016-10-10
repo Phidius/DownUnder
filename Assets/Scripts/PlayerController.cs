@@ -51,6 +51,11 @@ public class PlayerController : MonoBehaviour, IHitable
     private bool _isCatching = false;
     private bool _isCrouching = false;
     private bool _isJumping = false;
+
+    private GameObject boomerang;
+    private GameObject knife;
+
+    public GameObject[] _inventory;
     
     // Use this for initialization
     void Start ()
@@ -78,12 +83,6 @@ public class PlayerController : MonoBehaviour, IHitable
         _currentHealth = startingHealth;
         _stamina = staminaMax;
         
-        _weapon = GetComponentInChildren<Weapon>();
-        if (_weapon != null)
-        {
-            _weapon.Equipped(true);
-        }
-
         if (_reticle)
         {
             _reticle.SetDistance(50f);
@@ -108,6 +107,11 @@ public class PlayerController : MonoBehaviour, IHitable
                 _staminaImage = component;
             }
         }
+        
+        boomerang = GameObject.Find("boomerang");
+        knife = GameObject.Find("knife");
+
+        knife.SetActive(false);
     }
 
     void GetIteractables()
@@ -167,6 +171,25 @@ public class PlayerController : MonoBehaviour, IHitable
             return;
         }
 
+        if (CrossPlatformInputManager.GetButtonDown("SwitchWeapon"))
+        {
+            print ("SwitchWeapon");
+            if (boomerang.activeInHierarchy)
+            {
+                boomerang.SetActive(false);
+                knife.SetActive(true);
+            }
+            else
+            {
+                boomerang.SetActive(true);
+                knife.SetActive(false);
+            }
+        }
+        if (_weapon == null || _weapon.gameObject.activeInHierarchy == false)
+        {
+            _weapon = GetComponentInChildren<Weapon>();
+            _weapon.Equipped(true);
+        }
         GetIteractables();
         
         if (CrossPlatformInputManager.GetButtonDown("Jump"))

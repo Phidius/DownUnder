@@ -15,6 +15,7 @@ public class KnifeController : Weapon {
         foreach (var component in hitables)
         {
             var hitable = (IHitable)component;
+            print("Knife hit");
             hitable.Hit(meleeDamage);
             _state = WeaponState.Idle;
         }
