@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour, IHitable
     private Animator _animator;
     private AudioSource _audioSource;
     private Weapon _weapon;
+    private Usable _item;
     
     private float _stamina;
     private FirstPersonController _firstPersonController;
@@ -52,10 +53,8 @@ public class PlayerController : MonoBehaviour, IHitable
     private bool _isCrouching = false;
     private bool _isJumping = false;
 
-    private GameObject boomerang;
-    private GameObject knife;
-
-    public GameObject[] _inventory;
+    //private GameObject boomerang;
+    //private GameObject knife;
     
     // Use this for initialization
     void Start ()
@@ -108,10 +107,10 @@ public class PlayerController : MonoBehaviour, IHitable
             }
         }
         
-        boomerang = GameObject.Find("boomerang");
-        knife = GameObject.Find("Knife");
+        //boomerang = GameObject.Find("boomerang");
+        //knife = GameObject.Find("Knife");
 
-        knife.SetActive(false);
+        //knife.SetActive(false);
     }
 
     void GetIteractables()
@@ -171,23 +170,27 @@ public class PlayerController : MonoBehaviour, IHitable
             return;
         }
 
-        if (CrossPlatformInputManager.GetButtonDown("SwitchWeapon"))
-        {
-            if (boomerang.activeInHierarchy)
-            {
-                boomerang.SetActive(false);
-                knife.SetActive(true);
-            }
-            else
-            {
-                boomerang.SetActive(true);
-                knife.SetActive(false);
-            }
-        }
+        //if (CrossPlatformInputManager.GetButtonDown("SwitchWeapon"))
+        //{
+        //    if (boomerang.activeInHierarchy)
+        //    {
+        //        boomerang.SetActive(false);
+        //        knife.SetActive(true);
+        //    }
+        //    else
+        //    {
+        //        boomerang.SetActive(true);
+        //        knife.SetActive(false);
+        //    }
+        //}
         if (_weapon == null || _weapon.gameObject.activeInHierarchy == false)
         {
             _weapon = GetComponentInChildren<Weapon>();
-            _weapon.Equipped(true);
+            if (_weapon)
+            {
+                _weapon.Equipped(true);
+            }
+            
         }
         GetIteractables();
         
@@ -232,34 +235,39 @@ public class PlayerController : MonoBehaviour, IHitable
 
         Interact(CrossPlatformInputManager.GetButtonDown("Interact"));
         
-        var weaponDistance = Vector3.Distance(transform.position, _weapon.transform.position);
 
-        if (weaponDistance < 10f && _weapon.GetState() == Weapon.WeaponState.ThrowReturn && _isCatching == false)
+
+        
+        if (_weapon != null && _weapon.isActiveAndEnabled)
         {
-            _animator.SetBool("Catch", true);
-            _isCatching = true;
+            var weaponDistance = Vector3.Distance(transform.position, _weapon.transform.position);
+
+            if (weaponDistance < 10f && _weapon.GetState() == Weapon.WeaponState.ThrowReturn && _isCatching == false)
+            {
+                _animator.SetBool("Catch", true);
+                _isCatching = true;
+            }
+
+            if (_weapon.GetState() == Weapon.WeaponState.Idle)
+            {
+                _animator.SetBool("Windup", false);
+                _animator.SetBool("Swing", false);
+            }
+           var fireButtonPressed = CrossPlatformInputManager.GetButton("Fire1");
+            if (fireButtonPressed && _weapon.GetState() == Weapon.WeaponState.Idle)
+            {
+                _weapon.Charge();
+                _animator.SetBool("Windup", true);
+            }
+
+            if (!fireButtonPressed && _weapon.GetState() == Weapon.WeaponState.Charging)
+            {
+                // Button released
+                _animator.SetBool("Swing", true);
+                _weapon.Swing();
+            }
         }
 
-        if (_weapon.GetState() == Weapon.WeaponState.Idle)
-        {
-            _animator.SetBool("Windup", false);
-            _animator.SetBool("Swing", false);
-        }
-
-        var fireButtonPressed = CrossPlatformInputManager.GetButton("Fire1");
-
-        if (fireButtonPressed && _weapon.GetState() == Weapon.WeaponState.Idle)
-        {
-            _weapon.Charge();
-            _animator.SetBool("Windup", true);
-        }
-
-        if (!fireButtonPressed && _weapon.GetState() == Weapon.WeaponState.Charging)
-        {
-            // Button released
-            _animator.SetBool("Swing", true);
-            _weapon.Swing();
-        }
 
         UpdateHUDisplay();
     }
