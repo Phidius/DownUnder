@@ -15,11 +15,15 @@ public class Interactable : MonoBehaviour {
     private Material[] _materials;
 
     private bool _enable = true;
-    
-    public virtual void Start()
+
+    void Awake()
     {
         // Use the current object to find the first renderer in the children
         _renderer = GetComponentInChildren<Renderer>();
+    }
+
+    public virtual void Start()
+    {
         _materials = _renderer.materials;
         foreach (var mat in _materials)
         {

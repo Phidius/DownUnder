@@ -31,10 +31,12 @@ public class PlayerController : MonoBehaviour, IHitable
 
     private Transform _firstPerspective;
     private Transform _thirdPerspective;
+    public Transform _itemSlot;
+    public Transform _weaponSlot;
 
     private Animator _animator;
     private AudioSource _audioSource;
-    private Weapon _weapon;
+    public Weapon _weapon;
     private Usable _item;
     
     private float _stamina;
@@ -61,6 +63,9 @@ public class PlayerController : MonoBehaviour, IHitable
     {
         _firstPerspective = transform.FindChild("First");
         _thirdPerspective = transform.FindChild("Third");
+        _itemSlot = GameObject.Find("ItemSlot").transform;
+        _weaponSlot = GameObject.Find("WeaponSlot").transform;
+
         _startingPosition = transform.position;
 
         _animator = GetComponent<Animator>();
@@ -87,7 +92,9 @@ public class PlayerController : MonoBehaviour, IHitable
             _reticle.SetDistance(50f);
         }
 
-        foreach (var component in Camera.main.GetComponentsInChildren<Text>())
+        var HUDisplay = GameObject.Find("HUDisplay");
+
+        foreach (var component in HUDisplay.GetComponentsInChildren<Text>())
         {
             if (component.name == "Message")
             {
@@ -95,7 +102,7 @@ public class PlayerController : MonoBehaviour, IHitable
             }
         }
 
-        foreach (var component in Camera.main.GetComponentsInChildren<Image>())
+        foreach (var component in HUDisplay.GetComponentsInChildren<Image>())
 	    {
             if (component.name == "Health")
             {
@@ -107,10 +114,6 @@ public class PlayerController : MonoBehaviour, IHitable
             }
         }
         
-        //boomerang = GameObject.Find("boomerang");
-        //knife = GameObject.Find("Knife");
-
-        //knife.SetActive(false);
     }
 
     void GetIteractables()
@@ -185,13 +188,14 @@ public class PlayerController : MonoBehaviour, IHitable
         //}
         if (_weapon == null || _weapon.gameObject.activeInHierarchy == false)
         {
-            _weapon = GetComponentInChildren<Weapon>();
+            _weapon = _weaponSlot.gameObject.GetComponentInChildren<Weapon>();
             if (_weapon)
             {
                 _weapon.Equipped(true);
             }
             
         }
+
         GetIteractables();
         
         if (CrossPlatformInputManager.GetButtonDown("Jump"))

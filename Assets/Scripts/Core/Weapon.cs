@@ -4,6 +4,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Interactable))]
+[RequireComponent(typeof(Usable))]
 public abstract class Weapon : MonoBehaviour {
 
     public int meleeDamage;

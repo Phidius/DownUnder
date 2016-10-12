@@ -9,9 +9,14 @@ public abstract class MenuController : MonoBehaviour {
     protected bool verticalInUse = false;
     protected bool horizontalInUse = false;
 
-    // Use this for initialization
-    protected virtual void Start () {
+    protected virtual void Awake()
+    {
         actions = GetComponentsInChildren<Button>();
+    }
+
+    // Use this for initialization
+    protected virtual void Start ()
+    {
         actions[currentAction].Select();
     }
 
@@ -49,6 +54,7 @@ public abstract class MenuController : MonoBehaviour {
             {
                 horizontalInUse = true;
                 UseAction();
+                ActionUsed();
             }
         }
         if (CrossPlatformInputManager.GetAxisRaw("MenuActivation") == 0f)
