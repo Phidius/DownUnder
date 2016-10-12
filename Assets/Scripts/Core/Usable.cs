@@ -5,6 +5,13 @@ public class Usable : MonoBehaviour {
     
     public Sprite icon;
 
+    protected PlayerController player;
+
+    protected virtual void Start()
+    {
+        player = GameObject.FindObjectOfType<PlayerController>();
+    }
+
     public virtual void Equip()
     {
         

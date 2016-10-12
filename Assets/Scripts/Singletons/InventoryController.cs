@@ -44,22 +44,63 @@ public class InventoryController : MenuController
         
     }
 
-    public bool AddInventory(GameObject gameObject)
+    public bool AddInventory(GameObject item)
     {
         var result = false;
         for (var index = 0; index < inventory.Length; index++)
         {
             if (inventory[index] == null)
             {
-                inventory[index] = gameObject;
-                gameObject.transform.SetParent(_inventoryContainer, false);
-                gameObject.transform.localPosition = Vector3.zero;
+                inventory[index] = item;
+                inventory[index].GetComponent<Rigidbody>().isKinematic = true;// Prevent the object from moving around.
+                inventory[index].transform.SetParent(_inventoryContainer, false);
+                inventory[index].transform.localPosition = Vector3.zero;
                 UpdateInventoryIcons();
                 result = true;
+                var weapon = (Weapon)inventory[index].GetComponent(typeof(Weapon));
+                if (player._weapon == null && weapon != null)
+                {
+                    // Equip this weapon
+                    weapon.transform.SetParent(player._weaponSlot, false);
+                    weapon.Equipped(true);
+                    player._weapon = weapon;
+                }
+                if (player._item == null && weapon == null) // If this is not a weapon, it is an item
+                {
+                    // Player isn't holding an item - equip this item
+                    item.transform.SetParent(player._itemSlot, false);
+                    player._item = (Usable)item.GetComponent(typeof(Usable));
+                }
                 break;
             }
         }
-        return false;
+        return result;
+    }
+
+    public bool RemoveInventory(GameObject item)
+    {
+        var result = false;
+        for (var index = 0; index < inventory.Length; index++)
+        {
+            if (inventory[index] != null && inventory[index].name == item.name)
+            {
+                result = true;
+                Destroy(inventory[index]);
+                inventory[index] = null;
+                player._item = null;
+
+                UpdateInventoryIcons();
+            }
+        }
+        
+        return result;
+    }
+
+    public bool DropInventory(GameObject item)
+    {
+        var result = false;
+
+        return result;
     }
 
     public override void ActionChanged()
@@ -70,21 +111,39 @@ public class InventoryController : MenuController
     public override void ActionUsed()
     {
         var weapon = (Weapon)inventory[currentAction].GetComponent(typeof(Weapon));
+        var item = (Usable)inventory[currentAction].GetComponent(typeof(Usable));
 
-        if (weapon != null)
+        if (weapon == null)
         {
-            // Store the equipped weapon in a temporary variable
-            var tempGameObject = player._weapon.gameObject;
-
-            tempGameObject.transform.SetParent(_inventoryContainer, false);
-            tempGameObject.transform.localPosition = Vector3.zero;
-
+            // This is a usable item
+            //Move the currently equipped item into the InventoryContainer
+            if (player._item != null)
+            {
+                player._item.transform.SetParent(_inventoryContainer, false);
+                player._item.transform.localPosition = Vector3.zero;
+                player._item.transform.localRotation = Quaternion.identity;
+            }
+            item.transform.SetParent(player._itemSlot, false);
+            player._item = item;
+        }
+        else
+        {
+            //Move the currently equipped weapon into the InventoryContainer
+            if (player._weapon != null)
+            {
+                //tempGameObject = player._weapon.gameObject;
+                player._weapon.transform.SetParent(_inventoryContainer, false);
+                player._weapon.transform.localPosition = Vector3.zero;
+                player._weapon.transform.localRotation = Quaternion.identity;
+            }
+            
             // Place the selected inventory weapon in the player's hand
             weapon.transform.SetParent(player._weaponSlot, false);
             weapon.Equipped(true);
             player._weapon = weapon;
-            UpdateInventoryIcons();
         }
+
+        UpdateInventoryIcons();
     }
 
     public void UpdateInventoryIcons()
@@ -93,31 +152,41 @@ public class InventoryController : MenuController
         {
             if (inventory[index] == null)
             {
-                _slots[index].SetBackground(Color.grey);
+                _slots[index].SetBackground(Color.grey, false);
                 _slots[index].SetIcon(emptySprite);
             }
             else
             {
+                var weapon = (Weapon)inventory[index].GetComponent(typeof(Weapon));
                 var usable = (Usable)inventory[index].GetComponent(typeof(Usable));
-                print(player.gameObject.name);
-                print(player._weapon);
 
-                if (player._weapon != null && player._weapon.GetInstanceID() == inventory[index].GetInstanceID())
+                if (weapon != null)
                 {
-                    print(player._weapon.GetInstanceID() + " and " + inventory[index].GetInstanceID());
-
-                    _slots[index].SetBackground(Color.red);
+                    if (player._weapon != null && player._weapon.gameObject.GetInstanceID() == inventory[index].GetInstanceID())
+                    {
+                        _slots[index].SetBackground(Color.red, true);
+                    }
+                    else
+                    {
+                        _slots[index].SetBackground(Color.red, false);
+                    }
                 }
-                else
+
+                if (weapon == null)
                 {
-                    print("null and " + inventory[index].GetInstanceID());
-
-                    _slots[index].SetBackground(Color.grey);
+                    //print(inventory[index].GetInstanceID());
+                    //if (player._item != null) {  print("Player is holding " + player._item.gameObject.GetInstanceID());}
+                    if (player._item != null && player._item.gameObject.GetInstanceID() == inventory[index].GetInstanceID())
+                    {
+                        _slots[index].SetBackground(Color.blue, true);
+                    }
+                    else
+                    {
+                        _slots[index].SetBackground(Color.blue, false);
+                    }
                 }
-                
                 _slots[index].SetIcon(usable.icon);
             }
-
         }
     }
 }

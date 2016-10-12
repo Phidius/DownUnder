@@ -1,27 +1,24 @@
 ﻿using UnityEngine;
-[RequireComponent(typeof(AudioSource))]
-public class InteractionHealth : Interactable {
+using System.Collections;
 
-    public float healthRestored = 10;
+public class UsableFosters : Usable {
+
+    public float staminaRestored = 50;
     public AudioClip[] audioClips;
 
     private AudioSource _audioSource;
 
-    public override void Start()
+    protected override void Start()
     {
         base.Start();
         _audioSource = GetComponent<AudioSource>();
     }
-    public override void Interact(PlayerController player)
-    {
-        base.Interact(player);
-        if (IsEnabled() == false)
-        {
-            return;
-        }
 
+    public override void Use()
+    {
+        print("Give " + player.name + " some stamina");
         var delay = 0f;
-        player.Hit(-healthRestored);
+        player.ApplyStamina(staminaRestored);
 
         if (audioClips.Length > 0)
         {
@@ -47,9 +44,11 @@ public class InteractionHealth : Interactable {
             GameManager.Instance.BeenPlayed(this.name);
 
         }
-
-        base.Enable(false);
-        Destroy(gameObject, delay);
+        Invoke("DelayedRemoval", delay);
     }
-    
+
+    private void DelayedRemoval()
+    {
+        InventoryController.Instance.RemoveInventory(this.gameObject);
+    }
 }

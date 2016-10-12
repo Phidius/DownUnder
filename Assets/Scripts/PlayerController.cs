@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour, IHitable
     private Animator _animator;
     private AudioSource _audioSource;
     public Weapon _weapon;
-    private Usable _item;
+    public Usable _item;
     
     private float _stamina;
     private FirstPersonController _firstPersonController;
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour, IHitable
     private float _walkSpeed;
     public float crouchSpeed = .3f;
     private GameObject _interactableGameObject;
-    private VRReticle _reticle;
+    public VRReticle _reticle;
     private float _maxInteractableUpdate = .1f;
     private float _interactableUpdate = 0f;
 
@@ -126,6 +126,7 @@ public class PlayerController : MonoBehaviour, IHitable
         _interactableUpdate = 0f;
 
         var obstacle = _reticle.GetObstacle();
+
         if (obstacle)
         {
             if ((Interactable)obstacle.GetComponent(typeof(Interactable)) != null)
@@ -139,7 +140,6 @@ public class PlayerController : MonoBehaviour, IHitable
                 
                 // Turn on this object
                 _interactableGameObject = obstacle.gameObject;
-                
                 var interactable = ((Interactable)_interactableGameObject.GetComponent(typeof(Interactable)));
                 if (interactable.IsHighlighted() == false)
                 {
@@ -173,19 +173,6 @@ public class PlayerController : MonoBehaviour, IHitable
             return;
         }
 
-        //if (CrossPlatformInputManager.GetButtonDown("SwitchWeapon"))
-        //{
-        //    if (boomerang.activeInHierarchy)
-        //    {
-        //        boomerang.SetActive(false);
-        //        knife.SetActive(true);
-        //    }
-        //    else
-        //    {
-        //        boomerang.SetActive(true);
-        //        knife.SetActive(false);
-        //    }
-        //}
         if (_weapon == null || _weapon.gameObject.activeInHierarchy == false)
         {
             _weapon = _weaponSlot.gameObject.GetComponentInChildren<Weapon>();
@@ -196,8 +183,18 @@ public class PlayerController : MonoBehaviour, IHitable
             
         }
 
+        if (GameManager.Instance.gameState != GameManager.GameState.Play)
+        {
+            return;
+        }
+
         GetIteractables();
-        
+
+        if (CrossPlatformInputManager.GetButtonDown("Use") && _item != null)
+        {
+            _item.Use();
+        }
+
         if (CrossPlatformInputManager.GetButtonDown("Jump"))
         {
             _isJumping = true;
@@ -238,8 +235,6 @@ public class PlayerController : MonoBehaviour, IHitable
         MovePlayer();
 
         Interact(CrossPlatformInputManager.GetButtonDown("Interact"));
-        
-
 
         
         if (_weapon != null && _weapon.isActiveAndEnabled)
@@ -257,7 +252,7 @@ public class PlayerController : MonoBehaviour, IHitable
                 _animator.SetBool("Windup", false);
                 _animator.SetBool("Swing", false);
             }
-           var fireButtonPressed = CrossPlatformInputManager.GetButton("Fire1");
+            var fireButtonPressed = CrossPlatformInputManager.GetButton("Fire1");
             if (fireButtonPressed && _weapon.GetState() == Weapon.WeaponState.Idle)
             {
                 _weapon.Charge();

@@ -22,13 +22,12 @@ public abstract class Weapon : MonoBehaviour {
     protected Transform _weaponSlot;
     protected Animator _animator;
     protected AudioSource _audioSource;
-    public WeaponState _state = WeaponState.Rest;
+    public WeaponState _state = WeaponState.Idle;
     protected Vector3 _target;
     protected Interactable _interactable;
 
     public enum WeaponState
     {
-        Rest,
         Idle,
         Charging,
         Swing,
@@ -39,7 +38,6 @@ public abstract class Weapon : MonoBehaviour {
     public virtual void Awake()
     {
         _parent = transform; // Use _parent to move the Weapon... the transform will be locked by the _animator
-        _weaponSlot = transform.parent; // Return the _parent to this transform when catching after a throw
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
         _interactable = (Interactable)GetComponent(typeof(Interactable));
@@ -102,8 +100,8 @@ public abstract class Weapon : MonoBehaviour {
         else
         {
             _interactable.Enable(true);
-
         }
+        _weaponSlot = transform.parent; // Return the _parent to this transform when catching after a throw
     }
 
     public virtual WeaponState GetState()

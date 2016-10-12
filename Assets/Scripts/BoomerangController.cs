@@ -38,7 +38,7 @@ namespace Assets.Scripts
 
         private void OnTriggerEnter(Collider coll)
         {
-            if (_state == WeaponState.Rest || _state == WeaponState.Idle || _state == WeaponState.Charging)
+            if (_state == WeaponState.Idle || _state == WeaponState.Charging)
             {
                 return;
             }

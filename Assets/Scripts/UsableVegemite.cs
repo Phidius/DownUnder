@@ -1,36 +1,31 @@
 ﻿using UnityEngine;
-[RequireComponent(typeof(AudioSource))]
-public class InteractionStamina : Interactable
-{
-    public float staminaRestored = 50;
+using System.Collections;
+
+public class UsableVegemite : Usable {
+    public float healthRestored = 10;
     public AudioClip[] audioClips;
 
     private AudioSource _audioSource;
 
-    public override void Start()
+    protected override void Start()
     {
         base.Start();
         _audioSource = GetComponent<AudioSource>();
     }
 
-    public override void Interact(PlayerController player)
+    public override void Use()
     {
-        base.Interact(player);
-        if (IsEnabled() == false)
-        {
-            return;
-        }
-
+        print("Give " + player.name + " some health");
         var delay = 0f;
-        player.ApplyStamina(staminaRestored);
-        
+        player.Hit(-healthRestored);
+
         if (audioClips.Length > 0)
         {
             var index = 0;
             if (GameManager.Instance.HasBeenPlayed(this.name))
             {
                 // Play the first clip the first time, otherwise select at random
-                index = Random.Range(0, audioClips.Length);                
+                index = Random.Range(0, audioClips.Length);
             }
 
             if (audioClips[index] == null)
@@ -48,9 +43,10 @@ public class InteractionStamina : Interactable
             GameManager.Instance.BeenPlayed(this.name);
 
         }
-
-        base.Enable(false);
-        Destroy(gameObject, delay);
+        Invoke("DelayedRemoval", delay);
     }
-
+    private void DelayedRemoval()
+    {
+        InventoryController.Instance.RemoveInventory(this.gameObject);
+    }
 }

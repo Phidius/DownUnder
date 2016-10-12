@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class InteractionKnife : Interactable
+public class InteractionInventory: Interactable
 {
     public override void Interact(PlayerController player)
     {

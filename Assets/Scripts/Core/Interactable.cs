@@ -12,7 +12,7 @@ public class Interactable : MonoBehaviour {
     protected bool _highlighted = false;
 
     private Renderer _renderer;
-    private Material[] _materials;
+    protected Material[] _materials;
 
     private bool _enable = true;
 

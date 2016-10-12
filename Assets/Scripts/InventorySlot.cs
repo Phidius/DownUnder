@@ -22,8 +22,9 @@ public class InventorySlot : MonoBehaviour
         }
     }
 
-    public void SetBackground(Color color)
+    public void SetBackground(Color color, bool highlighted)
     {
+        color.a = (highlighted) ? .9f : 0f;
         background.color = color;
     }
 
