@@ -55,8 +55,9 @@ public class InventoryController : MenuController
                 inventory[index].GetComponent<Rigidbody>().isKinematic = true;// Prevent the object from moving around.
                 inventory[index].transform.SetParent(_inventoryContainer, false);
                 inventory[index].transform.localPosition = Vector3.zero;
-                UpdateInventoryIcons();
-                result = true;
+                inventory[index].transform.localRotation = Quaternion.identity;
+                inventory[index].gameObject.layer = LayerMask.NameToLayer("Weapon");
+
                 var weapon = (Weapon)inventory[index].GetComponent(typeof(Weapon));
                 if (player._weapon == null && weapon != null)
                 {
@@ -67,10 +68,13 @@ public class InventoryController : MenuController
                 }
                 if (player._item == null && weapon == null) // If this is not a weapon, it is an item
                 {
-                    // Player isn't holding an item - equip this item
+                    // Player isn't holding an item - equip this one
                     item.transform.SetParent(player._itemSlot, false);
                     player._item = (Usable)item.GetComponent(typeof(Usable));
                 }
+
+                UpdateInventoryIcons();
+                result = true;
                 break;
             }
         }
@@ -82,7 +86,7 @@ public class InventoryController : MenuController
         var result = false;
         for (var index = 0; index < inventory.Length; index++)
         {
-            if (inventory[index] != null && inventory[index].name == item.name)
+            if (inventory[index] != null && inventory[index].gameObject.GetInstanceID() == item.GetInstanceID())
             {
                 result = true;
                 Destroy(inventory[index]);
@@ -99,7 +103,7 @@ public class InventoryController : MenuController
     public bool DropInventory(GameObject item)
     {
         var result = false;
-
+        // TODO: turn off Kinematic so that the object behaves realistically
         return result;
     }
 
@@ -112,7 +116,7 @@ public class InventoryController : MenuController
     {
         var weapon = (Weapon)inventory[currentAction].GetComponent(typeof(Weapon));
         var item = (Usable)inventory[currentAction].GetComponent(typeof(Usable));
-
+        
         if (weapon == null)
         {
             // This is a usable item

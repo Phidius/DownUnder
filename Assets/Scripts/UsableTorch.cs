@@ -10,8 +10,10 @@ public class UsableTorch : Usable
     protected override void Start()
     {
         torchLight = gameObject.GetComponentInChildren<Light>();
+        torchLight.intensity = 1.0f;
         particleSystems = gameObject.GetComponentsInChildren<ParticleSystem>();
     }
+
     public override void Use()
     {
         var enabled = !torchLight.enabled;

@@ -16,7 +16,6 @@ public class UsableFosters : Usable {
 
     public override void Use()
     {
-        print("Give " + player.name + " some stamina");
         var delay = 0f;
         player.ApplyStamina(staminaRestored);
 
