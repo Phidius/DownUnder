@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class InventoryController : MenuController
 {
@@ -38,6 +39,15 @@ public class InventoryController : MenuController
     {
         base.Start();
         UpdateInventoryIcons();
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        if (CrossPlatformInputManager.GetButtonDown("Drop") && inventory[currentAction] != null)
+        {
+            DropInventory(inventory[currentAction]);
+        }
     }
     public void EquipItem()
     {
@@ -103,7 +113,37 @@ public class InventoryController : MenuController
     public bool DropInventory(GameObject item)
     {
         var result = false;
-        // TODO: turn off Kinematic so that the object behaves realistically
+
+        if (player._item != null && player._item.gameObject.GetInstanceID() == item.GetInstanceID())
+        {
+            // Can't remove an equipped item
+            return result;
+        }
+
+        if (player._weapon != null && player._weapon.gameObject.GetInstanceID() == item.GetInstanceID())
+        {
+            // Can't remove an equipped weapon
+            return result;
+        }
+
+        for (var index = 0; index < inventory.Length; index++)
+        {
+            if (inventory[index] != null && inventory[index].gameObject.GetInstanceID() == item.GetInstanceID())
+            {
+                inventory[index] = null;
+                item.transform.parent = null;
+                item.transform.position = player._itemSlot.position;
+                item.transform.localRotation = Quaternion.identity;
+                item.layer = LayerMask.NameToLayer("Interactable");
+                item.GetComponent<Rigidbody>().isKinematic = false;
+                result = true;
+
+                UpdateInventoryIcons();
+            }
+        }
+
+
+
         return result;
     }
 
