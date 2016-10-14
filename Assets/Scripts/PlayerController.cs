@@ -28,9 +28,7 @@ public class PlayerController : MonoBehaviour, IHitable
     
     private Image _staminaImage;
     private Text _message;
-
-    private Transform _firstPerspective;
-    private Transform _thirdPerspective;
+    
     public Transform _itemSlot;
     public Transform _weaponSlot;
 
@@ -40,7 +38,7 @@ public class PlayerController : MonoBehaviour, IHitable
     public Usable _item;
     
     private float _stamina;
-    private FirstPersonController _firstPersonController;
+    public FirstPersonController _firstPersonController;
 
     private float _jumpSpeed;
     private float _runSpeed;
@@ -54,15 +52,10 @@ public class PlayerController : MonoBehaviour, IHitable
     private bool _isCatching = false;
     private bool _isCrouching = false;
     private bool _isJumping = false;
-
-    //private GameObject boomerang;
-    //private GameObject knife;
     
     // Use this for initialization
     void Start ()
     {
-        _firstPerspective = transform.FindChild("First");
-        _thirdPerspective = transform.FindChild("Third");
         _itemSlot = GameObject.Find("ItemSlot").transform;
         _weaponSlot = GameObject.Find("WeaponSlot").transform;
 
@@ -230,8 +223,6 @@ public class PlayerController : MonoBehaviour, IHitable
             _stamina += staminaRecover * Time.deltaTime;
         }
         
-        MovePerspective();
-
         MovePlayer();
 
         Interact(CrossPlatformInputManager.GetButtonDown("Interact"));
@@ -329,45 +320,6 @@ public class PlayerController : MonoBehaviour, IHitable
                 }
             }
         }
-    }
-
-    private void MovePerspective()
-    {
-        var zoomCamera = Input.GetAxis("ZoomCamera");
-        if (zoomCamera != 0)
-        {
-            var cameraPosition = cameraTransform.localPosition; // Camera.main.transform.localPosition;
-            cameraPosition.z += zoomCamera;
-            cameraPosition.z = Mathf.Clamp(cameraPosition.z, -10f, 0f);
-
-            //z = 0 is the furthest forward... z = -1 is the limit to avoid seeing the avatar mesh
-            if (cameraPosition.z > -1f && cameraTransform.parent.gameObject.name == "Third")
-            {
-                cameraTransform.parent = _firstPerspective; // Camera.main.transform.parent = _firstPerspective;
-                cameraPosition.z = 0.0f;
-            }
-            else if (cameraPosition.z < 0f && cameraTransform.parent.gameObject.name == "First")
-            {
-                cameraTransform.parent = _thirdPerspective; //Camera.main.transform.parent = _thirdPerspective;
-                cameraPosition.z = -1.1f;
-            }
-            cameraTransform.localPosition = cameraPosition; //Camera.main.transform.localPosition = cameraPosition;
-        }
-
-        //if (cameraTransform.parent == _thirdPerspective)
-        //{
-        //    var rotateCamera = Input.GetAxis("RotateController");
-        //    if (rotateCamera != 0f)
-        //    {
-        //        _firstPersonController.rotationOffset += (rotateCamera*3);
-        //    }
-        //}
-        var rotateCamera = Input.GetAxis("RotateController");
-        if (rotateCamera != 0f)
-        {
-            _firstPersonController.rotationOffset += (rotateCamera * 3);
-        }
-
     }
 
     public void ReleaseBoomerang()

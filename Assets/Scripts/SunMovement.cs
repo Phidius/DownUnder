@@ -17,7 +17,7 @@ public class SunMovement : MonoBehaviour {
 
         transform.RotateAround(transform.position, Vector3.forward, angleThisFrame);
 	    //print(transform.rotation.x);
-	    sunLight.intensity = 2f * Mathf.Abs(transform.rotation.x);
+	    //sunLight.intensity = 2f * Mathf.Abs(transform.rotation.x);
 	    
 	}
 }
