@@ -137,7 +137,11 @@ public abstract class Weapon : MonoBehaviour {
 
     public virtual void ResetToIdle()
     {
-        _state = WeaponState.Idle;
+        if (_state == WeaponState.Swing)
+        {
+            _state = WeaponState.Idle;
+        }
+        
     }
 
     public virtual void Throw(Vector3 target)

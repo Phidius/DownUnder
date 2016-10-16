@@ -196,6 +196,11 @@ public class InventoryController : MonoBehaviour
     
     public void ActionUsed()
     {
+        if (inventory[currentAction] == null)
+        {
+            return;
+        }
+
         var weapon = (Weapon)inventory[currentAction].GetComponent(typeof(Weapon));
         var item = (Usable)inventory[currentAction].GetComponent(typeof(Usable));
         
