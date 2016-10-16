@@ -130,8 +130,14 @@ public abstract class Weapon : MonoBehaviour {
 
             _audioSource.clip = swingSound;
             _audioSource.Play();
+            Invoke("ResetToIdle", .5f);
         }
 
+    }
+
+    public virtual void ResetToIdle()
+    {
+        _state = WeaponState.Idle;
     }
 
     public virtual void Throw(Vector3 target)
@@ -152,8 +158,8 @@ public abstract class Weapon : MonoBehaviour {
         }
         else
         {
-            // Don't throw the weapon - just reset it to Idle.
-            _state = WeaponState.Idle;
+            // Don't throw the weapon - just swing it.
+            Swing();
         }
 
         _throwDistance = 0f;

@@ -5,7 +5,11 @@ public class KnifeController : Weapon {
     
     private void OnTriggerEnter(Collider coll)
     {
-        if (coll.tag == "Player")
+        if (_state == WeaponState.Idle || _state == WeaponState.Charging)
+        {
+            return;
+        }
+        if (coll.tag == "Event" || coll.tag == "Player")
         {
             return;
         }
@@ -22,6 +26,6 @@ public class KnifeController : Weapon {
 
     public override void Throw(Vector3 target)
     {
-        _state = WeaponState.Idle;
+        _state = WeaponState.Swing;
     }
 }

@@ -2,8 +2,13 @@
 using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class InventoryController : MenuController
+public class InventoryController : MonoBehaviour
 {
+
+    protected int currentAction = 0;
+    protected InventorySlot[] slots;
+    protected bool verticalInUse = false;
+    protected bool horizontalInUse = false;
 
     public Image selector;
     public GameObject[] inventory = new GameObject[6];
@@ -17,9 +22,11 @@ public class InventoryController : MenuController
     private InventorySlot[] _slots = new InventorySlot[6];
     public static InventoryController Instance { get { return _inventoryController; } }
 
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
+
+        slots = GetComponentsInChildren<InventorySlot>();
+
         if (_inventoryController != null && _inventoryController != this)
         {
             Destroy(this.gameObject);
@@ -35,23 +42,63 @@ public class InventoryController : MenuController
         }
     }
 
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
         UpdateInventoryIcons();
     }
 
-    protected override void Update()
+    protected void Update()
     {
-        base.Update();
-        if (CrossPlatformInputManager.GetButtonDown("Drop") && inventory[currentAction] != null)
+        if (GameManager.Instance.gameState != GameManager.GameState.Play)
         {
-            DropInventory(inventory[currentAction]);
+            return; // Only allow inventory manipulation when playing (would allow any menu action to modify inventory otherwise)
         }
-    }
-    public void EquipItem()
-    {
-        
+        var menuNavigation = CrossPlatformInputManager.GetAxisRaw("MenuActivation");
+        var menuActivation = CrossPlatformInputManager.GetAxisRaw("MenuNavigation");
+        if (menuNavigation != 0f)
+        {
+            var direction = (menuNavigation > 0)?1:-1;
+            if (horizontalInUse == false)
+            {
+                horizontalInUse = true;
+                
+                currentAction = currentAction + direction;
+                if (currentAction > slots.Length - 1)
+                {
+                    currentAction = 0;
+                }
+                else if (currentAction < 0)
+                {
+                    currentAction = slots.Length - 1;
+                }
+                selector.transform.SetParent(slots[currentAction].gameObject.transform, false);
+            }
+        }
+        if (menuNavigation == 0f)
+        {
+            horizontalInUse = false;
+        }
+
+        if (menuActivation != 0f)
+        {
+            if (verticalInUse == false)
+            {
+                verticalInUse = true;
+                if (menuActivation < 0)
+                {
+                    ActionUsed();
+                }
+                else
+                {
+                    DropInventory(inventory[currentAction]);
+                }               
+            }
+        }
+
+        if (menuActivation == 0f)
+        {
+            verticalInUse = false;
+        }
     }
 
     public bool AddInventory(GameObject item)
@@ -63,6 +110,7 @@ public class InventoryController : MenuController
             {
                 inventory[index] = item;
                 inventory[index].GetComponent<Rigidbody>().isKinematic = true;// Prevent the object from moving around.
+                inventory[index].GetComponent<Collider>().isTrigger = true;
                 inventory[index].transform.SetParent(_inventoryContainer, false);
                 inventory[index].transform.localPosition = Vector3.zero;
                 inventory[index].transform.localRotation = Quaternion.identity;
@@ -135,24 +183,18 @@ public class InventoryController : MenuController
                 item.transform.position = player._itemSlot.position;
                 item.transform.localRotation = Quaternion.identity;
                 item.layer = LayerMask.NameToLayer("Interactable");
+                item.GetComponent<Collider>().isTrigger = false;
                 item.GetComponent<Rigidbody>().isKinematic = false;
                 result = true;
 
                 UpdateInventoryIcons();
             }
         }
-
-
-
+        
         return result;
     }
-
-    public override void ActionChanged()
-    {
-        selector.transform.SetParent(actions[currentAction].gameObject.transform, false);
-    }
-
-    public override void ActionUsed()
+    
+    public void ActionUsed()
     {
         var weapon = (Weapon)inventory[currentAction].GetComponent(typeof(Weapon));
         var item = (Usable)inventory[currentAction].GetComponent(typeof(Usable));

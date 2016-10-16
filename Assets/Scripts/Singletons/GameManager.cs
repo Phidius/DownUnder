@@ -3,7 +3,7 @@ using UnityStandardAssets.CrossPlatformInput;
 using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
-    public enum GameState { Play, Options, Dead, Inventory }
+    public enum GameState { Play, Options, Dead }
 
     public AudioClip gameMusic;
     public AudioClip winningSound;
@@ -15,7 +15,6 @@ public class GameManager : MonoBehaviour
     private PlayerController _player;
     private GameObject _optionsPanel;
     private GameObject _hasDiedPanel;
-    private GameObject _inventoryPanel;
     private bool _lockControllerState = false;
     private List<string> _beenPlayed = new List<string>();
     private GameDifficulty _difficulty = GameDifficulty.Easy;
@@ -55,7 +54,6 @@ public class GameManager : MonoBehaviour
         _player =(PlayerController) GameObject.FindObjectOfType<PlayerController>();
         _optionsPanel = GameObject.Find("Options");
         _hasDiedPanel = GameObject.Find("HasDied");
-        _inventoryPanel = GameObject.Find("InventoryManagement");
 
         if (_player == null)
         {
@@ -82,6 +80,10 @@ public class GameManager : MonoBehaviour
             throw new System.NotImplementedException("Unable to locate the transform \"Inventory\" inside the \"HUDisplay\"");
         }
 
+        _optionsPanel.GetComponent<RectTransform>().localPosition = Vector3.zero;
+        _hasDiedPanel.GetComponent<RectTransform>().localPosition = Vector3.zero;
+
+
         HUDisplay.transform.parent = displayHolder.transform;
 
         HUDisplay.transform.localScale = new Vector3(1f, 1f, 1f);
@@ -104,19 +106,7 @@ public class GameManager : MonoBehaviour
             }
             //showOptions = !showOptions;
         }
-
-        if (CrossPlatformInputManager.GetButtonDown("Inventory"))
-        {
-            if (gameState == GameState.Inventory)
-            {
-                gameState = GameState.Play;
-            }
-            else
-            {
-                gameState = GameState.Inventory;
-            }
-        }
-
+        
         //if (showHasDied)
         if (gameState == GameState.Dead)
         {
@@ -142,7 +132,6 @@ public class GameManager : MonoBehaviour
             if (!_optionsPanel.activeInHierarchy)
             {
                 _hasDiedPanel.SetActive(false);
-                _inventoryPanel.SetActive(false);
             }
             _optionsPanel.SetActive(true);
         }
@@ -151,18 +140,8 @@ public class GameManager : MonoBehaviour
             if (!_hasDiedPanel.activeInHierarchy)
             {
                 _optionsPanel.SetActive(false);
-                _inventoryPanel.SetActive(false);
             }
             _hasDiedPanel.SetActive(true);
-        }
-        if (gameState == GameState.Inventory)
-        {
-            if (!_inventoryPanel.activeInHierarchy)
-            {
-                _hasDiedPanel.SetActive(false);
-                _optionsPanel.SetActive(false);
-            }
-            _inventoryPanel.SetActive(true);
         }
         if (gameState == GameState.Play)
         {
@@ -173,10 +152,6 @@ public class GameManager : MonoBehaviour
             if (_hasDiedPanel.activeInHierarchy)
             {
                 _hasDiedPanel.SetActive(false);
-            }
-            if (_inventoryPanel.activeInHierarchy)
-            {
-                _inventoryPanel.SetActive(false);
             }
         }
 

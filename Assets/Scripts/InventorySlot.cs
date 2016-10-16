@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour
 {
-    public Image background;
-    public Image image;
+    private Image background;
+    private Image image;
 
 	// Use this for initialization
 	void Awake ()
