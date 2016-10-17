@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     private GameObject _hasDiedPanel;
     private bool _lockControllerState = false;
     private List<string> _beenPlayed = new List<string>();
-    private GameDifficulty _difficulty = GameDifficulty.Easy;
+    private GameDifficulty _difficulty = GameDifficulty.Normal;
     private bool _gamePaused;
     private bool _levelFinished = false;
     private int _targetFrameRate;

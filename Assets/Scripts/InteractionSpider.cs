@@ -13,7 +13,7 @@ public class InteractionSpider : Interactable
     }
     public override void Interact(PlayerController player)
     {
-        if (!_highlighted || Vector3.Distance(player.transform.position, transform.position) > 5f)
+        if (!_highlighted)
         {
             return;
         }

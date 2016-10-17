@@ -18,10 +18,11 @@ public class InteractionChest : Interactable
     public override void Interact(PlayerController player)
     {
         base.Interact(player);
-        if (_isOpened)
+        if (!_highlighted || _isOpened)
         {
             return;
         }
+
         foreach(var content in contents)
         {
             //Instantiate(content, transform.position + new Vector3(0f, .2f, 0f), Quaternion.identity);

@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour, IHitable
         Won
     };
     public float startingHealth = 20;
+    public float healthRecover = .5f;
     public float staminaMax = 20;
     public float staminaRecover = 1;
     public AudioClip gruntSound;
@@ -222,7 +223,10 @@ public class PlayerController : MonoBehaviour, IHitable
         {
             _stamina += staminaRecover * Time.deltaTime;
         }
-        
+        _currentHealth += healthRecover*Time.deltaTime;
+
+        UpdateHUDisplay();
+
         MovePlayer();
 
         Interact(CrossPlatformInputManager.GetButtonDown("Interact"));
@@ -257,19 +261,35 @@ public class PlayerController : MonoBehaviour, IHitable
                 _weapon.Swing();
             }
         }
-
-
-        UpdateHUDisplay();
     }
 
     private void UpdateHUDisplay()
     {
         _stamina = Mathf.Clamp(_stamina, 0, staminaMax);
+        _currentHealth = Mathf.Clamp(_currentHealth, 0, startingHealth);
+
         var staminaScale = _staminaImage.transform.localScale;
         staminaScale.x = 1f;
         staminaScale.y = _stamina/staminaMax;
 
         _staminaImage.transform.localScale = staminaScale;
+
+        if (_currentHealth > startingHealth * .75)
+        {
+            _healthImage.color = Color.green;
+        }
+        else if (_currentHealth > startingHealth * .5)
+        {
+            _healthImage.color = Color.yellow;
+        }
+        else if (_currentHealth > startingHealth * .25)
+        {
+            _healthImage.color = Color.red;
+        }
+
+        var healthScale = _healthImage.transform.localScale;
+        healthScale.x = _currentHealth / startingHealth;
+        _healthImage.transform.localScale = healthScale;
 
     }
 
@@ -353,22 +373,6 @@ public class PlayerController : MonoBehaviour, IHitable
     public void Hit(float damage)
     {
         _currentHealth -= damage;
-        if (_currentHealth > startingHealth * .75)
-        {
-            _healthImage.color = Color.green;
-        }
-        else if (_currentHealth > startingHealth * .5)
-        {
-            _healthImage.color = Color.yellow;
-        }
-        else if (_currentHealth > startingHealth * .25)
-        {
-            _healthImage.color = Color.red;
-        }
-
-        var healthScale = _healthImage.transform.localScale;
-        healthScale.x = _currentHealth / startingHealth;
-        _healthImage.transform.localScale = healthScale;
 
         if (_currentHealth > 0f && damage > 0f)
         {
