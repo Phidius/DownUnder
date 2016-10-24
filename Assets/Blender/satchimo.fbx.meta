@@ -1,107 +1,105 @@
 fileFormatVersion: 2
-guid: 19bce79fe0ab9224b8765fa8ad09fae4
-timeCreated: 1473400966
+guid: 09e05fc3a89469d4db47ee791f10c071
+timeCreated: 1477345382
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: Body
-    100002: Body_end
-    100004: Camera
-    100006: Hemi
-    100008: Legs
-    100010: Primary01.L
-    100012: Primary01.R
-    100014: Primary02.L
-    100016: Primary02.R
-    100018: Primary03.L
-    100020: Primary03.R
-    100022: Primary04.L
-    100024: Primary04.L_end
-    100026: Primary04.R
-    100028: Primary04.R_end
-    100030: Quaternary01.L
-    100032: Quaternary01.R
-    100034: Quaternary02.L
-    100036: Quaternary02.R
-    100038: Quaternary03.L
-    100040: Quaternary03.R
-    100042: Quaternary04.L
-    100044: Quaternary04.L_end
-    100046: Quaternary04.R
-    100048: Quaternary04.R_end
-    100050: Satchimo
-    100052: //RootNode
-    100054: SatchimoMesh
-    100056: Secondary01.L
-    100058: Secondary01.R
-    100060: Secondary02.L
-    100062: Secondary02.R
-    100064: Secondary03.L
-    100066: Secondary03.R
-    100068: Secondary04.L
-    100070: Secondary04.L_end
-    100072: Secondary04.R
-    100074: Secondary04.R_end
-    100076: Tertiary01.L
-    100078: Tertiary01.R
-    100080: Tertiary02.L
-    100082: Tertiary02.R
-    100084: Tertiary03.L
-    100086: Tertiary03.R
-    100088: Tertiary04.L
-    100090: Tertiary04.L_end
-    100092: Tertiary04.R
-    100094: Tertiary04.R_end
-    400000: Body
-    400002: Body_end
-    400004: Camera
-    400006: Hemi
-    400008: Legs
-    400010: Primary01.L
-    400012: Primary01.R
-    400014: Primary02.L
-    400016: Primary02.R
-    400018: Primary03.L
-    400020: Primary03.R
-    400022: Primary04.L
-    400024: Primary04.L_end
-    400026: Primary04.R
-    400028: Primary04.R_end
-    400030: Quaternary01.L
-    400032: Quaternary01.R
-    400034: Quaternary02.L
-    400036: Quaternary02.R
-    400038: Quaternary03.L
-    400040: Quaternary03.R
-    400042: Quaternary04.L
-    400044: Quaternary04.L_end
-    400046: Quaternary04.R
-    400048: Quaternary04.R_end
-    400050: Satchimo
-    400052: //RootNode
-    400054: SatchimoMesh
-    400056: Secondary01.L
-    400058: Secondary01.R
-    400060: Secondary02.L
-    400062: Secondary02.R
-    400064: Secondary03.L
-    400066: Secondary03.R
-    400068: Secondary04.L
-    400070: Secondary04.L_end
-    400072: Secondary04.R
-    400074: Secondary04.R_end
-    400076: Tertiary01.L
-    400078: Tertiary01.R
-    400080: Tertiary02.L
-    400082: Tertiary02.R
-    400084: Tertiary03.L
-    400086: Tertiary03.R
-    400088: Tertiary04.L
-    400090: Tertiary04.L_end
-    400092: Tertiary04.R
-    400094: Tertiary04.R_end
+    100000: Legs
+    100002: Main
+    100004: Primary01.L
+    100006: Primary01.R
+    100008: Primary02.L
+    100010: Primary02.R
+    100012: Primary03.L
+    100014: Primary03.R
+    100016: Primary04.L
+    100018: Primary04.L_end
+    100020: Primary04.R
+    100022: Primary04.R_end
+    100024: Quaternary01.L
+    100026: Quaternary01.R
+    100028: Quaternary02.L
+    100030: Quaternary02.R
+    100032: Quaternary03.L
+    100034: Quaternary03.R
+    100036: Quaternary04.L
+    100038: Quaternary04.L_end
+    100040: Quaternary04.R
+    100042: Quaternary04.R_end
+    100044: Satchimo
+    100046: //RootNode
+    100048: SatchimoMesh
+    100050: Secondary01.L
+    100052: Secondary01.R
+    100054: Secondary02.L
+    100056: Secondary02.R
+    100058: Secondary03.L
+    100060: Secondary03.R
+    100062: Secondary04.L
+    100064: Secondary04.L_end
+    100066: Secondary04.R
+    100068: Secondary04.R_end
+    100070: Tertiary01.L
+    100072: Tertiary01.R
+    100074: Tertiary02.L
+    100076: Tertiary02.R
+    100078: Tertiary03.L
+    100080: Tertiary03.R
+    100082: Tertiary04.L
+    100084: Tertiary04.L_end
+    100086: Tertiary04.R
+    100088: Tertiary04.R_end
+    400000: Legs
+    400002: Main
+    400004: Primary01.L
+    400006: Primary01.R
+    400008: Primary02.L
+    400010: Primary02.R
+    400012: Primary03.L
+    400014: Primary03.R
+    400016: Primary04.L
+    400018: Primary04.L_end
+    400020: Primary04.R
+    400022: Primary04.R_end
+    400024: Quaternary01.L
+    400026: Quaternary01.R
+    400028: Quaternary02.L
+    400030: Quaternary02.R
+    400032: Quaternary03.L
+    400034: Quaternary03.R
+    400036: Quaternary04.L
+    400038: Quaternary04.L_end
+    400040: Quaternary04.R
+    400042: Quaternary04.R_end
+    400044: Satchimo
+    400046: //RootNode
+    400048: SatchimoMesh
+    400050: Secondary01.L
+    400052: Secondary01.R
+    400054: Secondary02.L
+    400056: Secondary02.R
+    400058: Secondary03.L
+    400060: Secondary03.R
+    400062: Secondary04.L
+    400064: Secondary04.L_end
+    400066: Secondary04.R
+    400068: Secondary04.R_end
+    400070: Tertiary01.L
+    400072: Tertiary01.R
+    400074: Tertiary02.L
+    400076: Tertiary02.R
+    400078: Tertiary03.L
+    400080: Tertiary03.R
+    400082: Tertiary04.L
+    400084: Tertiary04.L_end
+    400086: Tertiary04.R
+    400088: Tertiary04.R_end
     4300000: SatchimoMesh
+    7400000: Climb
+    7400002: Walk
+    7400004: Attack
+    7400006: Dying
     9500000: //RootNode
     13700000: SatchimoMesh
   materials:
@@ -124,7 +122,479 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Climb
+      takeName: Legs|Walk
+      firstFrame: 0
+      lastFrame: 14
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Satchimo
+        weight: 1
+      - path: Satchimo/Legs
+        weight: 1
+      - path: Satchimo/Legs/Main
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L/Primary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L/Primary04.L/Primary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R/Primary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R/Primary04.R/Primary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L/Quaternary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L/Quaternary04.L/Quaternary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R/Quaternary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R/Quaternary04.R/Quaternary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L/Secondary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L/Secondary04.L/Secondary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R/Secondary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R/Secondary04.R/Secondary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L/Tertiary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L/Tertiary04.L/Tertiary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R/Tertiary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R/Tertiary04.R/Tertiary04.R_end
+        weight: 1
+      - path: SatchimoMesh
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Walk
+      takeName: Legs|Walk
+      firstFrame: 15
+      lastFrame: 38
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Satchimo
+        weight: 1
+      - path: Satchimo/Legs
+        weight: 1
+      - path: Satchimo/Legs/Main
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L/Primary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L/Primary04.L/Primary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R/Primary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R/Primary04.R/Primary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L/Quaternary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L/Quaternary04.L/Quaternary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R/Quaternary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R/Quaternary04.R/Quaternary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L/Secondary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L/Secondary04.L/Secondary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R/Secondary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R/Secondary04.R/Secondary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L/Tertiary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L/Tertiary04.L/Tertiary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R/Tertiary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R/Tertiary04.R/Tertiary04.R_end
+        weight: 1
+      - path: SatchimoMesh
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Attack
+      takeName: Legs|Walk
+      firstFrame: 39
+      lastFrame: 67
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Satchimo
+        weight: 1
+      - path: Satchimo/Legs
+        weight: 1
+      - path: Satchimo/Legs/Main
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L/Primary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L/Primary04.L/Primary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R/Primary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R/Primary04.R/Primary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L/Quaternary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L/Quaternary04.L/Quaternary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R/Quaternary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R/Quaternary04.R/Quaternary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L/Secondary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L/Secondary04.L/Secondary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R/Secondary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R/Secondary04.R/Secondary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L/Tertiary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L/Tertiary04.L/Tertiary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R/Tertiary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R/Tertiary04.R/Tertiary04.R_end
+        weight: 1
+      - path: SatchimoMesh
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Dying
+      takeName: Legs|Walk
+      firstFrame: 68
+      lastFrame: 91
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Satchimo
+        weight: 1
+      - path: Satchimo/Legs
+        weight: 1
+      - path: Satchimo/Legs/Main
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L/Primary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.L/Primary02.L/Primary03.L/Primary04.L/Primary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R/Primary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Primary01.R/Primary02.R/Primary03.R/Primary04.R/Primary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L/Quaternary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.L/Quaternary02.L/Quaternary03.L/Quaternary04.L/Quaternary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R/Quaternary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Quaternary01.R/Quaternary02.R/Quaternary03.R/Quaternary04.R/Quaternary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L/Secondary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.L/Secondary02.L/Secondary03.L/Secondary04.L/Secondary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R/Secondary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Secondary01.R/Secondary02.R/Secondary03.R/Secondary04.R/Secondary04.R_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L/Tertiary04.L
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.L/Tertiary02.L/Tertiary03.L/Tertiary04.L/Tertiary04.L_end
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R/Tertiary04.R
+        weight: 1
+      - path: Satchimo/Legs/Main/Tertiary01.R/Tertiary02.R/Tertiary03.R/Tertiary04.R/Tertiary04.R_end
+        weight: 1
+      - path: SatchimoMesh
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
