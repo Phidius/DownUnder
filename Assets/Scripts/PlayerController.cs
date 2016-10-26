@@ -52,7 +52,6 @@ public class PlayerController : MonoBehaviour, IHitable
 
     private bool _isCatching = false;
     private bool _isCrouching = false;
-    private bool _isJumping = false;
     
     // Use this for initialization
     void Start ()
@@ -191,7 +190,6 @@ public class PlayerController : MonoBehaviour, IHitable
 
         if (CrossPlatformInputManager.GetButtonDown("Jump"))
         {
-            _isJumping = true;
             _stamina -= _jumpSpeed;
         }
         
@@ -298,12 +296,10 @@ public class PlayerController : MonoBehaviour, IHitable
         var forwardSpeed = 0f;
         if (_firstPersonController.m_MoveDir.y > 0f)
         {
-            _isJumping = true;
             _animator.SetBool("OnGround", false);
         }
         if (_firstPersonController.m_MoveDir.y == 0f)
         {
-            _isJumping = false;
             _animator.SetBool("OnGround", true);
         }
 

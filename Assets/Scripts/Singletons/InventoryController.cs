@@ -106,7 +106,7 @@ public class InventoryController : MonoBehaviour
         var result = false;
         for (var index = 0; index < inventory.Length; index++)
         {
-            if (inventory[index] == null)
+            if (inventory[index] == null && result == false)
             {
                 inventory[index] = item;
                 inventory[index].GetComponent<Rigidbody>().isKinematic = true;// Prevent the object from moving around.

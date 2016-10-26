@@ -19,7 +19,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     };
 
     //values that will be set in the Inspector
-    public int initialHealthMultiplier = 1;
+    public float initialHealthMultiplier = 1;
     public float initialRunSpeedMultiplier = 3f;
     public float initialWalkSpeedMultiplier = 2f;
     public int initialDamageMultiplier = 1;

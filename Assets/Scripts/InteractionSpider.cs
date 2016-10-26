@@ -17,7 +17,10 @@ public class InteractionSpider : Interactable
         {
             return;
         }
-
+        if (contents.Count < 1)
+        {
+            return;
+        }
         // Determine what (if anything) will be dropped
         var index = Random.Range(0, contents.Count);
         if (contents[index] != null)

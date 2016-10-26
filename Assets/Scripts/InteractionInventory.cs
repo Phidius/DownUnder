@@ -8,6 +8,7 @@ public class InteractionInventory: Interactable
         base.Interact(player);
         if (_highlighted)
         {
+            _highlighted = false;
             InventoryController.Instance.AddInventory(gameObject);
         }
     }
