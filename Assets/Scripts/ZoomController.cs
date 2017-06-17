@@ -11,8 +11,8 @@ public class ZoomController : MonoBehaviour {
     private void Start()
     {
         player = GameObject.FindObjectOfType<PlayerController>();
-        _firstPerspective = transform.root.FindChild("First");
-        _thirdPerspective = transform.root.FindChild("Third");
+        _firstPerspective = transform.root.Find("First");
+        _thirdPerspective = transform.root.Find("Third");
     }
 
     // Update is called once per frame

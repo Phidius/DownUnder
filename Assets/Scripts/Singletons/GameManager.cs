@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        var displayHolder = Camera.main.transform.FindChild("DisplayHolder");
+        var displayHolder = Camera.main.transform.Find("DisplayHolder");
         HUDisplay = GameObject.Find("HUDisplay");
         _player =(PlayerController) GameObject.FindObjectOfType<PlayerController>();
         _optionsPanel = GameObject.Find("Options");

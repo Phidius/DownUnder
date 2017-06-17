@@ -50,7 +50,7 @@ public class InteractionChest : Interactable
         _isOpened = true;
         _animator.SetTrigger("Open");
         Enable(false);
-        var miniMapIcon = transform.parent.FindChild("MiniMapIcon");
+        var miniMapIcon = transform.parent.Find("MiniMapIcon");
         miniMapIcon.gameObject.SetActive(false);
 
     }

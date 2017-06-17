@@ -4,7 +4,7 @@ using System.Collections;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(BoxCollider))]
-[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
 [RequireComponent(typeof(AudioSource))]
 public class SpiderController : MonoBehaviour, IHitable, IPatrolable
 {
@@ -27,7 +27,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
     public AudioClip deathCry;
     public AudioClip hitSound;
     public Material miniMapMaterial;
-    public NavMeshAgent agent { get; private set; }
+    public UnityEngine.AI.NavMeshAgent agent { get; private set; }
 
     //values for internal use
     private Animator _animator;
@@ -52,7 +52,7 @@ public class SpiderController : MonoBehaviour, IHitable, IPatrolable
         // Required components
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
-        agent = GetComponent<NavMeshAgent>();
+        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 
         // Child components
         var spiderSense = GetComponentInChildren<SpiderSense>();

@@ -18,7 +18,7 @@ public class AutosaveOnRun
                 {
                     EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetSceneAt(index));
                 }
-                EditorApplication.SaveAssets();
+                AssetDatabase.SaveAssets();
             }
         };
     }
